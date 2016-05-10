@@ -6,11 +6,18 @@
     <h3>Flight Search</h3>
     <!--Variables from user: adultCount, origin, desination, date, maxPrice-->
     <form action="/trip/results" method="POST">
+        <label>Travelers</label>
+        <input type="text" name="num_travelers" value="1">
         <label>Origin</label>
-        <input type="text" name="flight_origin">
+        <input type="text" name="flight_origin" value="SFO">
         <label>Destination</label>
-        <input type="text" name="flight_destination">
-        
+        <input type="text" name="flight_destination" value="LHR">
+        <label>Date</label>
+        <input type="text" name="departure_date" value="2016-05-11">
+        <label>Price Limit</label>
+        <input type="text" name="max_price" value="in USD">
+        <input type="submit" value="Search">
+
     </form>
 
 {% endblock %}
