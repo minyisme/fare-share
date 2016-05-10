@@ -3,6 +3,14 @@
     
     <h1>All the Searchings!</h1>
 
-    <a href="/trip/results">Search</a>
+    <h3>Flight Search</h3>
+    <!--Variables from user: adultCount, origin, desination, date, maxPrice-->
+    <form action="/trip/results" method="POST">
+        <label>Origin</label>
+        <input type="text" name="flight_origin">
+        <label>Destination</label>
+        <input type="text" name="flight_destination">
+        
+    </form>
 
 {% endblock %}
