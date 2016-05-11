@@ -60,21 +60,15 @@ def trip_results():
     max_price = request.form.get("max_price")
     max_price = "USD" + max_price
 
-    print num_travelers
+
+
+
 
     # Get key from environment
     API_KEY = os.environ['QPX_KEY']
 
     # Insert key into QPX API url
     url = "https://www.googleapis.com/qpxExpress/v1/trips/search?key=%s" %(API_KEY)
-
-    # # Get search parameters from Flight Search Form
-    # num_travelers = int(request.form.get("num_travelers"))
-    # flight_origin = request.form.get("flight_origin")
-    # flight_destination = request.form.get("flight_destination")
-    # departure_date = request.form.get("departure_date")
-    # max_price = request.form.get("max_price")
-    # max_price = "USD" + max_price
 
     # Search parameters to QPX API
     # Variables from user: adultCount, origin, desination, date, maxPrice
@@ -94,7 +88,7 @@ def trip_results():
             "maxStops": 1,
           }
         ],
-        "solutions": 2,
+        "solutions": 5,
         "maxPrice": max_price,
       }
     }
@@ -106,12 +100,44 @@ def trip_results():
 
     # Opens JSON results
     results = urllib2.urlopen(flight_request)
-    # Read results
-    json_results = results.read()
+    # Read results and turn it into Python
+    python_results = json.load(results)
     # Closes JSON results
     results.close()
 
-    return render_template("trip_results.html", results=json_results)
+    # Create flight_data dictionary
+    flight_data = {}
+
+
+
+
+
+    # For each flight option, get id, duration, fare, tax, total fare
+    for i in range(len(python_results["trips"]["tripOption"])):
+        flight_id = python_results["trips"]["tripOption"][i]["id"]
+        flight_duration = python_results["trips"]["tripOption"][i]["slice"][0]["duration"]
+        flight_fare = python_results["trips"]["tripOption"][i]["pricing"][0]["saleFareTotal"]
+        flight_tax = python_results["trips"]["tripOption"][i]["pricing"][0]["saleTaxTotal"]
+        flight_total = python_results["trips"]["tripOption"][i]["pricing"][0]["saleTotal"]
+
+        # Wrap all flight data for one flight into one dictionary item
+        flight_data[i] = [flight_id, flight_duration, flight_fare, flight_tax, flight_total]
+
+        # Create segment_data variable to do less repetitive typing
+        segment_data = python_results["trips"]["tripOption"][i]["slice"][0]["segment"]
+    
+        # For each segment inside each flight append all the legs and info to dict
+
+        flight_data[i].append([])
+        for x in range(len(segment_data)):
+            leg_origin = segment_data[x]["leg"][0]["origin"]
+            leg_departure = segment_data[x]["leg"][0]["departureTime"]
+            leg_destination = segment_data[x]["leg"][0]["destination"]
+            leg_arrival = segment_data[x]["leg"][0]["arrivalTime"]
+            flight_data[i][5].append([leg_origin, leg_departure, leg_destination, leg_arrival])
+
+
+    return render_template("trip_results.html", results=flight_data)
 
 @app.route('/trip/share')
 def trip_share():

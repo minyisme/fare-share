@@ -1,34 +1,10 @@
-# parameters = {
-#   "request": {
-#     "passengers": {
-#       "kind": "qpxexpress#passengerCounts",
-#       "adultCount": 1,
-#     },
-#     "slice": [
-#       {
-#         "kind": "qpxexpress#sliceInput",
-#         "origin": "JFK",
-#         "destination": "LHR",
-#         "date": "2016-06-11",
-#         "maxStops": 1,
-#       }
-#     ],
-#     "solutions": 2,
-#     "maxPrice": "USD800.00",
-#   }
-# }
-
-# General QPX search response fields
 {
  "kind": "qpxExpress#tripsSearch",
  "trips": {
-  # Either has options or none
   "kind": "qpxexpress#tripOptions",
   "requestId": "ekPvRgcdaS9tovyU70OIxD",
   "data": {
    "kind": "qpxexpress#data",
-
-   # List of all airports that could be origin or destination
    "airport": [
     {
      "kind": "qpxexpress#airportData",
@@ -55,8 +31,6 @@
      "name": "Moscow Sheremetyevo"
     }
    ],
-
-   # City that is where origin airports are located
    "city": [
     {
      "kind": "qpxexpress#cityData",
@@ -79,8 +53,6 @@
      "name": "Reykjavik"
     }
    ],
-
-   # List of all aircrafts used in search results
    "aircraft": [
     {
      "kind": "qpxexpress#aircraftData",
@@ -98,8 +70,6 @@
      "name": "Boeing 777"
     }
    ],
-
-   # List of all taxes applicable on these flight results
    "tax": [
     {
      "kind": "qpxexpress#taxData",
@@ -137,8 +107,6 @@
      "name": "US Passenger Facility Charge"
     }
    ],
-
-   # All carriers that are used in search results
    "carrier": [
     {
      "kind": "qpxexpress#carrierData",
@@ -152,39 +120,21 @@
     }
    ]
   },
-
-  # List of priced itinerary solutions to the query
   "tripOption": [
    {
-
-    # Option one. Two legs: JFK -> SVO, SVO -> LHR
     "kind": "qpxexpress#tripOption",
     "saleTotal": "USD642.50",
-
-    # trips.tripOption[].id
     "id": "JziM7lRq1yUPVw5DWSnSqL002",
     "slice": [
      {
       "kind": "qpxexpress#sliceInfo",
-
-      # trips.tripOption[].slice[].duration
       "duration": 865,
       "segment": [
        {
-
-        # Segment of a flight option
         "kind": "qpxexpress#segmentInfo",
-
-        # trips.tripOption[].slice[].segment[].duration
         "duration": 545,
-
-        # trips.tripOption[].slice[].segment[].flight
         "flight": {
-
-        # trips.tripOption[].slice[].segment[].flight.carrier
          "carrier": "SU",
-
-         # trips.tripOption[].slice[].segment[].flight.number
          "number": "101"
         },
         "id": "GkUtY7cMpLWsKc9K",
@@ -194,35 +144,21 @@
         "marriedSegmentGroup": "0",
         "leg": [
          {
-
-          #trips.tripOption[].slice[].segment[].leg[]
           "kind": "qpxexpress#legInfo",
           "id": "L-NsgKSx-LKJgLYM",
           "aircraft": "77W",
-
-          # #trips.tripOption[].slice[].segment[].leg[].arrivalTime
           "arrivalTime": "2016-06-12T06:25+03:00",
-
-          #trips.tripOption[].slice[].segment[].leg[].departureTime
           "departureTime": "2016-06-11T14:20-04:00",
-
-          #trips.tripOption[].slice[].segment[].leg[].origin
           "origin": "JFK",
-
-          #trips.tripOption[].slice[].segment[].leg[].destination
           "destination": "SVO",
           "originTerminal": "1",
           "destinationTerminal": "D",
-
-          #trips.tripOption[].slice[].segment[].leg[].duration
           "duration": 545,
           "mileage": 4646,
           "meal": "Lunch",
           "secure": true
          }
         ],
-
-        #trips.tripOption[].slice[].segment[].leg[].connectionDuration
         "connectionDuration": 70
        },
        {
@@ -282,17 +218,9 @@
         "segmentId": "GkUtY7cMpLWsKc9K"
        }
       ],
-
-      #trips.tripOption[].pricing[].baseFareTotal
       "baseFareTotal": "USD460.00",
-
-      #trips.tripOption[].pricing[].saleFareTotal
       "saleFareTotal": "USD460.00",
-
-      #trips.tripOption[].pricing[].saleTaxTotal
       "saleTaxTotal": "USD182.50",
-
-      #trips.tripOption[].pricing[].saleTotal
       "saleTotal": "USD642.50",
       "passengers": {
        "kind": "qpxexpress#passengerCounts",
@@ -332,12 +260,8 @@
        }
       ],
       "fareCalculation": "NYC SU X/MOW SU LON 460.00LKEXOW NUC 460.00 END ROE 1.00 FARE USD 460.00 XT 17.80US 5.60AY 154.60YQ 4.50XF JFK4.50",
-
-      # trips.tripOption[].pricing[].latestTicketingTime
       "latestTicketingTime": "2016-05-16T23:59-04:00",
       "ptc": "ADT",
-
-      # trips.tripOption[].pricing[].refundable
       "refundable": true
      }
     ]

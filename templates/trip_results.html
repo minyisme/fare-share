@@ -3,8 +3,55 @@
     
     <h1>Flight infos here!</h1>
 
-    <a href="/trip">Back to Specific Imaginary Trip!</a>
+    {% if results %}
 
-    <p>{{ results }}</p>
+    {% for flight in results %}
+    <table>
+        <thead>
+            <tr>
+                <th>Flight ID</th>
+                <th>Flight Duration</th>
+                <th>Flight Fare</th>
+                <th>Flight Tax</th>
+                <th>Flight Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ results[flight][0] }}</td>
+                <td>{{ results[flight][1] }}</td>
+                <td>{{ results[flight][2] }}</td>
+                <td>{{ results[flight][3] }}</td>
+                <td>{{ results[flight][4] }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <td>Origin</td>
+                <td>Departure</td>
+                <td>Destination</td>
+                <td>Arrival</td>
+            </tr>
+        </thead>
+        {% for leg in results[flight][5] %}
+        <tbody>
+            <tr>
+                <td>{{ leg[0] }}</td>
+                <td>{{ leg[1] }}</td>
+                <td>{{ leg[2] }}</td>
+                <td>{{ leg[3] }}</td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+    {% endif %}
+
+    <br>
+
+    <a href="/trip">Back to Specific Imaginary Trip!</a>
 
 {% endblock %}
