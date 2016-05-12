@@ -5,52 +5,60 @@
 
     {% if results %}
 
-    {% for flight in results %}
+    {% for route in results %}
+
+    <h1>Route</h1>
+    <br>
+    <br>
+
+    {% for option in route %}
     <table>
         <thead>
             <tr>
                 <th>Flight ID</th>
-                <th>Flight Duration</th>
                 <th>Flight Fare</th>
-                <th>Flight Tax</th>
-                <th>Flight Total</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>{{ results[flight][0] }}</td>
-                <td>{{ results[flight][1] }}</td>
-                <td>{{ results[flight][2] }}</td>
-                <td>{{ results[flight][3] }}</td>
-                <td>{{ results[flight][4] }}</td>
+                <td>{{ option["option_id"] }}</td>
+                <td>{{ option["option_price"] }}</td>
             </tr>
         </tbody>
     </table>
+    {% for flight in option["option_flight"] %}
     <table>
         <thead>
             <tr>
                 <td>Origin</td>
                 <td>Departure</td>
+                <td>Duration</td>
                 <td>Destination</td>
                 <td>Arrival</td>
             </tr>
         </thead>
-        {% for leg in results[flight][5] %}
+        {% for leg in flight %}
         <tbody>
             <tr>
-                <td>{{ leg[0] }}</td>
-                <td>{{ leg[1] }}</td>
-                <td>{{ leg[2] }}</td>
-                <td>{{ leg[3] }}</td>
+                <td>{{ leg["leg_origin"] }}</td>
+                <td>{{ leg["leg_departure"] }}</td>
+                <td>{{ leg["leg_duration"] }}</td>
+                <td>{{ leg["leg_destination"] }}</td>
+                <td>{{ leg["leg_arrival"] }}</td>
             </tr>
         </tbody>
         {% endfor %}
     </table>
     {% endfor %}
 
-    {% endif %}
+    {% endfor %}
 
     <br>
+    <br>
+
+    {% endfor %}
+
+    {% endif %}
 
     <a href="/trip">Back to Specific Imaginary Trip!</a>
 

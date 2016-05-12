@@ -317,43 +317,45 @@ with open('qpx_round_results.json') as results:
 #     u'id': u'LFi2v3UOH11vqKOh'
 # }]
 
-for x in range(len(python_results["trips"]["tripOption"])):
-    print "Round trip flight option %s" %(x)
-    flight_data = python_results["trips"]["tripOption"]
-    flight_id = flight_data[x]["id"]
-    print "ID: %s" %(flight_id)
-    flight_price = flight_data[x]["saleTotal"]
-    print "Price: %s" %(flight_price)
-    print "\n\n\n"
-    slice_data = python_results["trips"]["tripOption"][x]["slice"]
-    dep_ret = ["Departure", "Return"]
-    for y in range(len(slice_data)):
-        print "%s Leg" %(dep_ret[y])
-        flight_duration = slice_data[y]["duration"]
-        print "Flight Duration: %s" %(flight_duration)
-        segment_data = slice_data[y]["segment"]
-        for z in range(len(segment_data)):
-            print "Leg %s" %(z)
-            each_leg = segment_data[z]["leg"][0]
-            leg_duration = each_leg["duration"]
-            print "Duration: %s" %(leg_duration)
-            leg_origin = each_leg["origin"]
-            print "Origin: %s" %(leg_origin)
-            leg_departure = each_leg["departureTime"]
-            print "Departure Time: " + leg_departure
-            leg_destination = each_leg["destination"] 
-            print "Destination: %s" %(leg_destination)
-            leg_arrival = each_leg["arrivalTime"]
-            print "Arrival Time: " + leg_arrival
-            print "\n\n\n"
-        for a in range(len(segment_data)-1):
-            connection_duration = segment_data[a]["connectionDuration"]
-            print "Connection Duration: %s" %(connection_duration)
-            print "\n\n\n"
-    print "\n\n\n"
+# # Working code to get all info from results string and parse it to print
+# flight_data = []
 
+# for x in range(len(python_results["trips"]["tripOption"])):
+#     print "Round trip flight option %s" %(x)
+#     option_data = python_results["trips"]["tripOption"]
+#     option_id = option_data[x]["id"]
+#     print "ID: %s" %(option_id)
+#     option_price = option_data[x]["saleTotal"]
+#     print "Price: %s" %(option_price)
+#     print "\n\n\n"
+#     slice_data = python_results["trips"]["tripOption"][x]["slice"]
+#     dep_ret = ["Departure", "Return"]
+#     for y in range(len(slice_data)):
+#         print "%s Leg" %(dep_ret[y])
+#         flight_duration = slice_data[y]["duration"]
+#         print "Flight Duration: %s" %(flight_duration)
+#         segment_data = slice_data[y]["segment"]
+#         for z in range(len(segment_data)):
+#             print "Leg %s" %(z)
+#             each_leg = segment_data[z]["leg"][0]
+#             leg_duration = each_leg["duration"]
+#             print "Duration: %s" %(leg_duration)
+#             leg_origin = each_leg["origin"]
+#             print "Origin: %s" %(leg_origin)
+#             leg_departure = each_leg["departureTime"]
+#             print "Departure Time: " + leg_departure
+#             leg_destination = each_leg["destination"] 
+#             print "Destination: %s" %(leg_destination)
+#             leg_arrival = each_leg["arrivalTime"]
+#             print "Arrival Time: " + leg_arrival
+#             print "\n\n\n"
+#         for a in range(len(segment_data)-1):
+#             connection_duration = segment_data[a]["connectionDuration"]
+#             print "Connection Duration: %s" %(connection_duration)
+#             print "\n\n\n"
+#     print "\n\n\n"
 
-"""Mess of code to parse results data"""
+"""Mess of code to parse results data - doesn't work, start over"""
 # flight_data = {}
 
 # for x in range(len(python_results["trips"]["tripOption"])):
@@ -436,3 +438,131 @@ for x in range(len(python_results["trips"]["tripOption"])):
 #                         'leg_duration': 135
 #                     }]
 #     }]
+
+flight_data = []
+
+for x in range(len(python_results["trips"]["tripOption"])):
+
+    flight_data.append({})
+
+    # print "Round trip flight option %s" %(x)
+    option_data = python_results["trips"]["tripOption"]
+    option_id = option_data[x]["id"]
+    # print "ID: %s" %(option_id)
+    option_price = option_data[x]["saleTotal"]
+    # print "Price: %s" %(option_price)
+
+    flight_data[x]["option_id"] = option_id
+    flight_data[x]["option_price"] = option_price
+    flight_data[x]["option_flight"] = []
+    flight_data[x]["option_break"] = "\n\n\n\n\n\n"
+
+    # print flight_data[x]
+    # print "\n\n\n"
+    slice_data = python_results["trips"]["tripOption"][x]["slice"]
+    dep_ret = ["Departure", "Return"]
+    for y in range(len(slice_data)):
+
+        flight_data[x]["option_flight"].append([])
+
+        # print "%s Leg" %(dep_ret[y])
+        flight_duration = slice_data[y]["duration"]
+        # print "Flight Duration: %s" %(flight_duration)
+        segment_data = slice_data[y]["segment"]
+        for z in range(len(segment_data)):
+
+            flight_data[x]["option_flight"][y].append({})
+
+            # print "Leg %s" %(z)
+            each_leg = segment_data[z]["leg"][0]
+            leg_duration = each_leg["duration"]
+            # print "Duration: %s" %(leg_duration)
+            leg_origin = each_leg["origin"]
+            # print "Origin: %s" %(leg_origin)
+            leg_departure = each_leg["departureTime"]
+            # print "Departure Time: " + leg_departure
+            leg_destination = each_leg["destination"] 
+            # print "Destination: %s" %(leg_destination)
+            leg_arrival = each_leg["arrivalTime"]
+            # print "Arrival Time: " + leg_arrival
+
+            # flight_data[x]["option_flight"][y][z]
+            flight_data[x]["option_flight"][y][z]["leg_duration"] = leg_duration
+            flight_data[x]["option_flight"][y][z]["leg_origin"] = leg_origin
+            flight_data[x]["option_flight"][y][z]["leg_departure"] = leg_departure
+            flight_data[x]["option_flight"][y][z]["leg_destination"] = leg_destination
+            flight_data[x]["option_flight"][y][z]["leg_arrival"] = leg_arrival
+
+            # print "\n\n\n"
+
+        flight_data[x]["option_flight"][y].append({})
+        flight_data[x]["option_flight"][y][-1]["flight_duration"] = flight_duration
+        for a in range(len(segment_data)-1):
+            connection_duration = segment_data[a]["connectionDuration"]
+
+            flight_data[x]["option_flight"][y][-1]["connection_duration"] = connection_duration
+            # print "Connection Duration: %s" %(connection_duration)
+            # print "\n\n\n"
+    # print "\n\n\n"
+
+print flight_data
+
+{'option_break': '\n\n\n\n\n\n', 
+ 'option_id': u'C1TDtZ534dKQihoVN4pVNS00g', 
+ 'option_price': u'USD3256.36', 
+ 'option_flight': [[{'leg_arrival': u'2016-06-11T19:49-07:00', 
+                     'leg_origin': u'SFO', 
+                     'leg_departure': u'2016-06-11T17:30-07:00', 
+                     'leg_destination': u'YVR', 
+                     'leg_duration': 139}, 
+                    {'leg_arrival': u'2016-06-12T07:00-04:00', 
+                     'leg_origin': u'YVR', 
+                     'leg_departure': u'2016-06-11T22:50-07:00', 
+                     'leg_destination': u'JFK', 
+                     'leg_duration': 310}, 
+                    {'flight_duration': 630, 
+                     'connection_duration': 181}], 
+                   [{'leg_arrival': u'2016-06-21T10:33-07:00', 
+                     'leg_origin': u'JFK', 
+                     'leg_departure': u'2016-06-21T07:15-04:00', 
+                     'leg_destination': u'SEA', 
+                     'leg_duration': 378}, 
+                    {'leg_arrival': u'2016-06-21T16:10-07:00', 
+                     'leg_origin': u'SEA', 
+                     'leg_departure': u'2016-06-21T13:55-07:00', 
+                     'leg_destination': u'SFO', 
+                     'leg_duration': 135}, 
+                    {'flight_duration': 715, 
+                     'connection_duration': 202}]]
+}
+
+{'option_break': '\n\n\n\n\n\n', 
+ 'option_id': u'C1TDtZ534dKQihoVN4pVNS00g', 
+ 'option_price': u'USD3256.36', 
+ 'option_flight': [[{'leg_arrival': u'2016-06-11T19:49-07:00', 
+                     'leg_origin': u'SFO', 
+                     'leg_departure': u'2016-06-11T17:30-07:00', 
+                     'leg_destination': u'YVR', 'leg_duration': 139
+                    }, 
+                    {'leg_arrival': u'2016-06-12T07:00-04:00', 
+                     'leg_origin': u'YVR', 
+                     'leg_departure': u'2016-06-11T22:50-07:00', 
+                     'leg_destination': u'JFK', 
+                     'leg_duration': 310
+                    }, 
+                    {'flight_duration': 630
+                    }], 
+                   [{'leg_arrival': u'2016-06-21T10:33-07:00', 
+                     'leg_origin': u'JFK', 
+                     'leg_departure': u'2016-06-21T07:15-04:00', 
+                     'leg_destination': u'SEA', 
+                     'leg_duration': 378
+                    }, 
+                    {'leg_arrival': u'2016-06-21T16:10-07:00', 
+                     'leg_origin': u'SEA', 
+                     'leg_departure': u'2016-06-21T13:55-07:00', 
+                     'leg_destination': u'SFO', 'leg_duration': 135
+                    }, 
+                    {'flight_duration': 715}
+                    ]]
+}
