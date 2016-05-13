@@ -20,6 +20,9 @@ class User(db.Model):
     user_name = db.Column(db.String(20), nullable=False)
     origin_airport = db.Column(db.String(3), db.ForeignKey('airports.airport_code'), nullable=False)
 
+    # Define relationship to airport
+    airport = db.relationship('Airport', backref='users')
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -56,6 +59,11 @@ class UserTrip(db.Model):
     trip_id = db.Column(db.Integer, db.ForeignKey('trips.trip_id'), nullable=False)
     option_vote = db.Column(db.Integer, db.ForeignKey('options.option_id'), nullable=True)
 
+    # Define relationship to user, trip, and option
+    user = db.relationship('User', backref='usertrips')
+    trip = db.relationship('Trip', backref='usertrips')
+    option = db.relationship('Option', backref='votes')
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -76,6 +84,10 @@ class Option(db.Model):
     depart_date = db.Column(db.Date, nullable=False)
     return_date = db.Column(db.Date, nullable=False)
 
+    # Define relationship to trip and airport
+    trip = db.relationship('Trip', backref='options')
+    airport = db.relationship('Airport', backref='options')
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -92,9 +104,12 @@ class Flight(db.Model):
 
     flight_id = db.Column(db.String(25), primary_key=True)
     option_id = db.Column(db.Integer, db.ForeignKey('options.option_id'), nullable=False)
-    flight_price = db.Column(db.String(12), nullable=False)# Change to float?
+    flight_price = db.Column(db.String(12), nullable=False)
     connection = db.Column(db.Boolean, nullable=False)
     connection_time = db.Column(db.Integer, nullable=True)
+
+    # Define relationship to option
+    option = db.relationship('Option', backref='flights')
 
     def __repr__(self):
         """Provide helpful representation when printed."""
@@ -113,21 +128,27 @@ class Leg(db.Model):
     leg_id = db.Column(db.String(16), primary_key=True)
     flight_id = db.Column(db.ForeignKey('flights.flight_id'), nullable=False)
     direction = db.Column(db.String(6), nullable=False)
-    origin_airport = db.Column(db.String(3), nullable=False) #Foreign Key?
-    origin_city = db.Column(db.String(200), nullable=False) #Look up?
+    origin_airport = db.Column(db.ForeignKey('airports.airport_code'), nullable=False)
     departure_date = db.Column(db.DateTime, nullable=False)
-    destination_airport = db.Column(db.String(3), nullable=False) #Foreign Key?
-    destination_city = db.Column(db.String(200), nullable=False) #Look up?
-    arrival_date = db.Column(db.DateTime, nullable=False)
+    destination_airport = db.Column(db.ForeignKey('airports.airport_code'), nullable=False)
     leg_airline = db.Column(db.String(2), nullable=False)
     leg_code = db.Column(db.String(4), nullable=False)
     leg_time = db.Column(db.Integer, nullable=False)
 
+    # Define relationship to flight, airport, and airport
+    flight = db.relationship('Flight', backref='legs')
+    airport = db.relationship('Airport', backref='origins') #help queue these two relationships
+    airport = db.relationship('Airport', backref='destinations')
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Leg leg_id=%s flight_id=%s direction=%s origin_airport=%s origin_city=%s departure_date=%s destination_airport=%s destination_city=%s arrival_date=%s leg_airline=%s leg_code=%s leg_time=%s>"
-                % (self.leg_id, self.flight_id, self.direction, self.origin_airport, self.origin_airport, self.departure_date, self.destination_airport, self.destination_city, self.arrival_date, self.leg_airline, self.leg_code, self.leg_time))
+        return ("<Leg leg_id=%s flight_id=%s direction=%s origin_airport=%s" + 
+                "departure_date=%s destination_airport=%s arrival_date=%s" + 
+                "leg_airline=%s leg_code=%s leg_time=%s>"
+                % (self.leg_id, self.flight_id, self.direction, self.origin_airport, 
+                   self.departure_date, self.destination_airport, self.arrival_date, 
+                   self.leg_airline, self.leg_code, self.leg_time))
 
 
 
