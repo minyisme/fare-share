@@ -8,6 +8,8 @@ from model import connect_to_db, db, User, Trip, UserTrip, Option, Flight, Leg, 
 
 import functions
 
+import test_airports_parse
+
 
 
 app = Flask(__name__)
@@ -22,7 +24,9 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
-    return render_template("homepage.html")
+    results = test_airports_parse.parse()
+
+    return render_template("homepage.html", results=results)
 
 
 
