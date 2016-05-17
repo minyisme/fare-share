@@ -10,10 +10,14 @@
     A specifc Trip
 
     <br>
-    
-    <a href="/trip/details">Specific Trip</a>
+
+    {% for trip in trip_list %}
+
+    <a href="/trip/{{ trip.trip_id }}">{{ trip.trip_name}}</a>
 
     <br>
+
+    {% endfor %}
     
     <a href="/settings">Settings</a>
 

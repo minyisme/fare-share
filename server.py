@@ -19,6 +19,15 @@ app.secret_key = "ABC"
 # Undefined variable in Jinja2 raises an error
 app.jinja_env.undefined = StrictUndefined
 
+
+################################################################################
+
+## default pages routes ##
+
+################################################################################
+
+
+
 @app.route('/')
 def index():
     """Homepage"""
@@ -31,14 +40,38 @@ def index():
 def profile():
     """User profile page"""
 
-    print session["user_id"]
+    # print session["user_id"]
 
+    # Get all trips for this user to display on profile page
     user = User.query.filter_by(user_id=session["user_id"]).first()
 
-    trip_list = UserTrip.query.filter_by(user_id = user.user_id).all()
-    print trip_list
+    usertrip_list = UserTrip.query.filter_by(user_id = user.user_id).all()
+    # print usertrip_list
 
-    return render_template("profile.html")
+    trip_list = []
+
+    for usertrip in usertrip_list:
+        trip_list.append(Trip.query.filter_by(trip_id=usertrip.trip_id).first())
+
+    # print trip_list
+
+    return render_template("profile.html", trip_list=trip_list)
+
+
+
+@app.route('/settings')
+def settings():
+    """User settings page"""
+
+    return render_template("settings.html")
+
+
+
+################################################################################
+
+## login/logout routes ##
+
+################################################################################
 
 
 
@@ -75,6 +108,14 @@ def user_logout():
     flash("Don't leave meeeee!!!! :( ")
 
     return redirect('/')
+
+
+
+################################################################################
+
+## user registration routes ##
+
+################################################################################
 
 
 
@@ -116,11 +157,11 @@ def user_registration():
 
 
 
-@app.route('/settings')
-def settings():
-    """User settings page"""
+################################################################################
 
-    return render_template("settings.html")
+## trip adding routes ##
+
+################################################################################
 
 
 
@@ -133,7 +174,7 @@ def trip_info():
 
 
 @app.route('/trip/create_new', methods=["POST"])
-def trip_details():
+def trip_add():
     """Trip details page"""
 
     # Get trip name from form and add trip to db
@@ -174,45 +215,82 @@ def trip_details():
 
 
 
-@app.route('/trip/trip_id')
-def trip():
-    pass
+################################################################################
+
+## trip details, search/result, and share routes ##
+
+################################################################################
 
 
 
-@app.route('/trip/search')
-def trip_search():
+@app.route('/trip/<int:trip_id>')
+def trip_detail(trip_id):
+    """Display trip details page"""
+
+    trip = Trip.query.get(trip_id)
+    
+    return render_template("trip_detail.html", trip=trip)
+
+
+@app.route('/trip/<int:trip_id>/search')
+def trip_search(trip_id):
     """Search flights"""
 
-    return render_template("trip_search.html")
+    trip = Trip.query.get(trip_id)
+
+    return render_template("trip_search.html", trip=trip)
 
 
 
-@app.route('/trip/results', methods=["POST"])
-def trip_results():
+@app.route('/trip/<int:trip_id>/results', methods=["POST"])
+def trip_results(trip_id):
     """Search flights results"""
 
-    # Get search parameters from Flight Search Form
-    num_origins = int(request.form.get("num_origins"))
+    # Get trip
+    trip = Trip.query.get(trip_id)
 
+    # Get all origin airport codes to search from users attached to trip
+    origin_airport_codes = []
+    for usertrip in trip.usertrips:
+        origin_airport_codes.append(usertrip.user.origin_airport_code)
+
+    print origin_airport_codes
+
+    # Get destination, departure_date, return_date from form
+    destination = request.form.get("destination")
+    departure_date = request.form.get("departure_date")
+    return_date = request.form.get("departure_date")
+
+    # Add search option to database
+    option = Option(trip_id=trip_id, destination_airport_code=destination, 
+                    depart_date=departure_date, return_date=return_date)
+
+    db.session.add(option)
+
+    db.session.commit()
+
+    # Add search parameters to search params to send to search QPX function
     params = []
-    for num in range(0, num_origins):
+    count = 0
+    for origin_airport_code in origin_airport_codes:
         params.append({})
-        num_travelers = request.form.get("num_travelers%s" %num)
-        params[num]["num_travelers"] = num_travelers
-        flight_origin = request.form.get("flight_origin%s" %num)
-        params[num]["flight_origin"] = flight_origin
-        flight_destination = request.form.get("flight_destination%s" %num)
-        params[num]["flight_destination"] = flight_destination
-        departure_date = request.form.get("departure_date%s" %num)
-        params[num]["departure_date"] = departure_date
-        return_date = request.form.get("return_date%s" %num)
-        params[num]["return_date"] = return_date
-        max_price = request.form.get("max_price%s" %num)
-        max_price = "USD" + max_price
-        params[num]["max_price"] = max_price
+        params[count]["num_travelers"] = 1
+        params[count]["flight_origin"] = origin_airport_code
+        params[count]["flight_destination"] = destination
+        params[count]["departure_date"] = departure_date
+        params[count]["return_date"] = return_date
+        params[count]["max_price"] = "USD10000"
+        count += 1
 
-    flight_results_data = functions.flight_query(params)
+    print params
+
+    # Make call to QPX with flight searches
+    python_results = functions.flight_query(params)
+    print python_results
+
+    # Parse results to display on results page
+    flight_results_data = functions.flight_query_results(python_results)
+    print flight_results_data
 
     # Trip results page with all the data necessary for tables
     return render_template("trip_search_results.html", results=flight_results_data)
@@ -224,6 +302,14 @@ def trip_share():
     """Share trip with other users"""
 
     return render_template("trip_share.html")
+
+
+
+################################################################################
+
+## End routes ##
+
+################################################################################
 
 
 

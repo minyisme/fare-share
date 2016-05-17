@@ -62,6 +62,11 @@ def flight_query(params):
         # Closes JSON results
         results.close()
 
+    return python_results
+
+
+def flight_query_results(python_results):
+
     # Initialize empty list for all flight data to go into
     flight_data = []
 

@@ -1,45 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
     
-    <h1>All the Searchings!</h1>
+    <h1>{{ trip.trip_name }}: All the Searchings!</h1>
 
     <h3>Flight Search</h3>
 
-
-
-    <script type="text/javascript">
-
-    var num_origins = parseInt(prompt("From how many cities are travelers departing?"));
-
-    </script>
-
-
-    <form id="flight_search" action="/trip/results" method="POST">
+    <form id="flight_search" action="/trip/{{ trip.trip_id }}/results" method="POST">
+        <label>
+            Where do you want to go?<input type="text" name="destination" value="e.g. SFO">
+        </label>
+        <br>
+        <label>
+            When do you want to depart?<input type="text" name="departure_date" value="e.g. 2016-06-11">
+        </label>
+        <br>
+        <label>
+            When are you coming back?<input type="text" name="return_date" value="e.g. 2016--06-21">
+        </label>
+        <br>
+        <input type="submit" value="Search">
     </form>
 
-    <script type="text/javascript">
-    for (i=0; i < num_origins; i++) {
-
-        $("#flight_search").append('City' + (i+1) + '<br>')
-        $("#flight_search").append('<label>Travelers</label>')
-        $("#flight_search").append('<input type="text" name="num_travelers' + i +'" value="1">')
-        $("#flight_search").append('<label>Origin</label>')
-        $("#flight_search").append('<input type="text" name="flight_origin' + i +'" value="SFO">')
-        $("#flight_search").append('<label>Destination</label>')
-        $("#flight_search").append('<input type="text" name="flight_destination' + i +'" value="LHR">')
-        $("#flight_search").append('<label>Departure</label>')
-        $("#flight_search").append('<input type="text" name="departure_date' + i +'" value="2016-05-11">')
-        $("#flight_search").append('<label>Return</label>')
-        $("#flight_search").append('<input type="text" name="return_date' + i +'" value="2016-05-21">')
-        $("#flight_search").append('<label>Price Limit</label>')
-        $("#flight_search").append('<input type="text" name="max_price' + i +'" value="in USD">')
-        $("#flight_search").append('<br><br>')
-
-    }
-
-    $('#flight_search').append('<input type="hidden" name="num_origins" value="'+ num_origins +'">')
-    $('#flight_search').append('<input type="submit" value="Search">')
-
-    </script>
+    
 
 {% endblock %}
+

@@ -1,15 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
     
-    <h1>Trip: All the infos!</h1>
+    <h1>{{ trip.trip_name }}: All the infos!</h1>
 
     <br>
 
-    <a href="/trip/search">Searches the stuffs</a>
+    <h3>All the peoples
+        <ul>
+            {% for usertrip in trip.usertrips%}
+            <li>
+                {{ usertrip.user.user_name }}
+            </li>
+            {% endfor %}
+        </ul>
+    </h3>
+
+    <a href="/trip/{{ trip.trip_id }}/search">Searches the stuffs</a>
 
     <br>
 
-    <a href="/trip/share">Sharing all the trips!</a>
+    <a href="/trip/{{ trip.trip_id }}/share">Sharing all the trips!</a>
 
     <p>All stuffs in here based on search results and whatnots</p>
 
