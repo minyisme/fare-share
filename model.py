@@ -23,6 +23,9 @@ class User(db.Model):
     # Define relationship to airport
     origin_airport = db.relationship('Airport', backref='users')
 
+    # # Secondary backref to Trips
+    # trips = db.relationship('Trip', secondary="usertrips", backref=db.backref('usertrips'))
+
     def __repr__(self):
         """Provide helpful representation when printed."""
 
@@ -68,7 +71,7 @@ class UserTrip(db.Model):
         """Provide helpful representation when printed."""
 
         return ("<User_Trip user_trip_id=%s user_id=%s trip_id=%s user_trip_vote=%s>" 
-                % (self.user_trip_id, self.user_id, self.trip_id, self.option_vote))
+                % (self.usertrip_id, self.user_id, self.trip_id, self.option_vote))
 
 
 
@@ -144,12 +147,11 @@ class Leg(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Leg leg_id=%s flight_id=%s direction=%s origin_airport=%s" + 
-                "departure_datetime=%s destination_airport=%s arrival_datetime=%s" + 
-                "leg_airline=%s leg_flight_code=%s leg_duration=%s>"
-                % (self.leg_id, self.flight_id, self.direction, self.origin_airport, 
-                   self.departure_datetime, self.destination_airport, self.arrival_datetime, 
-                   self.leg_airline, self.leg_flight_code, self.leg_duration))
+        return ("<Leg leg_id=%s flight_id=%s direction=%s origin_airport=%sdeparture_datetime=%s" + 
+                "destination_airport=%s arrival_datetime=%s leg_airline=%s leg_flight_code=%s leg_duration=%s>"
+                % (self.leg_id, self.flight_id, self.direction, self.origin_airport, self.departure_datetime, 
+                   self.destination_airport, self.arrival_datetime, self.leg_airline, self.leg_flight_code, 
+                   self.leg_duration))
 
 
 

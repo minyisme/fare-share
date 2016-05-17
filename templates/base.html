@@ -6,9 +6,34 @@
 </head>
 <body>
     
-    <h1>Travels and Stuffs</h1>
+    {% if session.get("user_id") %}
+        <a href="/profile">Home</a>
+        <a href="/logout">Logout</a>
+    {% else %}
+        <p>Home</p>
+        <form action="/login" method="POST">
+            <lable>
+                Email<input type="text" name="email">
+            </label>
+            <label>
+                Password<input type="text" name="password">
+            </label>
+            <input type="submit" value="Login">
+        </form>
+        or
+        <form action="/user-reg-form">
+            <button type="submit">Signup</button>
+        </form>
+    {% endif %}
 
-    <a href="/">Login: to be fixed</a>
+    <ul>
+        {% for message in get_flashed_messages() %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+
+
+    <h1>Travels and Stuffs</h1>
 
     {% block content %} put your content here {% endblock %}
 

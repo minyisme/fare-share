@@ -122,6 +122,6 @@ def flight_query(params):
                 for a in range(len(segment_data)-1):
                     connection_duration = segment_data[a]["connectionDuration"]
 
-    pprint(python_results)
+    # pprint(python_results)
 
     return flight_data

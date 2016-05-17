@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Pretty placeholder picture heres!</h1>
+
+    <form action="/user-registration" method="POST">
+        <label>
+            Email<input type="text" name="email">
+        </label>
+        <br>
+        <label>
+            Password<input type="text" name="password">
+        </label>
+        <br>
+        <label>
+            Username<input type="text" name="username">
+        </label>
+        <br>
+        <label>Origin Aiport Code<input type="text" name="origin_airport_code" value="e.g. SFO">
+        </label>
+        <br>
+        <input type="submit" value="Signup">
+    </form>
+
+    <br>
+
+    <a href="/">Back</a>
+
+{% endblock %}

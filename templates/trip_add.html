@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    
+    <h1>Add Trip</h1>
+
+    <br>
+
+    <form action="/trip/create_new" method="POST">
+        <label>
+            Trip Name<input type="text" name="trip_name">
+        </label>
+
+        <label>
+            Add up to 4 other users to this trip:
+            <input type="text" name="trip_user1">
+            <input type="text" name="trip_user2">
+            <input type="text" name="trip_user3">
+            <input type="text" name="trip_user4">
+        </label>
+        <input type="submit" name="Add Trip">
+    </form>
+
+{% endblock %}
