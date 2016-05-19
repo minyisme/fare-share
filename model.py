@@ -108,8 +108,6 @@ class Flight(db.Model):
     flight_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     option_id = db.Column(db.Integer, db.ForeignKey('options.option_id'), nullable=False)
     flight_price = db.Column(db.String(12), nullable=False)
-    has_layover = db.Column(db.Boolean, nullable=False)
-    layover_duration = db.Column(db.Integer, nullable=True)
 
     # Define relationship to option
     option = db.relationship('Option', backref='flights')
@@ -117,8 +115,8 @@ class Flight(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Flight flight_id=%s option_id=%s flight_price=%s has_layover=%s layover_time=%s>"
-                % (self.flight_id, self.option_id, self.flight_price, self.has_layover, self.layover_duration))
+        return ("<Flight flight_id=%s option_id=%s flight_price=%s"
+                % (self.flight_id, self.option_id, self.flight_price))
 
 
 
@@ -130,11 +128,11 @@ class Leg(db.Model):
 
     leg_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     flight_id = db.Column(db.Integer, db.ForeignKey('flights.flight_id'), nullable=False)
-    direction = db.Column(db.String(6), nullable=False) # only allowed to put two things here
+    # direction = db.Column(db.String(6), nullable=False) # only allowed to put two things here
     origin_airport_code = db.Column(db.String(3), db.ForeignKey('airports.airport_code'), nullable=False)
-    departure_datetime = db.Column(db.DateTime, nullable=False)
+    departure_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
     destination_airport_code = db.Column(db.String(3), db.ForeignKey('airports.airport_code'), nullable=False)
-    arrival_datetime = db.Column(db.DateTime, nullable=False)
+    arrival_datetime = db.Column(db.DateTime(timezone=True), nullable=False)
     leg_airline = db.Column(db.String(2), nullable=False)
     leg_flight_code = db.Column(db.String(4), nullable=False) # think about storing it as an integer if leading 0 is unimportant
     leg_duration = db.Column(db.Integer, nullable=False)
@@ -147,10 +145,10 @@ class Leg(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Leg leg_id=%s flight_id=%s direction=%s origin_airport=%sdeparture_datetime=%s" + 
-                "destination_airport=%s arrival_datetime=%s leg_airline=%s leg_flight_code=%s leg_duration=%s>"
-                % (self.leg_id, self.flight_id, self.direction, self.origin_airport, self.departure_datetime, 
-                   self.destination_airport, self.arrival_datetime, self.leg_airline, self.leg_flight_code, 
+        return ("<Leg leg_id=%s flight_id=%s origin_airport_code=%s departure_datetime=%s" + 
+                "destination_airport_code=%s arrival_datetime=%s leg_airline=%s leg_flight_code=%s leg_duration=%s>"
+                % (self.leg_id, self.flight_id, self.origin_airport_code, self.departure_datetime, 
+                   self.destination_airport_code, self.arrival_datetime, self.leg_airline, self.leg_flight_code, 
                    self.leg_duration))
 
 

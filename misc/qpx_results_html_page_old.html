@@ -1,0 +1,56 @@
+{% if results %}
+
+    {% for result in results %}
+
+    <h1>Route</h1>
+    <br>
+    <br>
+
+    {% for option in result %}
+    <table>
+        <thead>
+            <tr>
+                <th>Flight ID</th>
+                <th>Flight Fare</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ option["option_id"] }}</td>
+                <td>{{ option["option_price"] }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% for flight in option["option_flight"] %}m
+    <table>
+        <thead>
+            <tr>
+                <td>Origin</td>
+                <td>Departure</td>
+                <td>Duration</td>
+                <td>Destination</td>
+                <td>Arrival</td>
+            </tr>
+        </thead>
+        {% for leg in flight %}
+        <tbody>
+            <tr>
+                <td>{{ leg["leg_origin"] }}</td>
+                <td>{{ leg["leg_departure"] }}</td>
+                <td>{{ leg["leg_duration"] }}</td>
+                <td>{{ leg["leg_destination"] }}</td>
+                <td>{{ leg["leg_arrival"] }}</td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+    {% endfor %}
+
+    <br>
+    <br>
+
+    {% endfor %}
+
+    {% endif %}

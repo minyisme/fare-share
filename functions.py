@@ -2,6 +2,8 @@
 """Functions for project""" 
 from pprint import pprint
 
+import pdb
+
 import urllib2
 import json    
 import os
@@ -44,7 +46,7 @@ def flight_query(params):
             ],
             # Hard coding number of flight options
             # QPX API takes up to 500
-            "solutions": 5,
+            "solutions": 2,
             "maxPrice": query["max_price"],
           }
         }
@@ -56,18 +58,19 @@ def flight_query(params):
 
         # Opens JSON results
         results = urllib2.urlopen(flight_request)
+
+        # pprint(results)
         # Read results and turn it into Python
         python_result = json.load(results)
         python_results.append(python_result)
         # Closes JSON results
         results.close()
 
-    return python_results
+    return [python_results, results]
 
 
 def flight_query_results(python_results):
 
-    # Initialize empty list for all flight data to go into
     flight_data = []
 
     for w in range(len(python_results)):
@@ -129,4 +132,38 @@ def flight_query_results(python_results):
 
     # pprint(python_results)
 
-    return flight_data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
