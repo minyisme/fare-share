@@ -232,8 +232,15 @@ def trip_detail(trip_id):
     """Display trip details page"""
 
     trip = Trip.query.get(trip_id)
+
+    flights ={}
+    options = trip.options
+
+    for option in options:
+        flights[option] = option.flights
+
     
-    return render_template("trip_detail.html", trip=trip)
+    return render_template("trip_detail.html", trip=trip, options=options)
 
 
 @app.route('/trip/<int:trip_id>/search')
@@ -291,17 +298,22 @@ def trip_results(trip_id):
     # Make call to QPX with flight searches
     python_results = functions.flight_query(params)
 
-    print python_results
+    # print python_results
 
     option_id = option.option_id
 
-    for i in range(len(python_results[0])):
-        for j in range(len(python_results[0][i]["trips"]["tripOption"])):
-            flight_price = python_results[0][i]["trips"]["tripOption"][j]["saleTotal"]
+
+    flights = {}
+    # Parsing QPX results to add to flights table
+    for i in range(len(python_results)):
+        for j in range(len(python_results[i]["trips"]["tripOption"])):
+            flight_price = python_results[i]["trips"]["tripOption"][j]["saleTotal"]
             flight = Flight(option_id=option_id, flight_price=flight_price)
             db.session.add(flight)
             db.session.commit()
-            for flight_slice in python_results[0][i]["trips"]["tripOption"][j]["slice"]:
+            flights[flight] = []
+            # Parsing QPX results to add to legs table
+            for flight_slice in python_results[i]["trips"]["tripOption"][j]["slice"]:
                 for flight_segment in flight_slice["segment"]:
                     airline_code = flight_segment["flight"]["carrier"]
                     flight_code = flight_segment["flight"]["number"]
@@ -310,94 +322,17 @@ def trip_results(trip_id):
                     departure_datetime = flight_segment["leg"][0]["departureTime"]
                     arrival_datetime = flight_segment["leg"][0]["arrivalTime"]
                     leg_duration = flight_segment["leg"][0]["duration"]
+                    print flight_segment["leg"][0]["duration"]
                     leg = Leg(flight_id=flight.flight_id, origin_airport_code=origin_airport_code,
                               departure_datetime=departure_datetime, destination_airport_code=destination_airport_code, 
                               arrival_datetime=arrival_datetime, leg_airline=airline_code, leg_flight_code=flight_code,
                               leg_duration=leg_duration)
                     db.session.add(leg)
                     db.session.commit()
-
-    
-    # Takes results from flight_query results and adds them to a dict with origin
-    # airport code as key and all the flights data as value
-    # count = 0
-    # dict_results_by_origin = {}
-    # for origin_airport_code in origin_airport_codes:
-    #     dict_results_by_origin[origin_airport_code] = python_results[0][count]
-    #     # print dict_results_by_origin
-    #     count += 1
-
-    # # Parsing the new dictionary of origins to flight data for all the information 
-    # # needed to save a flight into the flights table and save it
-    # dict_flights = {}
-    # flights = {}
-    # for origin in dict_results_by_origin:
-    #     dict_flights[origin] = []
-    #     # Getting the price of the flight to add to database
-    #     for x in range(len(dict_results_by_origin[origin]["trips"]["tripOption"])):
-    #         dict_flights[origin].append(dict_results_by_origin[origin]["trips"]["tripOption"][x]["saleTotal"])
-                   
-    #         # Adding a flight to the db
-    #         flight = Flight(option_id=option.option_id, flight_price=dict_flights[origin][x])
-
-    #         db.session.add(flight)
-
-    #         db.session.commit()
-
-
-    #         flights[flight.flight_id] = dict_results_by_origin[origin]["trips"]["tripOption"][x]
-
-    # # Parsing the new dictionary of flight to slices for all the information 
-    # dict_slice = {}
-    # for flight_id in flights:
-    #     dict_slice[flight_id] = []
-    #     for x in range(len(flights[flight_id]["slice"])):
-    #         dict_slice[flight_id].append(flights[flight_id]["slice"])
-
-    # print dict_slice
-
-    # # Gets flight carrier + number info and depart/return info for flights
-    # dict_leg = {}
-    # for flight_id in dict_slice:
-    #     dict_leg[flight_id] = []
-    #     print dict_slice[flight_id]
-    #     for x in range(len(dict_slice[flight_id])):
-    #         dict_leg[flight_id].append({})
-    #         if x == 0:
-    #             dict_leg[flight_id][0]["direction"] = "depart"
-    #             for y in range(len(dict_slice[flight_id][x])):
-    #                 dict_leg[flight_id].append([])
-    #                 for z in range(len(dict_slice[flight_id][x][y]["segment"])):
-    #                     dict_leg[flight_id][y+1].append({})
-    #                     dict_leg[flight_id][y+1][z]["departure_time"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["departureTime"]
-    #                     dict_leg[flight_id][y+1][z]["arrival_time"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["arrivalTime"]
-    #                     dict_leg[flight_id][y+1][z]["origin_airport_code"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["origin"]
-    #                     dict_leg[flight_id][y+1][z]["destination_airport_code"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["destination"]
-    #                     dict_leg[flight_id][y+1][z]["duration"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["duration"]
-    #         else:
-    #             dict_leg[flight_id][y+2]["direction"] = "return"
-    #             for y in range(len(dict_slice[flight_id][x])):
-    #                 dict_leg[flight_id].append([])
-    #                 for z in range(len(dict_slice[flight_id][x][y]["segment"])):
-    #                     dict_leg[flight_id][y+1].append({})
-    #                     dict_leg[flight_id][y+1][z]["departure_time"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["departureTime"]
-    #                     dict_leg[flight_id][y+1][z]["arrival_time"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["arrivalTime"]
-    #                     dict_leg[flight_id][y+1][z]["origin_airport_code"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["origin"]
-    #                     dict_leg[flight_id][y+1][z]["destination_airport_code"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["destination"]
-    #                     dict_leg[flight_id][y+1][z]["duration"] = dict_slice[flight_id][x][y]["segment"][z]["leg"][0]["duration"]
-            
-
-    # print dict_leg
-
-
-
-
-    # Parse results to display on results page
-    # flight_results_data = functions.flight_query_results(python_results)
-    # print flight_results_data
+                    flights[flight].append(leg)
 
     # Trip results page with all the data necessary for tables
-    return render_template("trip_search_results.html", results=python_results)
+    return render_template("trip_search_results.html", option=option, flights=flights, trip=trip)
 
 
 

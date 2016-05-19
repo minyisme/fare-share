@@ -1,10 +1,38 @@
 {% extends 'base.html' %}
 {% block content %}
     
-    <h1>Flight infos here!</h1>
+    <h1>Destination: {{ option.destination_airport.airport_city}}</h1>
 
-    {{ results }}
+    {% for flight in flights %}
+        <p>Flight ID: {{ flight.flight_id }}</p>
+        <p>Flight Price: {{ flight.flight_price }}</p>
+        <table>
+            <thead>
+                <th>
+                    <td>Origin Airport</td>
+                    <td>Departure Datetime</td>
+                    <td>Destination Airport</td>
+                    <td>Arrival Time</td>
+                    <td>Flight ID</td>
+                    <td>Flight Duration</td>
+                </th>
+            </thead>
+            {% for leg in flights[flight] %}
+            <tbody>
+                <tr>
+                    <td>{{ leg.origin_airport_code }}</td>
+                    <td>{{ leg.departure_datetime }}</td>
+                    <td>{{ leg.destination_airport_code }}</td>
+                    <td>{{ leg.arrival_datetime }}</td>
+                    <td>{{ leg.leg_airline }} {{ leg.leg_flight_code }}</td>
+                    <td>{{ leg.leg_duration }}</td>
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+    {% endfor %}
 
-    <a href="/trip">Back to Specific Imaginary Trip!</a>
+
+    <a href="/trip/{{ trip.trip_id }}">Back to {{ trip.trip_name }}!</a>
 
 {% endblock %}
