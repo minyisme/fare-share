@@ -266,7 +266,7 @@ def parameter_by_params(query):
         ],
         # Hard coding number of flight options
         # QPX API takes up to 500
-        "solutions": 2,
+        "solutions": 1,
         "maxPrice": query["max_price"],
       }
     }

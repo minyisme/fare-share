@@ -213,8 +213,11 @@ def trip_detail(trip_id):
     trip = Trip.query.get(trip_id)
     # Get all options for a trip
     options = trip.options
+
+    # Get user that's logged in
+    user = User.query.get(session["user_id"])
     
-    return render_template("trip_detail.html", trip=trip, options=options)
+    return render_template("trip_detail.html", trip=trip, options=options, user=user)
 
 
 
@@ -271,7 +274,7 @@ def trip_results(trip_id):
     flights = functions.parse_results(python_results, option)
 
     # Trip results page with all the data necessary for tables
-    return render_template("trip_search_results.html", option=option, flights=flights, trip=trip)
+    return render_template("trip_search_results.html", option=option, flights=flights, trip=trip,)
 
 
 

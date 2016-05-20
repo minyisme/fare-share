@@ -23,8 +23,59 @@
 
     <p>All stuffs in here based on search results and whatnots</p>
 
+    <!-- Trigger/Open The Modal -->
+    <button id="vote">Vote for Option</button>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">x</span>
+        {% for option in options %}
+        <br>
+        <button id="{{ option.option_id }}"></button>
+        <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
+            {% for flight in option.flights %}
+            {% for leg in flight.legs %}
+            {% if leg.origin_airport_code == user.origin_airport_code %}
+            <h4>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</h4>
+            <table>
+                <thead>
+                    <th>
+                        <td>Origin Airport</td>
+                        <td>Departure Datetime</td>
+                        <td>Destination Airport</td>
+                        <td>Arrival Time</td>
+                        <td>Flight ID</td>
+                        <td>Flight Duration</td>
+                    </th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ leg.origin_airport_code }}</td>
+                        <td>{{ leg.departure_datetime }}</td>
+                        <td>{{ leg.destination_airport_code }}</td>
+                        <td>{{ leg.arrival_datetime }}</td>
+                        <td>{{ leg.leg_airline }} {{ leg.leg_flight_code }}</td>
+                        <td>{{ leg.leg_duration }}</td>
+                    </tr>
+                </tbody>
+                {% endif %}
+                {% endfor %}
+            </table>
+            {% endfor %}
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <br>
+
     {% for option in options %}
-    <h3>Option: {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</h3>
+    <br>
+    <button id="{{ option.option_id }}"></button>
+    <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
         {% for flight in option.flights %}
         <h4>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</h4>
         <table>
@@ -54,4 +105,33 @@
         {% endfor %}
     {% endfor %}
 
+    <script type="text/javascript">
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("vote");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks on the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+
 {% endblock %}
+
