@@ -14,7 +14,7 @@ class RouteTest(unittest.TestCase):
 
     def test_profilepage(self):
         result = self.client.get('/profile')
-        self.assertIn("Profile Yo!", result.data)
+        self.assertIn("Travels and Stuffs", result.data)
 
     def test_settingspage(self):
         result = self.client.get('/settings')
