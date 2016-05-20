@@ -32,9 +32,10 @@
       <!-- Modal content -->
       <div class="modal-content">
         <span class="close">x</span>
+        <form>
         {% for option in options %}
         <br>
-        <button id="{{ option.option_id }}"></button>
+        <input type="radio" name="option_vote" value="{{ option.option_id }}"></input>
         <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
             {% for flight in option.flights %}
             {% for leg in flight.legs %}
@@ -66,6 +67,8 @@
             </table>
             {% endfor %}
         {% endfor %}
+        <input type="submit" value="vote">
+        </form>
       </div>
 
     </div>
