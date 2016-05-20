@@ -152,7 +152,7 @@ def trip_info():
 
 
 
-@app.route('/trip/create_new', methods=["POST"])
+@app.route('/trip/create-new', methods=["POST"])
 def trip_add():
     """Trip details page"""
 
@@ -275,11 +275,11 @@ def trip_results(trip_id):
 
 
 
-@app.route('/trip/share')
-def trip_share():
+@app.route('/trip/<int:trip_id>/share')
+def trip_share(trip_id):
     """Share trip with other users"""
 
-    return render_template("trip_share.html")
+    return render_template("trip_share.html", trip_id=trip_id)
 
 
 
