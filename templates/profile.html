@@ -1,17 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h1>Profile Yo!</h1>
+    <h1>{{ user.user_name }}'s Trips</h1>
 
     <a href="/trip/add">Add a Trip</a>
 
     <br>
 
-    A specifc Trip
-
-    <br>
-
-    {% for trip in trip_list %}
+    {% for trip in trips %}
 
     <a href="/trip/{{ trip.trip_id }}">{{ trip.trip_name}}</a>
 

@@ -4,14 +4,14 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
-
-from model import connect_to_db, db, User, Trip, UserTrip, Option, Flight, Leg, Airport
-
-import functions
-
 from pprint import pprint
 
-import pdb
+# File that holds my db classes and tables
+from model import connect_to_db, db, User, Trip, UserTrip, Option, Flight, Leg, Airport
+
+# File that holds my functionalities
+import functions
+
 
 
 
@@ -44,22 +44,12 @@ def index():
 def profile():
     """User profile page"""
 
-    # print session["user_id"]
+    # Get logged in user
+    user = User.query.get(session['user_id'])
+    # Get list of trips for user
+    trips = functions.trips_by_user(user)
 
-    # Get all trips for this user to display on profile page
-    user = User.query.filter_by(user_id=session["user_id"]).first()
-
-    usertrip_list = UserTrip.query.filter_by(user_id = user.user_id).all()
-    # print usertrip_list
-
-    trip_list = []
-
-    for usertrip in usertrip_list:
-        trip_list.append(Trip.query.filter_by(trip_id=usertrip.trip_id).first())
-
-    # print trip_list
-
-    return render_template("profile.html", trip_list=trip_list)
+    return render_template("profile.html", user=user, trips=trips)
 
 
 
@@ -88,16 +78,10 @@ def user_login():
     user_email = request.form.get('email')
     user_password = request.form.get('password')
 
-    # Check User db for email and password match
-    # If match, add to session to indicate logged in user
-    # Else, prompt to try again
-    if User.query.filter_by(email=user_email, password=user_password).first():
-        flash("Yay you're back!!!!!")
-        logged_in_user = User.query.filter_by(email=user_email, password=user_password).first()
-        session["user_id"] = logged_in_user.user_id
+    # Validate user_email and login and redirects depending on validity
+    if functions.is_valid_login(user_email, user_password):
         return redirect('/profile')
     else:
-        flash("Forgot your password you idiot! Try again.")
         return redirect('/')
 
 
@@ -106,10 +90,8 @@ def user_login():
 def user_logout():
     """Logs out user"""
 
-    # Deletes user_id from session when logging out
-    del session["user_id"]
-
-    flash("Don't leave meeeee!!!! :( ")
+    # Logs out user
+    functions.logout()
 
     return redirect('/')
 
@@ -136,26 +118,19 @@ def user_reg_form():
 def user_registration():
     """Check if user in db, if not, add"""
 
-    # Get email and password from user reg form
-    user_email = request.form.get('email')
-    user_password = request.form.get('password')
-    user_name = request.form.get('username')
-    user_origin_airport_code = request.form.get('origin_airport_code')
+    # Initialize empty dictionary for user info
+    user_info = {}
 
-    # Checks if user email is already registered
-    if User.query.filter_by(email=user_email).first():
-        flash("This email is already taken; please log in.")
-    else:
-        user = User(email=user_email, 
-                    password=user_password,
-                    user_name=user_name,
-                    origin_airport_code=user_origin_airport_code)
+    # Get inputs from user registration form
+    user_info["user_email"] = request.form.get('email')
+    user_info["user_password"] = request.form.get('password')
+    user_info["user_name"] = request.form.get('username')
+    user_info["user_origin_airport_code"] = request.form.get('origin_airport_code')
 
-        db.session.add(user)
-
-        db.session.commit()
-
-        flash("Thank you for registering; please log in.")
+    # Checks if email is in the db already
+    if functions.is_registered_email(user_info["user_email"]) == False:
+        # Add user in db if email is not already in db
+        functions.add_user_to_db(user_info)
 
     return redirect('/')
 
@@ -181,39 +156,42 @@ def trip_info():
 def trip_add():
     """Trip details page"""
 
+    # Initialize empty dictionary to add trip info to
+    trip_info = {}
     # Get trip name from form and add trip to db
-    trip_name = request.form.get("trip_name")
+    trip_info["trip_name"] = request.form.get("trip_name")
+    # Add trip object to db and assign trip to variable
+    trip = functions.add_trip_to_db(trip_info)
 
-    trip = Trip(trip_name=trip_name)
+    # Initialize empty dictionary to add usertrip info to
+    usertrip_info = {}
+    # Get user_id from session
+    usertrip_info["user_id"] = session["user_id"]
+    # Get trip_id from trip
+    usertrip_info["trip_id"] = trip.trip_id
+    # Add usertrip object to db
+    functions.add_usertrip_to_db(usertrip_info)
 
-    db.session.add(trip)
-
-    db.session.commit()
-
-    # Adding usertrip for user who's logged in to the db
-    user_id = session["user_id"]
-
-    usertrip = UserTrip(user_id=user_id, trip_id=trip.trip_id)
-
-    db.session.add(usertrip)
-
-    db.session.commit()
-    # For user emails entered in form, add usertrip to db if user email valid
-    # Else for email, flash email not in db
+    # Initialize empty list for user emails
+    emails = []
+    # Add user emails from form to user_emails list
     for x in range(5):
         if request.form.get("trip_user%s" %(x)):
-            user_email = request.form.get("trip_user%s" %(x))
-            if User.query.filter_by(email=user_email).first():
-                user = User.query.filter_by(email=user_email).first()
-                usertrip = UserTrip(user_id=user.user_id,
-                                    trip_id=trip.trip_id)
+            emails.append(request.form.get("trip_user%s" %(x)))
 
-                db.session.add(usertrip)
-
-                db.session.commit()
-
-            else:
-                flash("User not in db: " + user_email)
+    # For all emails entered in input
+    for email in emails:
+        # Validates if email in db
+        if functions.is_registered_email(email):
+            # Get user from registered email
+            user = User.query.filter_by(email=email).first()
+            # Get usertrip_info
+            usertrip_info = {"user_id":user.user_id, "trip_id":trip.trip_id}
+            # Add usertrip to db
+            functions.add_usertrip_to_db(usertrip_info)
+        # Else flash user not in db
+        else:
+            flash("User not in db: " + email)
 
     return redirect("/profile")
 
@@ -231,16 +209,13 @@ def trip_add():
 def trip_detail(trip_id):
     """Display trip details page"""
 
+    # Get trip from trip_id
     trip = Trip.query.get(trip_id)
-
-    flights ={}
+    # Get all options for a trip
     options = trip.options
-
-    for option in options:
-        flights[option] = option.flights
-
     
     return render_template("trip_detail.html", trip=trip, options=options)
+
 
 
 @app.route('/trip/<int:trip_id>/search')
@@ -257,79 +232,43 @@ def trip_search(trip_id):
 def trip_results(trip_id):
     """Search flights results"""
 
-    # Get trip
+    # Get trip from trip_id
     trip = Trip.query.get(trip_id)
 
-    # Get all origin airport codes to search from users attached to trip
-    origin_airport_codes = []
-    for usertrip in trip.usertrips:
-        origin_airport_codes.append(usertrip.user.origin_airport_code)
+    # Initializes empty dictionary to add option info to
+    option_info = {}
+    # Get destination, departure_date, return_date from form and add to option_info
+    option_info["destination"] = request.form.get("destination")
+    option_info["departure_date"] = request.form.get("departure_date")
+    option_info["return_date"] = request.form.get("departure_date")
+    # Add trip_id to option_info
+    option_info["trip_id"] = trip_id
 
-    print origin_airport_codes
+    # Add option to db and return option object
+    option = functions.add_option_to_db(option_info)
 
-    # Get destination, departure_date, return_date from form
-    destination = request.form.get("destination")
-    departure_date = request.form.get("departure_date")
-    return_date = request.form.get("departure_date")
+    # Get origin airport codes for trip
+    origin_airport_codes = functions.origin_airport_codes_by_trip(trip)
 
-    # Add search option to database
-    option = Option(trip_id=trip_id, destination_airport_code=destination, 
-                    depart_date=departure_date, return_date=return_date)
+    # Get parameter variables for QPX search from input option and origin_airport_codes
+    params = functions.get_params(origin_airport_codes, option_info)
 
-    db.session.add(option)
+    # Initialize empty results list to add QPX query restuls to
+    python_results = []
+    # For each set of parameter variables in params
+    for query in params:
+        # Get the parameter string from the parameter variables
+        parameter = functions.parameter_by_params(query)
+        # Make request to QPX
+        flight_request = functions.query_QPX(parameter)
+        # Read results from QPX into python
+        python_result = functions.QPX_results(flight_request)
+        #add python_result to python_results
+        python_results.append(python_result)
 
-    db.session.commit()
-
-    # Add search parameters to search params to send to search QPX function
-    params = []
-    count = 0
-    for origin_airport_code in origin_airport_codes:
-        params.append({})
-        params[count]["num_travelers"] = 1
-        params[count]["flight_origin"] = origin_airport_code
-        params[count]["flight_destination"] = destination
-        params[count]["departure_date"] = departure_date
-        params[count]["return_date"] = return_date
-        params[count]["max_price"] = "USD10000"
-        count += 1
-
-    print params
-
-    # Make call to QPX with flight searches
-    python_results = functions.flight_query(params)
-
-    # print python_results
-
-    option_id = option.option_id
-
-
-    flights = {}
-    # Parsing QPX results to add to flights table
-    for i in range(len(python_results)):
-        for j in range(len(python_results[i]["trips"]["tripOption"])):
-            flight_price = python_results[i]["trips"]["tripOption"][j]["saleTotal"]
-            flight = Flight(option_id=option_id, flight_price=flight_price)
-            db.session.add(flight)
-            db.session.commit()
-            flights[flight] = []
-            # Parsing QPX results to add to legs table
-            for flight_slice in python_results[i]["trips"]["tripOption"][j]["slice"]:
-                for flight_segment in flight_slice["segment"]:
-                    airline_code = flight_segment["flight"]["carrier"]
-                    flight_code = flight_segment["flight"]["number"]
-                    origin_airport_code = flight_segment["leg"][0]["origin"]
-                    destination_airport_code = flight_segment["leg"][0]["destination"]
-                    departure_datetime = flight_segment["leg"][0]["departureTime"]
-                    arrival_datetime = flight_segment["leg"][0]["arrivalTime"]
-                    leg_duration = flight_segment["leg"][0]["duration"]
-                    print flight_segment["leg"][0]["duration"]
-                    leg = Leg(flight_id=flight.flight_id, origin_airport_code=origin_airport_code,
-                              departure_datetime=departure_datetime, destination_airport_code=destination_airport_code, 
-                              arrival_datetime=arrival_datetime, leg_airline=airline_code, leg_flight_code=flight_code,
-                              leg_duration=leg_duration)
-                    db.session.add(leg)
-                    db.session.commit()
-                    flights[flight].append(leg)
+    # Parse python results to add flights and legs to db and to get data to render on 
+    # results page
+    flights = functions.parse_results(python_results, option)
 
     # Trip results page with all the data necessary for tables
     return render_template("trip_search_results.html", option=option, flights=flights, trip=trip)
