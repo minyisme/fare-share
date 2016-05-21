@@ -1,10 +1,11 @@
 """Server for project"""
 
 from jinja2 import StrictUndefined
-from flask import Flask, render_template, redirect, request, flash, session
+from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from pprint import pprint
+import json
 
 # File that holds my db classes and tables
 from model import connect_to_db, db, User, Trip, UserTrip, Option, Flight, Leg, Airport
@@ -303,9 +304,9 @@ def option_vote_func(trip_id):
 
     db.session.commit()
 
-    voting_option = Option.query.get(option_vote_int)
+    # voting_option = Option.query.get(option_vote_int)
     # pdb.set_trace()
-    return voting_option
+    return json.dumps(option_vote_int)
 
 
 

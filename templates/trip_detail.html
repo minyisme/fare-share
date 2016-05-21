@@ -25,7 +25,7 @@
 
     {% for usertrip in trip.usertrips %}
     {% if usertrip.user_id == session["user_id"] %}
-    <p>You voted for option: {{ usertrip.option_vote }}</p>
+        <p id="votedForOption">You voted for option: {{ usertrip.option_vote }}</p>
     {% endif %}
     {% endfor %}
 
@@ -144,19 +144,21 @@
 
     <script type="text/javascript">
         function showConfirmation(result) {
-            alert("blah");
+            $("#myModal").hide();
+            $("#votedForOption").val(voted_option_id)
         }
 
         function voteOption(evt) {
             evt.preventDefault();
 
             var voted_option_id = $(".options:checked").val();      
+
+            $("#votedForOption").text("You voted for option: " + voted_option_id)
             // debugger;
             $.post("/trip/{{ trip.trip_id }}/option-vote", 
                   {"voted_option_id": voted_option_id}, 
                   showConfirmation
                   );
-
         }
 
         $("#option-vote").on("submit", voteOption);
