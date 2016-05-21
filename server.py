@@ -243,7 +243,7 @@ def trip_results(trip_id):
     # Get destination, departure_date, return_date from form and add to option_info
     option_info["destination"] = request.form.get("destination")
     option_info["departure_date"] = request.form.get("departure_date")
-    option_info["return_date"] = request.form.get("departure_date")
+    option_info["return_date"] = request.form.get("return_date")
     # Add trip_id to option_info
     option_info["trip_id"] = trip_id
 
@@ -287,25 +287,25 @@ def trip_share(trip_id):
 
 
 @app.route('/trip/<int:trip_id>/option-vote', methods=["POST"])
-def option_vote(trip_id):
+def option_vote_func(trip_id):
     """Save user's option vote for trip to db"""
     # import pdb
 
-    option_vote = request.form.get("voted_option_id")
+    option_vote_unicode = request.form.get("voted_option")
     # pdb.set_trace()
-    print option_vote 
+    print option_vote_unicode
 
     usertrip = UserTrip.query.filter_by(user_id=session["user_id"], trip_id=trip_id).first()
 
-    option_vote_int = int(option_vote)
+    option_vote_int = int(option_vote_unicode)
 
     usertrip.option_vote = option_vote_int
 
     db.session.commit()
 
-    option = Option.query.get(option_vote_int)
-
-    return option
+    voting_option = Option.query.get(option_vote_int)
+    # pdb.set_trace()
+    return voting_option
 
 
 

@@ -78,7 +78,6 @@
 
     {% for option in options %}
     <br>
-    <button id="{{ option.option_id }}"></button>
     <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
         {% for flight in option.flights %}
         <h4>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</h4>
@@ -140,15 +139,16 @@
     <script type="text/javascript">
         function showConfirmation(result) {
             alert("blah");
+            }
         }
 
         function voteOption(evt) {
             evt.preventDefault();
 
             var voted_option_id = $(".option:checked").val();      
-            debugger;
+            // debugger;
             $.post("/trip/{{ trip.trip_id }}/option-vote", 
-                {"voted_option_id": voted_option_id}, 
+                {"voted_option": voted_option_id}, 
                 showConfirmation
                 );
 
