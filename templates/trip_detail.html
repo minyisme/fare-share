@@ -35,7 +35,7 @@
         <form id="option-vote">
         {% for option in options %}
         <br>
-        <input class="option" type="radio" name="vote-option" value="{{ option.option_id }}"></input>
+        <input class="options" type="radio" name="vote-option" value="{{ option.option_id }}"></input>
         <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
             {% for flight in option.flights %}
             {% for leg in flight.legs %}
@@ -139,18 +139,17 @@
     <script type="text/javascript">
         function showConfirmation(result) {
             alert("blah");
-            }
         }
 
         function voteOption(evt) {
             evt.preventDefault();
 
-            var voted_option_id = $(".option:checked").val();      
+            var voted_option_id = $(".options:checked").val();      
             // debugger;
             $.post("/trip/{{ trip.trip_id }}/option-vote", 
-                {"voted_option": voted_option_id}, 
-                showConfirmation
-                );
+                  {"voted_option_id": voted_option_id}, 
+                  showConfirmation
+                  );
 
         }
 

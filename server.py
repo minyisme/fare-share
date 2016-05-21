@@ -291,7 +291,7 @@ def option_vote_func(trip_id):
     """Save user's option vote for trip to db"""
     # import pdb
 
-    option_vote_unicode = request.form.get("voted_option")
+    option_vote_unicode = request.form.get("voted_option_id")
     # pdb.set_trace()
     print option_vote_unicode
 
