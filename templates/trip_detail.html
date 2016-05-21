@@ -7,7 +7,7 @@
 
     <h3>All the peoples
         <ul>
-            {% for usertrip in trip.usertrips%}
+            {% for usertrip in trip.usertrips %}
             <li>
                 {{ usertrip.user.user_name }}
             </li>
@@ -22,6 +22,12 @@
     <a href="/trip/{{ trip.trip_id }}/share">Sharing all the trips!</a>
 
     <p>All stuffs in here based on search results and whatnots</p>
+
+    {% for usertrip in trip.usertrips %}
+    {% if usertrip.user_id == session["user_id"] %}
+    <p>You voted for option: {{ usertrip.option_vote }}</p>
+    {% endif %}
+    {% endfor %}
 
     <!-- Trigger/Open The Modal -->
     <button id="vote">Vote for Option</button>
