@@ -286,6 +286,29 @@ def trip_share(trip_id):
 
 
 
+@app.route('/trip/<int:trip_id>/option-vote', methods=["POST"])
+def option_vote(trip_id):
+    """Save user's option vote for trip to db"""
+    # import pdb
+
+    option_vote = request.form.get("voted_option_id")
+    # pdb.set_trace()
+    print option_vote 
+
+    usertrip = UserTrip.query.filter_by(user_id=session["user_id"], trip_id=trip_id).first()
+
+    option_vote_int = int(option_vote)
+
+    usertrip.option_vote = option_vote_int
+
+    db.session.commit()
+
+    option = Option.query.get(option_vote_int)
+
+    return option
+
+
+
 ################################################################################
 
 ## End routes ##
