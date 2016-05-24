@@ -234,6 +234,74 @@ def trip_search(trip_id):
 
 
 
+@app.route('/trip/<int:trip_id>/option-delete', methods=["POST"])
+def option_delete(trip_id):
+    """Delete an option from the db"""
+
+    # Get option id from from
+    option_id = int(request.form.get("option-id-delete"))
+    # import pdb
+    # pdb.set_trace()
+    # Get option by option id
+    option = Option.query.get(option_id)
+
+    # Get flights by option
+    flights = functions.flights_by_option(option)
+
+    # Get legs by flight
+    for flight in flights:
+        legs = functions.legs_by_flight(flight)
+        # Delete all legs from db
+        functions.delete_legs(legs)
+    # Delte all flights from db
+    functions.delete_flights(flights)
+
+    # Delete option
+    db.session.delete(option)
+    db.session.commit()
+
+    # Store message to flash confirmation of deletion
+    flash("Option: " + str(option_id) + " deleted!")
+
+    # Return back to trip details page
+    return redirect('/trip/{}'.format(int(trip_id)))
+
+
+
+@app.route('/trip/<int:trip_id>/option-update', methods=["POST"])
+def option_update(trip_id):
+    """Update the search results of an option"""
+
+    trip = Trip.query.get(trip_id)
+    origin_airport_codes = functions.origin_airport_codes_by_trip(trip)
+
+    # Get option id from ajax
+    option_id = int(request.form.get("option-id-update"))
+    # import pdb
+    # pdb.set_trace()
+    # Get option by option id
+    option = Option.query.get(option_id)
+
+    # Get flights by option
+    flights = functions.flights_by_option(option)
+
+    # Get legs by flight
+    for flight in flights:
+        legs = functions.legs_by_flight(flight)
+        # Delete all legs from db
+        functions.delete_legs(legs)
+    # Delte all flights from db
+    functions.delete_flights(flights)
+
+    # Return back to trip details page
+    return render_template("trip_search.html", 
+                       trip=trip, 
+                       origin_airport_codes=origin_airport_codes,
+                       option=option,
+                       )
+
+
+
 @app.route('/trip/<int:trip_id>/share')
 def trip_share(trip_id):
     """Share trip with other users"""
@@ -326,20 +394,23 @@ def trip_results(trip_id):
 
 
 @app.route('/trip/<int:trip_id>/option-vote', methods=["POST"])
-def option_vote_func(trip_id):
+def option_vote(trip_id):
     """Save user's option vote for trip to db"""
     # import pdb
 
-    option_vote_unicode = request.form.get("voted_option_id")
+    # Get unicode of option id to be voted for
+    option_vote_unicode = request.form.get("voted-option-id")
     # pdb.set_trace()
     print option_vote_unicode
 
+    # Get usertrip that vote will be attached to by user and trip
     usertrip = UserTrip.query.filter_by(user_id=session["user_id"], trip_id=trip_id).first()
 
+    # Set variable to integer of the voted for option id
     option_vote_int = int(option_vote_unicode)
-
+    # Change option_vote for usertrip in db to the voted for option
     usertrip.option_vote = option_vote_int
-
+    # Commit session
     db.session.commit()
 
     # voting_option = Option.query.get(option_vote_int)

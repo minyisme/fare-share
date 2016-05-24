@@ -213,9 +213,57 @@ def origin_airport_codes_by_trip(trip):
 
 
 
+def flights_by_option(option):
+    """Takes input option object, and returns all flight objects associated with
+    that option"""
+
+    flights = Flight.query.filter_by(option_id = option.option_id).all()
+
+    return flights
+
+
+
+def legs_by_flight(flight):
+    """Takes input flight object, and returns all legs objects associated with
+    that flight"""
+
+    legs = Leg.query.filter_by(flight_id = flight.flight_id).all()
+
+    return legs
+
+
+
 ################################################################################
 
-## QPX Query ##
+## delete from db ##
+
+################################################################################
+
+
+
+def delete_legs(legs):
+    """Takes input list of leg inputs and delets all leg records from db"""
+
+    # Iterate over legs_list and delete all legs from db
+    for leg in legs:
+        db.session.delete(leg)
+        db.session.commit()
+
+    return
+
+def delete_flights(flights):
+    """Takes input list of leg inputs and delets all leg records from db"""
+
+    # Iterate over flights and delete all flights from db
+    for flight in flights:
+        db.session.delete(flight)
+        db.session.commit()
+
+    return
+
+################################################################################
+
+## QPX query ##
 
 ################################################################################
 
@@ -296,7 +344,7 @@ def query_QPX(parameter):
 
 ################################################################################
 
-## QPX Results ##
+## QPX results ##
 
 ################################################################################
 
@@ -359,7 +407,7 @@ def parse_results(python_result, option):
 
 ################################################################################
 
-## Other ##
+## other ##
 
 ################################################################################
 

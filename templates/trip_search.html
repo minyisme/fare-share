@@ -6,6 +6,22 @@
     <h3>Flight Search</h3>
 
     <form id="flight_search">
+      {% if option %}
+        <label>
+            Where do you want to go?<input id="destination-airport-code-reQ" type="text" name="destination" value="{{ option.destination_airport_code }}">
+        </label>
+        Remember to validate that this airport doesn't match any of the origin airports
+        <br>
+        <label>
+            When do you want to depart?<input id="depart-date-reQ" type="text" name="depart_date" value="{{ option.depart_date }}">
+        </label>
+        <br>
+        <label>
+            When are you coming back?<input id="return-date-reQ" type="text" name="return_date" value="{{ option.return_date }}">
+        </label>
+        <br>
+        <button type="button" id="qpx-reQuery" data-origins='{{ origin_airport_codes }}' data-option="{{ option.option_id }}">Update search</button>
+      {% else %}
         <label>
             Where do you want to go?<input id="destination-airport-code" type="text" name="destination" value="e.g. SFO">
         </label>
@@ -20,7 +36,9 @@
         </label>
         <br>
         <button type="button" id="qpx-query" data-origins='{{ origin_airport_codes }}'>Search</button>
+        {% endif %}
     </form>
+
 
     <div id="finished_query"></div>
     <br>
@@ -110,6 +128,33 @@
 
         $("#qpx-query").click(searchQPX);
         
+    </script>
+
+    <script type="text/javascript">
+
+        function updateSearchQPX(evt) {
+          for (var i=0; i<$("#qpx-reQuery").data("origins").length; i++) {
+
+                              // var originAirports = $(this).data("origins").split(",")
+                                // debugger;
+                              var queryInputs = {
+                                  "destination" : $("#destination-airport-code-reQ").val(),
+                                  "depart-date" : $("#depart-date-reQ").val(),
+                                  "return-date" : $("#return-date-reQ").val(),
+                                  "origin-airport-code" : $("#qpx-reQuery").data("origins")[i],
+                                  "option-id" : $("#qpx-reQuery").data("option"),
+                              };
+
+                              $.ajax({type: "POST",
+                                  url: "/trip/{{ trip.trip_id }}/results.json",
+                                  data: queryInputs,
+                                  success: showFlightResults,
+                               });
+                            }
+
+        }
+
+        $("#qpx-reQuery").click(updateSearchQPX);
     </script>
 
 {% endblock %}

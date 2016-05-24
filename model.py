@@ -127,7 +127,7 @@ class Flight(db.Model):
     def __repr__(self):
         """Provide helpful representation when printed."""
 
-        return ("<Flight flight_id=%s option_id=%s flight_price=%s"
+        return ("<Flight flight_id=%s option_id=%s flight_price=%s>"
                 % (self.flight_id, self.option_id, self.flight_price))
 
     def to_dict(self):

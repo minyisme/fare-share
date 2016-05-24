@@ -85,6 +85,15 @@
     {% for option in options %}
     <br>
     <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
+    <br>
+    <form action="/trip/{{ trip.trip_id }}/option-delete" method="POST">
+        <input type="hidden" name="option-id-delete" value="{{ option.option_id }}">
+        <input type="submit" class="option-delete" value="Delete Option">
+    </form>
+    <form action="/trip/{{ trip.trip_id }}/option-update" method="POST">
+        <input type="hidden" name="option-id-update" value="{{ option.option_id }}">
+        <input type="submit" class="option-update" value="Update Option Results">
+    </form>
         {% for flight in option.flights %}
         <h4>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</h4>
         <table>
@@ -156,7 +165,7 @@
             $("#votedForOption").text("You voted for option: " + voted_option_id)
             // debugger;
             $.post("/trip/{{ trip.trip_id }}/option-vote", 
-                  {"voted_option_id": voted_option_id}, 
+                  {"voted-option-id": voted_option_id}, 
                   showConfirmation
                   );
         }
