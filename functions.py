@@ -119,7 +119,7 @@ def add_option_to_db(option_info):
     # Instantiates option object with info from input option_info
     option = Option(trip_id=option_info["trip_id"], 
                     destination_airport_code=option_info["destination"], 
-                    depart_date=option_info["departure_date"], 
+                    depart_date=option_info["depart_date"], 
                     return_date=option_info["return_date"])
 
     # Add option to session
@@ -205,6 +205,10 @@ def origin_airport_codes_by_trip(trip):
     for usertrip in trip.usertrips:
         origin_airport_codes.append(usertrip.user.origin_airport_code)
 
+    origin_airport_codes = str(origin_airport_codes)
+    origin_airport_codes = origin_airport_codes.replace("u'", '"')
+    origin_airport_codes = origin_airport_codes.replace("'", '"')
+
     return origin_airport_codes
 
 
@@ -217,23 +221,19 @@ def origin_airport_codes_by_trip(trip):
 
 
 
-def get_params(origin_airport_codes, option_info):
+def get_params(origin_airport_code, option_info):
     """Gets parameter variables for a QPX search from user origin_airport_codes 
     and option"""
 
     # Initializes empty params list
-    params = []
-    count = 0
+    params = {}
     # Adds a dictionary to params of parameters for every origin airport code
-    for origin_airport_code in origin_airport_codes:
-        params.append({})
-        params[count]["num_travelers"] = 1
-        params[count]["flight_origin"] = origin_airport_code
-        params[count]["flight_destination"] = option_info["destination"]
-        params[count]["departure_date"] = option_info["departure_date"]
-        params[count]["return_date"] = option_info["return_date"]
-        params[count]["max_price"] = "USD10000"
-        count += 1
+    params["num_travelers"] = 1
+    params["flight_origin"] = origin_airport_code
+    params["flight_destination"] = option_info["destination"]
+    params["depart_date"] = option_info["depart_date"]
+    params["return_date"] = option_info["return_date"]
+    params["max_price"] = "USD10000"
 
     return params
 
@@ -254,7 +254,7 @@ def parameter_by_params(query):
             # "kind": "qpxexpress#sliceInput",
             "origin": query["flight_origin"],
             "destination": query["flight_destination"],
-            "date": query["departure_date"],
+            "date": query["depart_date"],
             "maxStops": 1,
           },
           {
@@ -317,38 +317,41 @@ def QPX_results(flight_request):
 
 
 
-def parse_results(python_results, option):
+def parse_results(python_result, option):
     """Takes inputs python_results and option object and parses the python_results
     to be ready to display on search results page."""
 
     # Gets option_id from option object
     option_id = option.option_id
 
-    # Initiates empty flights dictionary
-    flights = {}
+    # # Initiates empty flights dictionary
+    flights = []
     # Parsing QPX results to add to flights table
-    for i in range(len(python_results)):
-        for j in range(len(python_results[i]["trips"]["tripOption"])):
-            flight_info = {"flight_price":python_results[i]["trips"]["tripOption"][j]["saleTotal"]}
-            # Calls function to add flight to db
-            flight = add_flight_to_db(option, flight_info)
-            # Adds a new list value at flight object key in flights dictionary
-            flights[flight] = []
-            # Parsing QPX results to add to legs table
-            for flight_slice in python_results[i]["trips"]["tripOption"][j]["slice"]:
-                for flight_segment in flight_slice["segment"]:
-                    leg_info = {}
-                    leg_info["airline_code"] = flight_segment["flight"]["carrier"]
-                    leg_info["flight_code"] = flight_segment["flight"]["number"]
-                    leg_info["origin_airport_code"] = flight_segment["leg"][0]["origin"]
-                    leg_info["destination_airport_code"] = flight_segment["leg"][0]["destination"]
-                    leg_info["departure_datetime"] = flight_segment["leg"][0]["departureTime"]
-                    leg_info["arrival_datetime"] = flight_segment["leg"][0]["arrivalTime"]
-                    leg_info["leg_duration"] = flight_segment["leg"][0]["duration"]
-                    # Calls function to add leg to db
-                    leg = add_leg_to_db(flight, leg_info)
-                    # Adds each leg to the list value at flight key
-                    flights[flight].append(leg)
+    # for i in range(len(python_results)):
+    for j in range(len(python_result["trips"]["tripOption"])):
+        flight_info = {"flight_price":python_result["trips"]["tripOption"][j]["saleTotal"]}
+        # Calls function to add flight to db
+        flight = add_flight_to_db(option, flight_info)
+        flight_dict = flight.to_dict()
+        # Adds a new list value at flight object key in flights dictionary
+        flights.append(flight_dict)
+        flights.append([])
+        # Parsing QPX results to add to legs table
+        for flight_slice in python_result["trips"]["tripOption"][j]["slice"]:
+            for flight_segment in flight_slice["segment"]:
+                leg_info = {}
+                leg_info["airline_code"] = flight_segment["flight"]["carrier"]
+                leg_info["flight_code"] = flight_segment["flight"]["number"]
+                leg_info["origin_airport_code"] = flight_segment["leg"][0]["origin"]
+                leg_info["destination_airport_code"] = flight_segment["leg"][0]["destination"]
+                leg_info["departure_datetime"] = flight_segment["leg"][0]["departureTime"]
+                leg_info["arrival_datetime"] = flight_segment["leg"][0]["arrivalTime"]
+                leg_info["leg_duration"] = flight_segment["leg"][0]["duration"]
+                # Calls function to add leg to db
+                leg = add_leg_to_db(flight, leg_info)
+                leg_dict = leg.to_dict()
+                # Adds each leg to the list value at flight key
+                flights[1].append(leg_dict)
 
     return flights
 

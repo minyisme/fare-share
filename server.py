@@ -77,7 +77,7 @@ def user_login():
 
     # Get email and password from the user login
     user_email = request.form.get('email')
-    user_password = request.form.get('password')
+    user_password = request.form.get('user-password')
 
     # Validate user_email and login and redirects depending on validity
     if functions.is_valid_login(user_email, user_password):
@@ -123,8 +123,8 @@ def user_registration():
     user_info = {}
 
     # Get inputs from user registration form
-    user_info["user_email"] = request.form.get('email')
-    user_info["user_password"] = request.form.get('password')
+    user_info["user_email"] = request.form.get('user-email')
+    user_info["user_password"] = request.form.get('user-password')
     user_info["user_name"] = request.form.get('username')
     user_info["user_origin_airport_code"] = request.form.get('origin_airport_code')
 
@@ -228,11 +228,53 @@ def trip_search(trip_id):
 
     trip = Trip.query.get(trip_id)
 
-    return render_template("trip_search.html", trip=trip)
+    origin_airport_codes = functions.origin_airport_codes_by_trip(trip)
+
+    return render_template("trip_search.html", trip=trip, origin_airport_codes=origin_airport_codes)
 
 
 
-@app.route('/trip/<int:trip_id>/results', methods=["POST"])
+@app.route('/trip/<int:trip_id>/share')
+def trip_share(trip_id):
+    """Share trip with other users"""
+
+    return render_template("trip_share.html", trip_id=trip_id)
+
+
+
+################################################################################
+
+## AJAX routes ##
+
+################################################################################
+
+
+
+@app.route('/trip/<int:trip_id>/search.json', methods=["POST"])
+def trip_option_info(trip_id):
+    """Get Option info and save to db"""
+
+    # Initializes empty dictionary to add option info to
+    option_info = {}
+    # Get destination, departure_date, return_date from form and add to option_info
+    option_info["destination"] = request.form.get("destination")
+    option_info["depart_date"] = request.form.get("depart-date")
+    option_info["return_date"] = request.form.get("return-date")
+    # Add trip_id to option_info
+    option_info["trip_id"] = trip_id
+
+    # Add option to db and return option object
+    option = functions.add_option_to_db(option_info)
+
+    option_id_to_use = {"option_id": option.option_id}
+
+    # option = option.to_dict()
+
+    return jsonify(option_id_to_use)
+
+
+
+@app.route('/trip/<int:trip_id>/results.json', methods=["POST"])
 def trip_results(trip_id):
     """Search flights results"""
 
@@ -243,47 +285,43 @@ def trip_results(trip_id):
     option_info = {}
     # Get destination, departure_date, return_date from form and add to option_info
     option_info["destination"] = request.form.get("destination")
-    option_info["departure_date"] = request.form.get("departure_date")
-    option_info["return_date"] = request.form.get("return_date")
+    option_info["depart_date"] = request.form.get("depart-date")
+    option_info["return_date"] = request.form.get("return-date")
     # Add trip_id to option_info
     option_info["trip_id"] = trip_id
 
-    # Add option to db and return option object
-    option = functions.add_option_to_db(option_info)
-
     # Get origin airport codes for trip
-    origin_airport_codes = functions.origin_airport_codes_by_trip(trip)
-
-    # Get parameter variables for QPX search from input option and origin_airport_codes
-    params = functions.get_params(origin_airport_codes, option_info)
+    origin_airport_code = request.form.get("origin-airport-code")
 
     # Initialize empty results list to add QPX query restuls to
-    python_results = []
-    # For each set of parameter variables in params
-    for query in params:
-        # Get the parameter string from the parameter variables
-        parameter = functions.parameter_by_params(query)
-        # Make request to QPX
-        flight_request = functions.query_QPX(parameter)
-        # Read results from QPX into python
-        python_result = functions.QPX_results(flight_request)
-        #add python_result to python_results
-        python_results.append(python_result)
+    # python_results = []
+
+    # Get parameter variables for QPX search from input option and origin_airport_codes
+    params = functions.get_params(origin_airport_code, option_info)
+    # Get the parameter string from the parameter variables
+    parameter = functions.parameter_by_params(params)
+    # Make request to QPX
+    flight_request = functions.query_QPX(parameter)
+    # import pdb
+    # pdb.set_trace()
+    # Read results from QPX into python
+    python_result = functions.QPX_results(flight_request)
+    #add python_result to python_results
+    # python_results.append(python_result)
+
+    # change this later to get by option_info!!!!
+    option_id = request.form.get("option-id")
+    option = Option.query.get(option_id)
 
     # Parse python results to add flights and legs to db and to get data to render on 
     # results page
-    flights = functions.parse_results(python_results, option)
+    flights = functions.parse_results(python_result, option)
 
+    result = {"flights" : flights}
+    # import pdb
+    # pdb.set_trace()
     # Trip results page with all the data necessary for tables
-    return render_template("trip_search_results.html", option=option, flights=flights, trip=trip,)
-
-
-
-@app.route('/trip/<int:trip_id>/share')
-def trip_share(trip_id):
-    """Share trip with other users"""
-
-    return render_template("trip_share.html", trip_id=trip_id)
+    return jsonify(result)
 
 
 

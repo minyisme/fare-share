@@ -5,8 +5,16 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
-#################################################
+################################################################################
 # Model definitions
+
+
+
+################################################################################
+
+## DB class ##
+
+################################################################################
 
 # User who logs in to the site
 class User(db.Model):
@@ -97,7 +105,11 @@ class Option(db.Model):
         return ("<Option option_id=%s trip_id=%s destination_airport_code=%s departure_date=%s return_date=%s>"
                 % (self.option_id, self.trip_id, self.destination_airport_code, self.depart_date, self.return_date))    
 
+    def to_dict(self):
+        """Provide jsonify-able representation"""
 
+        return {"option_id": self.option_id, "trip_id": self.trip_id, "destination_airport_code": self.destination_airport_code,
+                "depart_date": self.depart_date, "return_date": self.return_date}
 
 # Flight options from QPX API belonging to each option
 class Flight(db.Model):
@@ -117,6 +129,11 @@ class Flight(db.Model):
 
         return ("<Flight flight_id=%s option_id=%s flight_price=%s"
                 % (self.flight_id, self.option_id, self.flight_price))
+
+    def to_dict(self):
+        """Provide jsonify-able representation"""
+
+        return {"flight_id": self.flight_id, "option_id": self.option_id, "flight_price": self.flight_price}
 
 
 
@@ -151,6 +168,14 @@ class Leg(db.Model):
                    self.destination_airport_code, self.arrival_datetime, self.leg_airline, self.leg_flight_code, 
                    self.leg_duration))
 
+    def to_dict(self):
+        """Provide jsonify-able representation"""
+
+        return {"leg_id": self.leg_id, "flight_id": self.flight_id, "origin_airport_code": self.origin_airport_code,
+                "departure_datetime": self.departure_datetime, "destination_airport_code": self.destination_airport_code,
+                "arrival_datetime": self.arrival_datetime, "leg_airline": self.leg_airline, 
+                "leg_flight_code": self.leg_flight_code, "leg_duration": self.leg_duration}
+
 
 
 # Airports by airport code that can be origins and destination IDs
@@ -171,7 +196,22 @@ class Airport(db.Model):
         return ("<Airport airport_code=%s airport_name=%s airport_city=%s airport_lat=%s airport_long=%s>"
                 % (self.airport_code, self.airport_name, self.airport_city, self.airport_lat, self.airport_long))
 
-#################################################
+
+
+################################################################################
+
+## Non DB class ##
+
+################################################################################
+
+
+
+# class QPX():
+#     """QPX class for QPX API calls"""
+
+
+
+################################################################################
 # Helper functions
 
 def connect_to_db(app):
