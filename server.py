@@ -139,7 +139,7 @@ def user_registration():
 
 ################################################################################
 
-## trip adding routes ##
+## trip add/delete routes ##
 
 ################################################################################
 
@@ -150,6 +150,34 @@ def trip_info():
     """Trip page"""
 
     return render_template("trip_add.html")
+
+
+
+@app.route('/profile/trip-delete', methods=["POST"])
+def trip_delete():
+    """Delete trip and all option, flight, and leg data associated with that trip
+    in db"""
+
+    trip_id = request.form.get("trip-id-delete")
+    trip = Trip.query.get(trip_id)
+
+    options = functions.options_by_trip(trip)
+    for option in options:
+        flights = functions.flights_by_option(option)
+        for flight in flights:
+            legs = functions.legs_by_flight(flight)
+            functions.delete_legs(legs)
+            db.session.commit()
+        functions.delete_flights(flights)
+    functions.delete_options(options)
+
+    userstrips = functions.userstrips_by_trip(trip)
+    functions.delete_userstrips(userstrips)
+
+    db.session.delete(trip)
+    db.session.commit()
+
+    return redirect('/profile')
 
 
 
@@ -230,7 +258,10 @@ def trip_search(trip_id):
 
     origin_airport_codes = functions.origin_airport_codes_by_trip(trip)
 
-    return render_template("trip_search.html", trip=trip, origin_airport_codes=origin_airport_codes)
+    return render_template("trip_search.html", 
+                           trip=trip, 
+                           origin_airport_codes=origin_airport_codes,
+                           option=None)
 
 
 
@@ -314,7 +345,7 @@ def trip_share(trip_id):
 
 ## AJAX routes ##
 
-################################################################################
+################################################################################    
 
 
 

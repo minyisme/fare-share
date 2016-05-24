@@ -10,6 +10,10 @@
     {% for trip in trips %}
 
     <a href="/trip/{{ trip.trip_id }}">{{ trip.trip_name}}</a>
+    <form action="/profile/trip-delete" method="POST">
+        <input type="hidden" name="trip-id-delete" value="{{ trip.trip_id }}">
+        <input type="submit" class="trip-delete" value="Delete Trip">
+    </form>
 
     <br>
 

@@ -213,6 +213,25 @@ def origin_airport_codes_by_trip(trip):
 
 
 
+def userstrips_by_trip(trip):
+    """Takes input trip object, and returns all usertrip objects associated with
+    that trip"""
+
+    userstrips = UserTrip.query.filter_by(trip_id = trip.trip_id).all()
+
+    return userstrips
+
+
+
+def options_by_trip(trip):
+    """Takes input trip object, and returns all option objects associated with
+    that trip"""
+
+    options = Option.query.filter_by(trip_id = trip.trip_id).all()
+
+    return options
+
+
 def flights_by_option(option):
     """Takes input option object, and returns all flight objects associated with
     that option"""
@@ -242,7 +261,7 @@ def legs_by_flight(flight):
 
 
 def delete_legs(legs):
-    """Takes input list of leg inputs and delets all leg records from db"""
+    """Takes input list of leg objects and deletes all leg records from db"""
 
     # Iterate over legs_list and delete all legs from db
     for leg in legs:
@@ -252,7 +271,7 @@ def delete_legs(legs):
     return
 
 def delete_flights(flights):
-    """Takes input list of leg inputs and delets all leg records from db"""
+    """Takes input list of flights objects and deletes all flight records from db"""
 
     # Iterate over flights and delete all flights from db
     for flight in flights:
@@ -260,6 +279,23 @@ def delete_flights(flights):
         db.session.commit()
 
     return
+
+def delete_options(options):
+    """Takes input list of options objects and deletes all option records from db"""
+
+    # Iterate over options and delete all options from db
+    for option in options:
+        db.session.delete(option)
+        db.session.commit()
+
+def delete_userstrips(userstrips):
+    """Takes input list of usertrip objects and deletes all usertrip records from
+    db"""
+
+    # Iterate over userstrips and delete all options from db
+    for usertrip in userstrips:
+        db.session.delete(usertrip)
+        db.session.commit
 
 ################################################################################
 
