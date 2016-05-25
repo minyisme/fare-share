@@ -20,7 +20,7 @@
             When are you coming back?<input id="return-date-reQ" type="text" name="return_date" value="{{ option.return_date }}">
         </label>
         <br>
-        <button type="button" id="qpx-reQuery" data-origins='{{ origin_airport_codes }}' data-option="{{ option.option_id }}">Update search</button>
+        <button type="button" id="qpx-reQuery" data-origins='{{ origin_airport_codes }}' data-option="{{ option.option_id }}" data-trip='{{ trip.trip_id }}'> Update search</button>
       {% else %}
         <label>
             Where do you want to go?<input id="destination-airport-code" type="text" name="destination" value="e.g. SFO">
@@ -35,7 +35,7 @@
             When are you coming back?<input id="return-date" type="text" name="return_date" value="e.g. 2016-06-21">
         </label>
         <br>
-        <button type="button" id="qpx-query" data-origins='{{ origin_airport_codes }}'>Search</button>
+        <button type="button" id="qpx-query" data-origins='{{ origin_airport_codes }}' data-trip='{{ trip.trip_id }}'>Search</button>
         {% endif %}
     </form>
 
@@ -46,114 +46,6 @@
     <br>
 
     <a href="/trip/{{ trip.trip_id }}">Back to {{ trip.trip_name }}!</a>
-
-    <script type="text/javascript">
-
-        function tableResults(flights) {
-            $("#flightResults").append("<p>Flight ID: " + flights[0]["flight_id"] + 
-                                       "</p><p>Flight Price: " + flights[0]["flight_price"] + "</p>");
-            var results_table = "<table><thead><th>" + 
-                        "<td>Origin Airport</td>" + 
-                        "<td>Departure Datetime</td>" + 
-                        "<td>Destination Airport</td>" + 
-                        "<td>Arrival Time</td>" + 
-                        "<td>Flight ID</td>" + 
-                        "<td>Flight Duration</td>" + 
-                        "</th></thead><tbody>";
-            for (i=0; i<flights[1].length; i++) {
-                var origin_airport_code = flights[1][i]["origin_airport_code"];
-                var departure_datetime = flights[1][i]["departure_datetime"];
-                var destination_airport_code = flights[1][i]["destination_airport_code"];
-                var arrival_datetime = flights[1][i]["arrival_datetime"];
-                var leg_airline = flights[1][i]["leg_airline"];
-                var leg_flight_code = flights[1][i]["leg_flight_code"];
-                var leg_duration = flights[1][i]["leg_duration"];
-                results_table += ("<tr><td>" + origin_airport_code + 
-                             "</td><td>" + departure_datetime +
-                             "</td><td>" + destination_airport_code + 
-                             "</td><td>" + arrival_datetime + 
-                             "</td><td>" + leg_airline + leg_flight_code + 
-                             "</td><td>" + leg_duration + 
-                             "</td></tr>");
-            }
-            results_table += "</tbody></table>";
-            $("#flightResults").append(results_table);
-        }
-
-        function showFlightResults(result) {
-            var flights = result["flights"];
-            // debugger;
-            tableResults(flights);
-            $("#finished_query").text("Results complete.");
-        }
-        
-        function searchQPX(evt) {
-
-            var optionAttributes = {
-                "destination" : $("#destination-airport-code").val(),
-                "depart-date" : $("#depart-date").val(),
-                "return-date" : $("#return-date").val(),
-            };
-
-            $.ajax({type: "POST",
-                url: "/trip/{{ trip.trip_id }}/search.json",
-                data: optionAttributes,
-                success: function (result) {
-                    debugger;
-                         alert("option added");
-
-                         for (var i=0; i<$("#qpx-query").data("origins").length; i++) {
-
-                              // var originAirports = $(this).data("origins").split(",")
-                                // debugger;
-                              var queryInputs = {
-                                  "destination" : $("#destination-airport-code").val(),
-                                  "depart-date" : $("#depart-date").val(),
-                                  "return-date" : $("#return-date").val(),
-                                  "origin-airport-code" : $("#qpx-query").data("origins")[i],
-                                  "option-id" : result["option_id"],
-                              };
-
-                              $.ajax({type: "POST",
-                                  url: "/trip/{{ trip.trip_id }}/results.json",
-                                  data: queryInputs,
-                                  success: showFlightResults,
-                               });
-                            }
-                }
-            });
-        }
-
-        $("#qpx-query").click(searchQPX);
-        
-    </script>
-
-    <script type="text/javascript">
-
-        function updateSearchQPX(evt) {
-          for (var i=0; i<$("#qpx-reQuery").data("origins").length; i++) {
-
-                              // var originAirports = $(this).data("origins").split(",")
-                                // debugger;
-                              var queryInputs = {
-                                  "destination" : $("#destination-airport-code-reQ").val(),
-                                  "depart-date" : $("#depart-date-reQ").val(),
-                                  "return-date" : $("#return-date-reQ").val(),
-                                  "origin-airport-code" : $("#qpx-reQuery").data("origins")[i],
-                                  "option-id" : $("#qpx-reQuery").data("option"),
-                              };
-
-                              $.ajax({type: "POST",
-                                  url: "/trip/{{ trip.trip_id }}/results.json",
-                                  data: queryInputs,
-                                  success: showFlightResults,
-                               });
-                            }
-
-        }
-
-        $("#qpx-reQuery").click(updateSearchQPX);
-    </script>
 
 {% endblock %}
 

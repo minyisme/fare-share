@@ -15,7 +15,6 @@ import functions
 
 
 
-
 app = Flask(__name__)
 
 # Required to use Flask sessions and the debug toolbar
