@@ -332,6 +332,32 @@ def option_update(trip_id):
 
 
 
+@app.route('/trip/<int:trip_id>/option-vote.json', methods=["POST"])
+def option_vote(trip_id):
+    """Save user's option vote for trip to db"""
+    # import pdb
+
+    # Get unicode of option id to be voted for
+    option_vote_unicode = request.form.get("voted-option-id")
+    # pdb.set_trace()
+    print option_vote_unicode
+
+    # Get usertrip that vote will be attached to by user and trip
+    usertrip = UserTrip.query.filter_by(user_id=session["user_id"], trip_id=trip_id).first()
+
+    # Set variable to integer of the voted for option id
+    option_vote_int = int(option_vote_unicode)
+    # Change option_vote for usertrip in db to the voted for option
+    usertrip.option_vote = option_vote_int
+    # Commit session
+    db.session.commit()
+
+    # voting_option = Option.query.get(option_vote_int)
+    # pdb.set_trace()
+    return json.dumps(option_vote_int)
+
+
+
 @app.route('/trip/<int:trip_id>/share')
 def trip_share(trip_id):
     """Share trip with other users"""
@@ -342,7 +368,7 @@ def trip_share(trip_id):
 
 ################################################################################
 
-## AJAX routes ##
+## QPX query AJAX routes ##
 
 ################################################################################    
 
@@ -421,31 +447,6 @@ def trip_results(trip_id):
     # Trip results page with all the data necessary for tables
     return jsonify(result)
 
-
-
-@app.route('/trip/<int:trip_id>/option-vote', methods=["POST"])
-def option_vote(trip_id):
-    """Save user's option vote for trip to db"""
-    # import pdb
-
-    # Get unicode of option id to be voted for
-    option_vote_unicode = request.form.get("voted-option-id")
-    # pdb.set_trace()
-    print option_vote_unicode
-
-    # Get usertrip that vote will be attached to by user and trip
-    usertrip = UserTrip.query.filter_by(user_id=session["user_id"], trip_id=trip_id).first()
-
-    # Set variable to integer of the voted for option id
-    option_vote_int = int(option_vote_unicode)
-    # Change option_vote for usertrip in db to the voted for option
-    usertrip.option_vote = option_vote_int
-    # Commit session
-    db.session.commit()
-
-    # voting_option = Option.query.get(option_vote_int)
-    # pdb.set_trace()
-    return json.dumps(option_vote_int)
 
 
 

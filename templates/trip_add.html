@@ -5,17 +5,17 @@
 
     <br>
 
-    <form action="/trip/create-new" method="POST">
+    <form action="/trip/create-new.json" method="POST">
         <label>
-            Trip Name<input type="text" name="trip_name">
+            Trip Name<input type="text" name="trip_name" autocomplete="off">
         </label>
 
         <label>
             Add up to 4 other users to this trip:
-            <input type="text" name="trip_user1">
-            <input type="text" name="trip_user2">
-            <input type="text" name="trip_user3">
-            <input type="text" name="trip_user4">
+            <input type="text" name="trip_user1" autocomplete="off">
+            <input type="text" name="trip_user2" autocomplete="off">
+            <input type="text" name="trip_user3" autocomplete="off">
+            <input type="text" name="trip_user4" autocomplete="off">
         </label>
         <input type="submit" name="Add Trip">
     </form>

@@ -3,7 +3,33 @@
 
     <h1>{{ user.user_name }}'s Trips</h1>
 
-    <a href="/trip/add">Add a Trip</a>
+    <!-- Trigger/Open The Modal -->
+    <button id="addTrip">Add a Trip</button>
+    <div id="addTripConf"></div>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">x</span>
+        <form id="trip-add" action="/trip/create-new" method="POST">
+            <label>
+                Trip Name<input id="trip_name" type="text" name="trip_name" autocomplete="off">
+            </label>
+
+            <label>
+                Add up to 4 other users to this trip:
+                <input id="trip_user1" type="text" name="trip_user1" autocomplete="off">
+                <input id="trip_user2" type="text" name="trip_user2" autocomplete="off">
+                <input id="trip_user3" type="text" name="trip_user3" autocomplete="off">
+                <input id="trip_user4" type="text" name="trip_user4" autocomplete="off">
+            </label>
+            <input type="submit" value="add">
+        </form>
+      </div>
+
+    </div>
 
     <br>
 
@@ -20,5 +46,29 @@
     {% endfor %}
     
     <a href="/settings">Settings</a>
+
+    <script type="text/javascript">
+        // Get the modal
+        var modal = document.getElementById('myModal');
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("addTrip");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+    </script>
+
+    <script type="text/javascript">
+        var trip_name = $("#trip_name").val()
+
+        var trip_user1 = $("#trip_user1").val()
+
+        var trip_user2 = $("#trip_user2").val()
+
+        var trip_user3 = $("#trip_user3").val()
+
+        var trip_user4 = $("#trip_user4").val()
+
+    </script>
 
 {% endblock %}

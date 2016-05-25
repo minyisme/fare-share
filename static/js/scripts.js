@@ -1,7 +1,3 @@
-var tripId = $("#qpx-query").data("trip");
-
-var reQTripId = $("#qpx-reQuery").data("trip");
-
 function tableResults(flights) {
     $("#flightResults").append("<p>Flight ID: " + flights[0]["flight_id"] + 
                                "</p><p>Flight Price: " + flights[0]["flight_price"] + "</p>");
@@ -103,14 +99,14 @@ function updateSearchQPX(evt) {
 $("#qpx-reQuery").click(updateSearchQPX);
 
 
-// Get the modal
-var modal = document.getElementById('myModal');
 
-// Get the button that opens the modal
-var btn = document.getElementById("vote");
+////////////////////////////////////////////////////////////////////////////////
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+//Modal Window Actions
+
+////////////////////////////////////////////////////////////////////////////////
+
+
 
 // When the user clicks on the button, open the modal 
 btn.onclick = function() {
@@ -129,24 +125,64 @@ window.onclick = function(event) {
     }
 }
 
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//Next Function
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+
 function showConfirmation(result) {
     $("#myModal").hide();
     $("#votedForOption").val(voted_option_id)
 }
 
-function voteOption(evt) {
-    evt.preventDefault();
-
-    var voted_option_id = $(".options:checked").val();      
+function voteOption(evt, voted_option_id) {
+    evt.preventDefault();     
 
     $("#votedForOption").text("You voted for option: " + voted_option_id)
     // debugger;
-    $.post("/trip/{{ trip.trip_id }}/option-vote", 
-          {"voted-option-id": voted_option_id}, 
-          showConfirmation
-          );
+    $.ajax({type: "POST",
+            url: "/trip/" + voteTripId + "/option-vote.json",
+            data: {"voted-option-id": voted_option_id}, 
+            showConfirmation
+          });
 }
 
-$("#option-vote").on("submit", voteOption);
+$("#option-vote").on("submit", voteOption(voted_option_id));
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//Next Function
+
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+function showAddedTrip(result) {
+    $("#myModal").hide();
+    $("#addTripConf").val("Trip Added")
+}
+
+function addTrip(evt) {
+    evt.preventDefault();
+
+    $.ajax({type: "POST",
+      url: "/trip/create-new",
+      data: {"trip_name": trip_name,
+             "trip_user1": trip_user1,
+             "trip_user2": trip_user2,
+             "trip_user3": trip_user3,
+             "trip_user4": trip_user4,},
+      showAddedTrip
+    });
+}
+
+$("#trip-add").on("submit", addTrip);
 
 

@@ -8,31 +8,31 @@
     <form id="flight_search">
       {% if option %}
         <label>
-            Where do you want to go?<input id="destination-airport-code-reQ" type="text" name="destination" value="{{ option.destination_airport_code }}">
+            Where do you want to go?<input id="destination-airport-code-reQ" type="text" name="destination" value="{{ option.destination_airport_code }}" autocomplete="off">
         </label>
         Remember to validate that this airport doesn't match any of the origin airports
         <br>
         <label>
-            When do you want to depart?<input id="depart-date-reQ" type="text" name="depart_date" value="{{ option.depart_date }}">
+            When do you want to depart?<input id="depart-date-reQ" type="text" name="depart_date" value="{{ option.depart_date }}" autocomplete="off">
         </label>
         <br>
         <label>
-            When are you coming back?<input id="return-date-reQ" type="text" name="return_date" value="{{ option.return_date }}">
+            When are you coming back?<input id="return-date-reQ" type="text" name="return_date" value="{{ option.return_date }}" autocomplete="off">
         </label>
         <br>
         <button type="button" id="qpx-reQuery" data-origins='{{ origin_airport_codes }}' data-option="{{ option.option_id }}" data-trip='{{ trip.trip_id }}'> Update search</button>
       {% else %}
         <label>
-            Where do you want to go?<input id="destination-airport-code" type="text" name="destination" value="e.g. SFO">
+            Where do you want to go?<input id="destination-airport-code" type="text" name="destination" value="e.g. SFO" autocomplete="off">
         </label>
         Remember to validate that this airport doesn't match any of the origin airports
         <br>
         <label>
-            When do you want to depart?<input id="depart-date" type="text" name="depart_date" value="e.g. 2016-06-11">
+            When do you want to depart?<input id="depart-date" type="text" name="depart_date" value="e.g. 2016-06-11" autocomplete="off">
         </label>
         <br>
         <label>
-            When are you coming back?<input id="return-date" type="text" name="return_date" value="e.g. 2016-06-21">
+            When are you coming back?<input id="return-date" type="text" name="return_date" value="e.g. 2016-06-21" autocomplete="off">
         </label>
         <br>
         <button type="button" id="qpx-query" data-origins='{{ origin_airport_codes }}' data-trip='{{ trip.trip_id }}'>Search</button>
@@ -46,6 +46,12 @@
     <br>
 
     <a href="/trip/{{ trip.trip_id }}">Back to {{ trip.trip_name }}!</a>
+
+    <script type="text/javascript">
+      var tripId = $("#qpx-query").data("trip");
+
+      var reQTripId = $("#qpx-reQuery").data("trip");
+    </script>
 
 {% endblock %}
 
