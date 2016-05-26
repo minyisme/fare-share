@@ -1,15 +1,28 @@
 {% extends 'base.html' %}
+{% block head_stuff %}
+    <meta charset='utf-8' />
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.css' rel='stylesheet' />
+    <style>
+        #mapBoxYo { position:absolute; top:0; bottom:0; width:500px; height:600px; display:block;}
+    </style>
+{% endblock %}
+
 {% block content %}
     
     <h1>{{ trip.trip_name }}: All the Searchings!</h1>
 
     <h3>Flight Search</h3>
 
+    <a href="/untitled">blahblahblah</a>
+
     <form id="flight_search">
       {% if option %}
         <label>
             Where do you want to go?<input id="destination-airport-code-reQ" type="text" name="destination" value="{{ option.destination_airport_code }}" autocomplete="off" maxlength="3">
         </label>
+        <div id='mapBoxYo'></div>
         Remember to validate that this airport doesn't match any of the origin airports
         <br>
         <label>
@@ -39,13 +52,13 @@
         {% endif %}
     </form>
 
-
     <div id="finished_query"></div>
     <br>
     <div id="flightResults"></div>
     <br>
 
     <a href="/trip/{{ trip.trip_id }}">Back to {{ trip.trip_name }}!</a>
+
 
     <script type="text/javascript">
         $(function() {
@@ -104,6 +117,16 @@
 
             });
 
+    </script>
+
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoibWlueWlzbWUiLCJhIjoiY2lvb3A0Nmw2MDAwaHV4bTN4NW4zMGFudyJ9.tk7PmSh3waHuHHnMyaDUYg';
+    var map = new mapboxgl.Map({
+        container: 'mapBoxYo', // container id
+        style: 'mapbox://styles/mapbox/light-v9', //stylesheet location
+        center: [-74.50, 40], // starting position
+        zoom: 9 // starting zoom
+    });
     </script>
 
 {% endblock %}

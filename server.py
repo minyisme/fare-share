@@ -466,6 +466,13 @@ def trip_results(trip_id):
 
 
 
+@app.route('/untitled')
+def get_untitled():
+
+    return render_template("untitled.html")
+
+
+
 ################################################################################
 
 ## End routes ##
