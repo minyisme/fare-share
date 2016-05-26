@@ -11,7 +11,7 @@ $(document).ready(function() {
 
   var voteTripId = $("#vote-button").data("trip");
 
-  var voted_option_id = $(".options:checked").val(); 
+
 
   var tripId = $("#qpx-query").data("trip");
 
@@ -154,23 +154,28 @@ $(document).ready(function() {
 
 
   function showConfirmation(result) {
+
+      var voted_option_id = $(".options:checked").val(); 
+
       $("#myModal").hide();
       $("#votedForOption").val(voted_option_id)
   }
 
-  function voteOption(evt, voted_option_id) {
+  function voteOption(evt) {
       evt.preventDefault();     
+
+      var voted_option_id = $(".options:checked").val(); 
 
       $("#votedForOption").text("You voted for option: " + voted_option_id)
       // debugger;
       $.ajax({type: "POST",
               url: "/trip/" + voteTripId + "/option-vote.json",
               data: {"voted-option-id": voted_option_id}, 
-              showConfirmation
+              success: showConfirmation
             });
   }
 
-  $("#option-vote").on("submit", voteOption(voted_option_id));
+  $("#option-vote").on("submit", voteOption);
 
 
 
