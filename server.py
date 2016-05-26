@@ -49,7 +49,9 @@ def profile():
     # Get list of trips for user
     trips = functions.trips_by_user(user)
 
-    return render_template("profile.html", user=user, trips=trips)
+    images_list = ["/static/css/IMG_1777.jpg", "/static/css/IMG_3767.jpg", "/static/css/IMG_6073.jpg", "/static/css/IMG_3980.jpg", "/static/css/IMG_4676.jpg", "/static/css/IMG_5133.jpg", "/static/css/IMG_5494.jpg", "/static/css/IMG_6541.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_5862.jpg", "/static/css/IMG_5300.jpg", "/static/css/IMG_5597.jpg", "/static/css/IMG_5807.jpg", "/static/css/IMG_5707.jpg", "/static/css/IMG_5812.jpg", "/static/css/IMG_6005.jpg", "/static/css/IMG_6534.jpg", "/static/css/thumb_IMG_5362_1024.jpg", "/static/css/IMG_5346.jpg"]
+
+    return render_template("profile.html", user=user, trips=trips, images_list=images_list)
 
 
 
@@ -103,7 +105,12 @@ def user_logout():
 
 ################################################################################
 
-
+# @app.route('/user', methods=['POST', 'GET'])
+# def user():
+#     if method == 'POST':
+#         return do_post()  # register the user
+#     elif method == 'GET':
+#         return do_get()  # get the user registration form
 
 @app.route('/user-reg-form')
 def user_reg_form():
@@ -151,8 +158,8 @@ def trip_info():
     return render_template("trip_add.html")
 
 
-
-@app.route('/profile/trip-delete', methods=["POST"])
+# /profile/trip/{id}  # DELETE
+@app.route('/profile/trip-delete', methods=["POST"])  # DELETE
 def trip_delete():
     """Delete trip and all option, flight, and leg data associated with that trip
     in db"""

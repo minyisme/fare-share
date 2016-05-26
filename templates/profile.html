@@ -3,72 +3,20 @@
 
     <h1>{{ user.user_name }}'s Trips</h1>
 
-    <!-- Trigger/Open The Modal -->
-    <button id="addTrip">Add a Trip</button>
-    <div id="addTripConf"></div>
-
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span class="close">x</span>
-        <form id="trip-add" action="/trip/create-new" method="POST">
-            <label>
-                Trip Name<input id="trip_name" type="text" name="trip_name" autocomplete="off">
-            </label>
-
-            <label>
-                Add up to 4 other users to this trip:
-                <input id="trip_user1" type="text" name="trip_user1" autocomplete="off">
-                <input id="trip_user2" type="text" name="trip_user2" autocomplete="off">
-                <input id="trip_user3" type="text" name="trip_user3" autocomplete="off">
-                <input id="trip_user4" type="text" name="trip_user4" autocomplete="off">
-            </label>
-            <input type="submit" value="add">
-        </form>
-      </div>
-
-    </div>
-
-    <br>
-
     {% for trip in trips %}
 
-    <a href="/trip/{{ trip.trip_id }}">{{ trip.trip_name}}</a>
-    <form action="/profile/trip-delete" method="POST">
-        <input type="hidden" name="trip-id-delete" value="{{ trip.trip_id }}">
-        <input type="submit" class="trip-delete" value="Delete Trip">
-    </form>
+    <div class="trip-div">
+        <a class="trip-link" id="{{ trip.trip_id}}" href="/trip/{{ trip.trip_id }}"><img class="trip-image" title="{{ trip.trip_name}}" src="{{ images_list[trip.trip_id] }}"></a>
+        <form class="trip-form" action="/profile/trip-delete" method="POST">
+            <input type="hidden" name="trip-id-delete" value="{{ trip.trip_id }}">
+            <input class="trip-submit" type="submit" id="delete-trip" class="trip-delete" value="Delete Trip">
+        </form>
+    </div>
 
     <br>
 
     {% endfor %}
     
     <a href="/settings">Settings</a>
-
-    <script type="text/javascript">
-        // Get the modal
-        var modal = document.getElementById('myModal');
-
-        // Get the button that opens the modal
-        var btn = document.getElementById("addTrip");
-
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-    </script>
-
-    <script type="text/javascript">
-        var trip_name = $("#trip_name").val()
-
-        var trip_user1 = $("#trip_user1").val()
-
-        var trip_user2 = $("#trip_user2").val()
-
-        var trip_user3 = $("#trip_user3").val()
-
-        var trip_user4 = $("#trip_user4").val()
-
-    </script>
 
 {% endblock %}

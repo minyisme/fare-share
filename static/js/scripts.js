@@ -127,7 +127,8 @@ $(document).ready(function() {
 
 
   // When the user clicks on the button, open the modal 
-  btn.onclick = function() {
+  addTripLink.onclick = function(evt) {
+      evt.preventDefault()
       modal.style.display = "block";
   }
 

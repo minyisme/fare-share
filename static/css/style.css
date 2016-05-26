@@ -8,6 +8,33 @@ body {
 
 }
 
+#delete-trip {
+    color: black;
+}
+
+.trip-image {
+    height: 400px;
+    padding-left: 20px;
+    display: block;
+}
+
+.trip-form {
+    display: inline;
+    padding-left: 20px;
+}
+
+.trip-submit {
+    display: inline;
+}
+
+.trip-div {
+    display: inline;
+}
+
+.trip-link {
+    display: inline;
+}
+
 a {
     color: white;
 }
