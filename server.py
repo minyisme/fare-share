@@ -125,7 +125,7 @@ def user_registration():
     user_info["user_email"] = request.form.get('user-email')
     user_info["user_password"] = request.form.get('user-password')
     user_info["user_name"] = request.form.get('username')
-    user_info["user_origin_airport_code"] = request.form.get('origin_airport_code')
+    user_info["user_origin_airport_code"] = (request.form.get('origin_airport_code')).upper()
 
     # Checks if email is in the db already
     if functions.is_registered_email(user_info["user_email"]) == False:
@@ -264,6 +264,16 @@ def trip_search(trip_id):
 
 
 
+@app.route('/get-airports-to-autocomplete', methods=["GET"])
+def get_airports_autocomplete():
+
+    airports_autocomplete_list = functions.make_airports_autocomplete()
+    # import pdb
+    # pdb.set_trace()
+
+    return jsonify({"airports": airports_autocomplete_list})
+
+
 @app.route('/trip/<int:trip_id>/option-delete', methods=["POST"])
 def option_delete(trip_id):
     """Delete an option from the db"""
@@ -381,7 +391,7 @@ def trip_option_info(trip_id):
     # Initializes empty dictionary to add option info to
     option_info = {}
     # Get destination, departure_date, return_date from form and add to option_info
-    option_info["destination"] = request.form.get("destination")
+    option_info["destination"] = ((request.form.get("destination")).upper())[:3]
     option_info["depart_date"] = request.form.get("depart-date")
     option_info["return_date"] = request.form.get("return-date")
     # Add trip_id to option_info
@@ -408,14 +418,14 @@ def trip_results(trip_id):
     # Initializes empty dictionary to add option info to
     option_info = {}
     # Get destination, departure_date, return_date from form and add to option_info
-    option_info["destination"] = request.form.get("destination")
+    option_info["destination"] = ((request.form.get("destination")).upper())[:3]
     option_info["depart_date"] = request.form.get("depart-date")
     option_info["return_date"] = request.form.get("return-date")
     # Add trip_id to option_info
     option_info["trip_id"] = trip_id
 
     # Get origin airport codes for trip
-    origin_airport_code = request.form.get("origin-airport-code")
+    origin_airport_code = (request.form.get("origin-airport-code")).upper()
 
     # Initialize empty results list to add QPX query restuls to
     # python_results = []
@@ -446,7 +456,6 @@ def trip_results(trip_id):
     # pdb.set_trace()
     # Trip results page with all the data necessary for tables
     return jsonify(result)
-
 
 
 

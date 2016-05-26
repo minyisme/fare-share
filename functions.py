@@ -252,6 +252,25 @@ def legs_by_flight(flight):
 
 
 
+def make_airports_autocomplete():
+    """Takes no input, and returns list of strings of all airports "Airport Code 
+    - Airport Name, Airport City"""
+
+    airports = Airport.query.all()
+
+    airports_autocomplete_list = []
+    for airport in airports:
+        if airport.airport_city:
+            airport_autocomplete = "%s: %s, %s" %(
+                airport.airport_code, airport.airport_name, airport.airport_city)
+        else:
+            airport_autocomplete = "%s: %s" %(airport.airport_code, airport.airport_name)
+        airports_autocomplete_list.append(airport_autocomplete)
+
+    return airports_autocomplete_list
+
+
+
 ################################################################################
 
 ## delete from db ##

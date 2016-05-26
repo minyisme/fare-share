@@ -8,7 +8,7 @@
     <form id="flight_search">
       {% if option %}
         <label>
-            Where do you want to go?<input id="destination-airport-code-reQ" type="text" name="destination" value="{{ option.destination_airport_code }}" autocomplete="off">
+            Where do you want to go?<input id="destination-airport-code-reQ" type="text" name="destination" value="{{ option.destination_airport_code }}" autocomplete="off" maxlength="3">
         </label>
         Remember to validate that this airport doesn't match any of the origin airports
         <br>
@@ -23,16 +23,16 @@
         <button type="button" id="qpx-reQuery" data-origins='{{ origin_airport_codes }}' data-option="{{ option.option_id }}" data-trip='{{ trip.trip_id }}'> Update search</button>
       {% else %}
         <label>
-            Where do you want to go?<input id="destination-airport-code" type="text" name="destination" value="e.g. SFO" autocomplete="off">
+            Where do you want to go?<input id="destination-airport-code" type="text" name="destination" autocomplete="off" maxlength="3">
         </label>
         Remember to validate that this airport doesn't match any of the origin airports
         <br>
         <label>
-            When do you want to depart?<input id="depart-date" type="text" name="depart_date" value="e.g. 2016-06-11" autocomplete="off">
+            When do you want to depart?<input id="depart-date" type="text" name="depart_date" autocomplete="off">
         </label>
         <br>
         <label>
-            When are you coming back?<input id="return-date" type="text" name="return_date" value="e.g. 2016-06-21" autocomplete="off">
+            When are you coming back?<input id="return-date" type="text" name="return_date" autocomplete="off">
         </label>
         <br>
         <button type="button" id="qpx-query" data-origins='{{ origin_airport_codes }}' data-trip='{{ trip.trip_id }}'>Search</button>
@@ -48,9 +48,62 @@
     <a href="/trip/{{ trip.trip_id }}">Back to {{ trip.trip_name }}!</a>
 
     <script type="text/javascript">
-      var tripId = $("#qpx-query").data("trip");
+        $(function() {
+            $('#datepicker').datepicker({
+              inline: true,
+              showOtherMonths: true,
+              dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+            });
+        });
 
-      var reQTripId = $("#qpx-reQuery").data("trip");
+            $("#depart-date-reQ").datepicker({dateFormat: "yy-mm-dd"});
+            $("#depart-date").datepicker({dateFormat: "yy-mm-dd"});
+            $("#return-date-reQ").datepicker({dateFormat: "yy-mm-dd"});
+            $("#return-date").datepicker({dateFormat: "yy-mm-dd"});
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+  //Next Function
+
+  ////////////////////////////////////////////////////////////////////////////////
+
+            $.get("/get-airports-to-autocomplete", function(result) {
+
+                // alert(result["airports"]);
+                var airportsAutocomplete = result["airports"];
+
+                $("#destination-airport-code-reQ").autocomplete({
+                    source: function(request, response) {
+                        var filteredAirportsAutocomplete = $.map(airportsAutocomplete, function(item) {
+                            if(item.indexOf(request.term.toUpperCase()) == 0){
+                                return item;
+                            }
+                            else{
+                                return null;
+                            }
+                        });
+                        response(filteredAirportsAutocomplete);
+                    },
+                });
+
+                $("#destination-airport-code").autocomplete({
+                    source: function(request, response) {
+                        var filteredAirportsAutocomplete = $.map(airportsAutocomplete, function(item) {
+                            if(item.indexOf(request.term.toUpperCase()) == 0){
+                                return item;
+                            }
+                            else{
+                                return null;
+                            }
+                        });
+                        response(filteredAirportsAutocomplete);
+                    },
+                });
+
+            });
+
     </script>
 
 {% endblock %}

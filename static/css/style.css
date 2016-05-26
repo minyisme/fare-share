@@ -55,3 +55,105 @@ a {
     text-decoration: none;
     cursor: pointer;
 }
+
+.ui-datepicker {
+    color: black;
+    opacity: .9;
+    width: 216px;
+    height: auto;
+    margin: 5px auto 0;
+    font: 9pt black, sans-serif;
+}
+
+.ui-datepicker a {
+    color: black;
+    text-decoration: none;
+    background-color: white;
+    text-align: center;
+}
+
+.ui-datepicker table {
+    padding: 2px 0 0 0;
+    background-color: white;
+    color: black;
+    width: 100%;
+    border: 1px solid gray;
+}
+
+.ui-datepicker-header {
+    background-color: white;
+    color: black;
+    font-weight: bold;
+    line-height: 30px;
+    border-width: 1px 1px 0 1px;
+    border-style: solid;
+    border-color: gray;
+}
+
+.ui-datepicker-title {
+    text-align: center;
+}
+
+.ui-datepicker-prev, .ui-datepicker-next {
+    color: black;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-image: url('../css/arrow.png'); 
+    line-height: 600%;
+    overflow: hidden;
+}
+
+.ui-datepicker-prev {
+    float: left;
+    background-position: center -30px;
+}
+.ui-datepicker-next {
+    float: right;
+    background-position: center 0px;
+}
+
+.ui-autocomplete {
+  color: black;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  float: left;
+  display: none;
+  min-width: 160px;
+  width: 500px;
+  height: 400px;
+  padding: 4px;
+  margin: 2px 0 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid black;
+  overflow-y: auto;
+  /* prevent horizontal scrollbar */
+  overflow-x: hidden;
+  /* add padding to account for vertical scrollbar */
+  padding-right: 20px;
+}
+
+.ui-menu-item > a.ui-corner-all {
+    display: block;
+    padding: 3px 15px;
+    clear: both;
+    font-weight: normal;
+    line-height: 18px;
+    color: #555555;
+    white-space: nowrap;
+    }
+
+&.ui-state-hover, &.ui-state-active {
+      color: #ffffff;
+      text-decoration: none;
+      background-color: #0088cc;
+      border-radius: 0px;
+      background-image: none;
+}
+
