@@ -261,10 +261,11 @@ def make_airports_autocomplete():
     airports_autocomplete_list = []
     for airport in airports:
         if airport.airport_city:
-            airport_autocomplete = "%s: %s, %s" %(
-                airport.airport_code, airport.airport_name, airport.airport_city)
+            airport_autocomplete = ["%s: %s, %s" %(airport.airport_code, airport.airport_name, airport.airport_city)]
+            airport_autocomplete.append((airport.airport_lat, airport.airport_long))
         else:
-            airport_autocomplete = "%s: %s" %(airport.airport_code, airport.airport_name)
+            airport_autocomplete = ["%s: %s" %(airport.airport_code, airport.airport_name)]
+            airport_autocomplete.append((airport.airport_lat, airport.airport_long))
         airports_autocomplete_list.append(airport_autocomplete)
 
     return airports_autocomplete_list

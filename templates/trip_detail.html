@@ -123,5 +123,57 @@
         {% endfor %}
     {% endfor %}
 
+    <script type="text/javascript">
+
+    var voteModal = document.getElementById('voteModal');
+
+    // Get the button that opens the modal
+    var voteBtn = document.getElementById("vote");
+
+    var closeVoteModalSpan = document.getElementById("closeVoteModal");
+
+    var voteTripId = $("#vote-button").data("trip");
+
+    voteBtn.onclick = function(evt) {
+    evt.preventDefault()
+    voteModal.style.display = "block";
+    }
+
+    closeVoteModalSpan.onclick = function() {
+    voteModal.style.display = "none";
+    }
+
+
+
+    </script>
+
+    <script type="text/javascript">
+
+    function showConfirmation(result) {
+
+    var voted_option_id = $(".options:checked").val(); 
+    // debugger;
+    $("#voteModal").hide();
+    $("#votedForOption").val(voted_option_id)
+    }
+
+    function voteOption(evt) {
+    evt.preventDefault();     
+
+    var voted_option_id = $(".options:checked").val(); 
+
+    $("#votedForOption").text("You voted for option: " + voted_option_id)
+    // debugger;
+    $.ajax({type: "POST",
+        url: "/trip/" + voteTripId + "/option-vote.json",
+        data: {"voted-option-id": voted_option_id}, 
+        success: showConfirmation
+        });
+    }
+
+    $("#option-vote").on("submit", voteOption);
+
+    </script>
+
 {% endblock %}
 

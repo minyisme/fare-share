@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 {% block head_stuff %}
-    <meta charset=utf-8 />
-    <title>Display latitude and longitude on marker movement</title>
-    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
-    <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
     <style>
-      body { margin:0; padding:0; }
-      #map { position:static; width:60%; height: 500px;}
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+        width: 60%;
+      }
     </style>
 {% endblock %}
 
@@ -53,7 +57,7 @@
         {% endif %}
     </form>
 
-    <div id='mapBoxYo'></div>
+    <div id="map"></div>
 
     <div id="finished_query"></div>
     <br>
@@ -72,10 +76,10 @@
             });
         });
 
-            $("#depart-date-reQ").datepicker({dateFormat: "yy-mm-dd"});
-            $("#depart-date").datepicker({dateFormat: "yy-mm-dd"});
-            $("#return-date-reQ").datepicker({dateFormat: "yy-mm-dd"});
-            $("#return-date").datepicker({dateFormat: "yy-mm-dd"});
+        $("#depart-date-reQ").datepicker({dateFormat: "yy-mm-dd"});
+        $("#depart-date").datepicker({dateFormat: "yy-mm-dd"});
+        $("#return-date-reQ").datepicker({dateFormat: "yy-mm-dd"});
+        $("#return-date").datepicker({dateFormat: "yy-mm-dd"});
 
 
 
@@ -85,84 +89,211 @@
 
   ////////////////////////////////////////////////////////////////////////////////
 
-            $.get("/get-airports-to-autocomplete", function(result) {
+        $.get("/get-airports-to-autocomplete", function(result) {
 
-                // alert(result["airports"]);
-                var airportsAutocomplete = result["airports"];
+            // alert(result["airports"]);
+            var airportsAutocomplete = [];
+            for (i=0; i<result["airports"].length; i++) {
+                var airportAutocomplete = result["airports"][i][0];
+                airportsAutocomplete.push(airportAutocomplete);
+                // console.log(result["airports"][i][1])
+            }
+            // debugger;
 
-                $("#destination-airport-code-reQ").autocomplete({
-                    source: function(request, response) {
-                        var filteredAirportsAutocomplete = $.map(airportsAutocomplete, function(item) {
-                            if(item.indexOf(request.term.toUpperCase()) == 0){
-                                return item;
-                            }
-                            else{
-                                return null;
-                            }
-                        });
-                        response(filteredAirportsAutocomplete);
-                    },
-                });
 
-                $("#destination-airport-code").autocomplete({
-                    source: function(request, response) {
-                        var filteredAirportsAutocomplete = $.map(airportsAutocomplete, function(item) {
-                            if(item.indexOf(request.term.toUpperCase()) == 0){
-                                return item;
-                            }
-                            else{
-                                return null;
-                            }
-                        });
-                        response(filteredAirportsAutocomplete);
-                    },
-                });
+            $("#destination-airport-code-reQ").autocomplete({
+                source: function(request, response) {
+                    var filteredAirportsAutocomplete = $.map(airportsAutocomplete, function(item) {
+                        if(item.indexOf(request.term.toUpperCase()) == 0){
+                            return item;
+                        }
+                        else{
+                            return null;
+                        }
+                    });
+                    response(filteredAirportsAutocomplete);
+                },
+                change: function () {
+                    for (i=0; i<result["airports"].length; i++) {
+                        if ($("#destination-airport-code").val() === result["airports"][i][0]){
+                            var latitude = result["airports"][i][1][0];
+                            var longitude = result["airports"][i][1][1];
+                        }
+                    }
 
+                    var marker = new google.maps.Marker({
+                        position: {lat: latitude, lng: longitude},
+                        map: map,
+                        title: "Destination"
+                    });
+                }   
             });
 
-    </script>
+            //Add update marker function in these functions
 
-    <style>
-    pre.ui-coordinates {
-      position:absolute;
-      bottom:10px;
-      left:10px;
-      padding:5px 10px;
-      background:rgba(0,0,0,0.5);
-      color:#fff;
-      font-size:11px;
-      line-height:18px;
-      border-radius:3px;
+            $("#destination-airport-code").autocomplete({
+                source: function(request, response) {
+                    var filteredAirportsAutocomplete = $.map(airportsAutocomplete, function(item) {
+                        if(item.indexOf(request.term.toUpperCase()) == 0){
+                            return item;
+                        }
+                        else{
+                            return null;
+                        }
+                    });
+                    response(filteredAirportsAutocomplete);
+                },
+                change: function () {
+                    for (i=0; i<result["airports"].length; i++) {
+                        if ($("#destination-airport-code").val() === result["airports"][i][0]){
+                            var latitude = result["airports"][i][1][0];
+                            var longitude = result["airports"][i][1][1];
+                        }
+                    }
+
+                    var marker = new google.maps.Marker({
+                        position: {lat: latitude, lng: longitude},
+                        map: map,
+                        title: "Destination"
+                    });
+                }   
+            });
+
+        }); 
+
+        var map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: 30, lng: 0},
+            zoom: 2
+            });
+        }
+
+        // $("#destination-airport-code").change(function () {
+        //     debugger;
+        //     for (i=0; i<result["airports"].length; i++) {
+        //         if ($("#destination-airport-code").val() === result["airports"][i][0]){
+        //             var latitude = result["airports"][i][1][0];
+        //             var longitude = result["airports"][i][1][1];
+        //         }
+        //     }
+
+        //     var marker = new google.maps.Marker({
+        //         position: {lat: latitude, lng: longitude},
+        //         map: map,
+        //         title: 'Hello World!'
+        //     });
+        // });
+
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-GCR38Gz0Y-tued81BwisFBmiWMtP8oU&callback=initMap"
+        async defer></script>
+
+        <script type="text/javascript">
+      var tripId = $("#qpx-query").data("trip");
+
+      var reQTripId = $("#qpx-reQuery").data("trip");
+
+      function tableResults(flights) {
+          $("#flightResults").append("<p>Flight ID: " + flights[0]["flight_id"] + 
+                                     "</p><p>Flight Price: " + flights[0]["flight_price"] + "</p>");
+          var results_table = "<table><thead><th>" + 
+                      "<td>Origin Airport</td>" + 
+                      "<td>Departure Datetime</td>" + 
+                      "<td>Destination Airport</td>" + 
+                      "<td>Arrival Time</td>" + 
+                      "<td>Flight ID</td>" + 
+                      "<td>Flight Duration</td>" + 
+                      "</th></thead><tbody>";
+          for (i=0; i<flights[1].length; i++) {
+              var origin_airport_code = flights[1][i]["origin_airport_code"];
+              var departure_datetime = flights[1][i]["departure_datetime"];
+              var destination_airport_code = flights[1][i]["destination_airport_code"];
+              var arrival_datetime = flights[1][i]["arrival_datetime"];
+              var leg_airline = flights[1][i]["leg_airline"];
+              var leg_flight_code = flights[1][i]["leg_flight_code"];
+              var leg_duration = flights[1][i]["leg_duration"];
+              results_table += ("<tr><td>" + origin_airport_code + 
+                           "</td><td>" + departure_datetime +
+                           "</td><td>" + destination_airport_code + 
+                           "</td><td>" + arrival_datetime + 
+                           "</td><td>" + leg_airline + leg_flight_code + 
+                           "</td><td>" + leg_duration + 
+                           "</td></tr>");
+          }
+          results_table += "</tbody></table>";
+          $("#flightResults").append(results_table);
       }
-    </style>
-    <div id='map'></div>
-    <pre id='coordinates' class='ui-coordinates'></pre>
-    <script>
-    L.mapbox.accessToken = "pk.eyJ1IjoibWlueWlzbWUiLCJhIjoiY2lvb3A0Nmw2MDAwaHV4bTN4NW4zMGFudyJ9.tk7PmSh3waHuHHnMyaDUYg";
-    var map = L.mapbox.map('map', 'mapbox.streets')
-        .setView([51.5074, -0.1278], 5);
 
-    var coordinates = document.getElementById('coordinates');
+      function showFlightResults(result) {
+          var flights = result["flights"];
+          // debugger;
+          tableResults(flights);
+      }
 
-    var marker = L.marker([51.5074, -0.1278], {
-        icon: L.mapbox.marker.icon({
-          'marker-color': '#3232ff'
-        }),
-        draggable: true
-    }).addTo(map);
+      function searchQPX(evt) {
 
-    // every time the marker is dragged, update the coordinates container
-    marker.on('dragend', ondragend);
+          var optionAttributes = {
+              "destination" : $("#destination-airport-code").val(),
+              "depart-date" : $("#depart-date").val(),
+              "return-date" : $("#return-date").val(),
+          };
 
-    // Set the initial marker coordinate on load.
-    ondragend();
+          $.ajax({type: "POST",
+              url: "/trip/" + tripId + "/search.json",
+              data: optionAttributes,
+              success: function (result) {
+                       // alert("option added");
 
-    function ondragend() {
-        var m = marker.getLatLng();
-        coordinates.innerHTML = 'Latitude: ' + m.lat + '<br />Longitude: ' + m.lng;
-    }
+                       for (var i=0; i<$("#qpx-query").data("origins").length; i++) {
+
+                            // var originAirports = $(this).data("origins").split(",")
+                              // debugger;
+                            var queryInputs = {
+                                "destination" : $("#destination-airport-code").val(),
+                                "depart-date" : $("#depart-date").val(),
+                                "return-date" : $("#return-date").val(),
+                                "origin-airport-code" : $("#qpx-query").data("origins")[i],
+                                "option-id" : result["option_id"],
+                            };
+
+                            $.ajax({type: "POST",
+                                url: "/trip/" + tripId + "/results.json",
+                                data: queryInputs,
+                                success: showFlightResults,
+                             });
+                          }
+              }
+          });
+      }
+
+      $("#qpx-query").click(searchQPX);
+
+      function updateSearchQPX(evt) {
+        for (var i=0; i<$("#qpx-reQuery").data("origins").length; i++) {
+
+                            // var originAirports = $(this).data("origins").split(",")
+                              // debugger;
+                            var queryInputs = {
+                                "destination" : $("#destination-airport-code-reQ").val(),
+                                "depart-date" : $("#depart-date-reQ").val(),
+                                "return-date" : $("#return-date-reQ").val(),
+                                "origin-airport-code" : $("#qpx-reQuery").data("origins")[i],
+                                "option-id" : $("#qpx-reQuery").data("option"),
+                            };
+
+                            $.ajax({type: "POST",
+                                url: "/trip/" + reQTripId + "/results.json",
+                                data: queryInputs,
+                                success: showFlightResults,
+                             });
+                          }
+
+      }
+
+      $("#qpx-reQuery").click(updateSearchQPX);
+
     </script>
-
 
 
 {% endblock %}

@@ -67,15 +67,52 @@
     <br>
 
     <script type="text/javascript">
+
+
         // Get the modal
-        var modal = document.getElementById('myModal');
+        var addTripModal = document.getElementById('addTripModal');
 
         // Get the button that opens the modal
         var addTripLink = document.getElementById("addTrip");
 
         // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
+        var closeAddTripModalSpan = document.getElementById("closeAddTripModal");
+
+        // When the user clicks on the button, open the modal 
+        addTripLink.onclick = function(evt) {
+            debugger
+            evt.preventDefault()
+            addTripModal.style.display = "block";
+        }   
+
+        // When the user clicks on <span> (x), close the modal
+        closeAddTripModalSpan.onclick = function(evt) {
+        addTripModal.style.display = "none";
+        }
+
+    function showAddedTrip(result) {
+      $("#myModal").hide();
+      $("#addTripConf").val("Trip Added")
+  }
+
+  function addTrip(evt) {
+      evt.preventDefault();
+
+      $.ajax({type: "POST",
+        url: "/trip/create-new",
+        data: {"trip_name": trip_name,
+               "trip_user1": trip_user1,
+               "trip_user2": trip_user2,
+               "trip_user3": trip_user3,
+               "trip_user4": trip_user4,},
+        showAddedTrip
+      });
+  }
+
+  $("#trip-add").on("submit", addTrip);
+
     </script>
+
 
     <script type="text/javascript">
         var trip_name = $("#trip_name").val()
@@ -90,8 +127,6 @@
 
     </script>
 
-        <a href="/profile">Home</a>
-        <a href="/logout">Logout</a>
     {% else %}
         <p>Home</p>
         <form action="/login" method="POST">

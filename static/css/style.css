@@ -9,6 +9,10 @@ body {
 
 }
 
+input {
+    color: black;
+}
+
 #delete-trip {
     color: black;
 }
@@ -178,10 +182,16 @@ a {
     }
 
 &.ui-state-hover, &.ui-state-active {
-      color: #ffffff;
+      color: white;
       text-decoration: none;
-      background-color: #0088cc;
+      background-color: gray;
       border-radius: 0px;
       background-image: none;
 }
 
+.ui-state-focus
+{
+    color: white;
+    background:gray;
+    outline:none;
+}
