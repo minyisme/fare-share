@@ -13,6 +13,10 @@ input {
     color: black;
 }
 
+#vote {
+    color: black;
+}
+
 #delete-trip {
     color: black;
 }
@@ -157,8 +161,9 @@ a {
   float: left;
   display: none;
   min-width: 160px;
-  width: 500px;
-  height: 400px;
+  _width: 500px;
+  min-height: 20px;
+  max-height: 400px;
   padding: 4px;
   margin: 2px 0 0 0;
   list-style: none;

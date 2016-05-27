@@ -17,7 +17,7 @@
 
 {% block content %}
     
-    <h1>{{ trip.trip_name }}: All the Searchings!</h1>
+    <h1 id="trip-info" data-trip="{{ trip.trip_name }}">{{ trip.trip_name }}: All the Searchings!</h1>
 
     <h3>Flight Search</h3>
 
@@ -166,6 +166,19 @@
             map = new google.maps.Map(document.getElementById('map'), {
             center: {lat: 30, lng: 0},
             zoom: 2
+            });
+
+            $.get("/origins-for-map", {"trip": $("#trip-info").data("trip")}, function(result) {
+                debugger;
+                for (i=0; i<result["latlongs"].length; i++) {
+                    var origin_lat = result["latlongs"][i][0]
+                    var origin_long = result["latlongs"][i][1]
+                    marker = new google.maps.Marker({
+                        position: {lat: origin_lat, lng: origin_long},
+                        map: map,
+                        title: "Origin"
+                    });
+                }
             });
         }
 

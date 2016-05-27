@@ -80,8 +80,7 @@
 
         // When the user clicks on the button, open the modal 
         addTripLink.onclick = function(evt) {
-            debugger
-            evt.preventDefault()
+            evt.preventDefault();
             addTripModal.style.display = "block";
         }   
 
@@ -91,30 +90,14 @@
         }
 
     function showAddedTrip(result) {
-      $("#myModal").hide();
+        debugger;
+      $("#addTripModal").hide();
       $("#addTripConf").val("Trip Added")
   }
 
   function addTrip(evt) {
       evt.preventDefault();
 
-      $.ajax({type: "POST",
-        url: "/trip/create-new",
-        data: {"trip_name": trip_name,
-               "trip_user1": trip_user1,
-               "trip_user2": trip_user2,
-               "trip_user3": trip_user3,
-               "trip_user4": trip_user4,},
-        showAddedTrip
-      });
-  }
-
-  $("#trip-add").on("submit", addTrip);
-
-    </script>
-
-
-    <script type="text/javascript">
         var trip_name = $("#trip_name").val()
 
         var trip_user1 = $("#trip_user1").val()
@@ -125,7 +108,20 @@
 
         var trip_user4 = $("#trip_user4").val()
 
-    </script>
+      $.ajax({type: "POST",
+        url: "/trip/create-new",
+        data: {"trip_name": trip_name,
+               "trip_user1": trip_user1,
+               "trip_user2": trip_user2,
+               "trip_user3": trip_user3,
+               "trip_user4": trip_user4,},
+        success: showAddedTrip
+      });
+  }
+
+  $("#trip-add").on("submit", addTrip);
+
+    </script>s
 
     {% else %}
         <p>Home</p>

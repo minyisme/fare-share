@@ -49,7 +49,7 @@ def profile():
     # Get list of trips for user
     trips = functions.trips_by_user(user)
 
-    images_list = ["/static/css/IMG_1777.jpg", "/static/css/IMG_3767.jpg", "/static/css/IMG_6073.jpg", "/static/css/IMG_3980.jpg", "/static/css/IMG_4676.jpg", "/static/css/IMG_5133.jpg", "/static/css/IMG_5494.jpg", "/static/css/IMG_6541.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_5862.jpg", "/static/css/IMG_5300.jpg", "/static/css/IMG_5597.jpg", "/static/css/IMG_5807.jpg", "/static/css/IMG_5707.jpg", "/static/css/IMG_5812.jpg", "/static/css/IMG_6005.jpg", "/static/css/IMG_6534.jpg", "/static/css/thumb_IMG_5362_1024.jpg", "/static/css/IMG_5346.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg"]
+    images_list = ["/static/css/IMG_1777.jpg", "/static/css/IMG_3767.jpg", "/static/css/IMG_6073.jpg", "/static/css/IMG_3980.jpg", "/static/css/IMG_4676.jpg", "/static/css/IMG_5133.jpg", "/static/css/IMG_5494.jpg", "/static/css/IMG_6541.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_5862.jpg", "/static/css/IMG_5300.jpg", "/static/css/IMG_5597.jpg", "/static/css/IMG_5807.jpg", "/static/css/IMG_5707.jpg", "/static/css/IMG_5812.jpg", "/static/css/IMG_6005.jpg", "/static/css/IMG_6534.jpg", "/static/css/thumb_IMG_5362_1024.jpg", "/static/css/IMG_5346.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6534.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg", "/static/css/IMG_6526.jpg"]
 
     return render_template("profile.html", user=user, trips=trips, images_list=images_list)
 
@@ -456,6 +456,30 @@ def trip_results(trip_id):
     # pdb.set_trace()
     # Trip results page with all the data necessary for tables
     return jsonify(result)
+
+
+
+@app.route('/origins-for-map')
+def origins_for_map():
+    trip_name = request.args.get("trip")
+    trip = Trip.query.filter_by(trip_name=trip_name).first()
+    users = []
+    # import pdb
+    # pdb.set_trace()
+    userstrips = trip.usertrips
+    for usertrip in userstrips:
+        user_id = (usertrip.user_id)
+        user = User.query.get(user_id)
+        users.append(user)
+
+    latlongs = []
+    for user in users:
+        origin_airport = user.origin_airport
+        latlongs.append((origin_airport.airport_lat, origin_airport.airport_long))
+
+
+
+    return jsonify({"latlongs": latlongs})
 
 
 
