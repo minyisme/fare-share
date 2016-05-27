@@ -51,29 +51,48 @@ class RouteTest(unittest.TestCase):
         self.assertEqual(result.status_code, 200)
         assert "Pretty placeholder" in result.data
 
-    # def test_logout(self):
-    #     result = self.client.get('/logout')
-    #     self.assertIn("change this!!!!!", result.data)
-
     def test_user_reg_form(self):
         result = self.client.get('/user-reg-form')
         self.assertIn("Email", result.data)
 
-    # def test_user_registration(self):
-    #     result = self.client.get('/user-registration')
-    #     self.assertIn("change this!!!!!", result.data)
+    def user_registration(self, useremail, userpassword, username, originairportcode):
+        return self.client.post('/user-registration', data={"user-email":useremail, 
+            "user-password":userpassword, 
+            "username":username, 
+            "origin_airport_code":originairportcode },
+            follow_redirects=True)
 
-    def test_trip_add(self):
-        result = self.client.get('/trip/add')
-        self.assertIn("Add up to 4 other users to this trip", result.data)
+    def test_user_registration(self):
+        result = self.user_registration('minyisme@gmail.com', 'abc123', 'minyisme', 'SFO')
+        self.assertEqual(result.status_code, 200)
+        assert "Pretty placeholder" in result.data
+
+    # WORKS BUT COMMENTED OUT BECAUSE CHANGES MY DB
+
+
+    # def trip_create(self, tripname):
+    #     return self.client.post('/trip/create-new', 
+    #         data={"trip_name": tripname},
+    #         follow_redirects=True)
 
     # def test_trip_create(self):
-    #     result = self.client.get('/trip/create_new')
-    #     self.assertIn("change this!!!!!", result.data)
+    #     result = self.trip_create('Testing Test to Test')
+    #     self.assertEqual(result.status_code, 200)
+    #     assert "Testing Test to Test" in result.data
 
-    # def test_trip(self, trip_id):
-    #     result = self.client.get('/trip/<int:trip_id>')
-    #     self.assertIn("All the infos!", result.data)
+    # def trip_delete(self, tripid):
+    #     return self.client.post('/profile/trip-delete',
+    #         data={"trip-id-delete": tripid},
+    #         follow_redirects=True)
+
+    # def test_trip_delete(self):
+    #     result = self.trip_delete(21)
+    #     self.assertEqual(result.status_code, 200)
+    #     assert "'s Trips" in result.data
+
+    def test_trip(self):
+        result = self.client.get('/trip/11')
+        self.assertIn("All the infos!", result.data)
 
     # def test_trip_search(self, trip_id):
     #     result = self.client.get('/trip/<int:trip_id>/search')

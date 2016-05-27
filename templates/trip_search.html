@@ -1,11 +1,13 @@
 {% extends 'base.html' %}
 {% block head_stuff %}
-    <meta charset='utf-8' />
+    <meta charset=utf-8 />
+    <title>Display latitude and longitude on marker movement</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.18.0/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.js'></script>
+    <link href='https://api.mapbox.com/mapbox.js/v2.4.0/mapbox.css' rel='stylesheet' />
     <style>
-        #mapBoxYo { position:absolute; top:0; bottom:0; width:500px; height:600px; display:block;}
+      body { margin:0; padding:0; }
+      #map { position:static; width:60%; height: 500px;}
     </style>
 {% endblock %}
 
@@ -22,7 +24,6 @@
         <label>
             Where do you want to go?<input id="destination-airport-code-reQ" type="text" name="destination" value="{{ option.destination_airport_code }}" autocomplete="off" maxlength="3">
         </label>
-        <div id='mapBoxYo'></div>
         Remember to validate that this airport doesn't match any of the origin airports
         <br>
         <label>
@@ -36,7 +37,7 @@
         <button type="button" id="qpx-reQuery" data-origins='{{ origin_airport_codes }}' data-option="{{ option.option_id }}" data-trip='{{ trip.trip_id }}'> Update search</button>
       {% else %}
         <label>
-            Where do you want to go?<input id="destination-airport-code" type="text" name="destination" autocomplete="off" maxlength="3">
+            Where do you want to go? Pick a destination or place marker in map below.<input id="destination-airport-code" type="text" name="destination" autocomplete="off" maxlength="3">
         </label>
         Remember to validate that this airport doesn't match any of the origin airports
         <br>
@@ -51,6 +52,8 @@
         <button type="button" id="qpx-query" data-origins='{{ origin_airport_codes }}' data-trip='{{ trip.trip_id }}'>Search</button>
         {% endif %}
     </form>
+
+    <div id='mapBoxYo'></div>
 
     <div id="finished_query"></div>
     <br>
@@ -119,15 +122,48 @@
 
     </script>
 
+    <style>
+    pre.ui-coordinates {
+      position:absolute;
+      bottom:10px;
+      left:10px;
+      padding:5px 10px;
+      background:rgba(0,0,0,0.5);
+      color:#fff;
+      font-size:11px;
+      line-height:18px;
+      border-radius:3px;
+      }
+    </style>
+    <div id='map'></div>
+    <pre id='coordinates' class='ui-coordinates'></pre>
     <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWlueWlzbWUiLCJhIjoiY2lvb3A0Nmw2MDAwaHV4bTN4NW4zMGFudyJ9.tk7PmSh3waHuHHnMyaDUYg';
-    var map = new mapboxgl.Map({
-        container: 'mapBoxYo', // container id
-        style: 'mapbox://styles/mapbox/light-v9', //stylesheet location
-        center: [-74.50, 40], // starting position
-        zoom: 9 // starting zoom
-    });
+    L.mapbox.accessToken = "pk.eyJ1IjoibWlueWlzbWUiLCJhIjoiY2lvb3A0Nmw2MDAwaHV4bTN4NW4zMGFudyJ9.tk7PmSh3waHuHHnMyaDUYg";
+    var map = L.mapbox.map('map', 'mapbox.streets')
+        .setView([51.5074, -0.1278], 5);
+
+    var coordinates = document.getElementById('coordinates');
+
+    var marker = L.marker([51.5074, -0.1278], {
+        icon: L.mapbox.marker.icon({
+          'marker-color': '#3232ff'
+        }),
+        draggable: true
+    }).addTo(map);
+
+    // every time the marker is dragged, update the coordinates container
+    marker.on('dragend', ondragend);
+
+    // Set the initial marker coordinate on load.
+    ondragend();
+
+    function ondragend() {
+        var m = marker.getLatLng();
+        coordinates.innerHTML = 'Latitude: ' + m.lat + '<br />Longitude: ' + m.lng;
+    }
     </script>
+
+
 
 {% endblock %}
 

@@ -41,11 +41,11 @@
     <div id="addTripConf"></div>
 
     <!-- The Modal -->
-    <div id="myModal" class="modal">
+    <div id="addTripModal" class="modal">
 
       <!-- Modal content -->
       <div class="modal-content">
-        <span class="close">x</span>
+        <span id="closeAddTripModal" class="close">x</span>
         <form id="trip-add" action="/trip/create-new" method="POST">
             <label>
                 Trip Name<input id="trip_name" type="text" name="trip_name" autocomplete="off">

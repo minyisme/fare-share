@@ -33,11 +33,11 @@
     <button id="vote">Vote for Option</button>
 
     <!-- The Modal -->
-    <div id="myModal" class="modal">
+    <div id="voteModal" class="modal">
 
       <!-- Modal content -->
       <div class="modal-content">
-        <span class="close">x</span>
+        <span id="closeVoteModal" class="close">x</span>
         <form id="option-vote">
         {% for option in options %}
         <br>

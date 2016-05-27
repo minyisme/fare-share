@@ -1,13 +1,17 @@
 $(document).ready(function() {
 
   // Get the modal
-  var modal = document.getElementById('myModal');
+  var addTripModal = document.getElementById('addTripModal');
+
+  var voteModal = document.getElementById('voteModal');
 
   // Get the button that opens the modal
   var btn = document.getElementById("vote");
 
   // Get the <span> element that closes the modal
-  var span = document.getElementsByClassName("close")[0];
+  var closeAddTripModalSpan = document.getElementById("closeAddTripModal");
+
+  var closeVoteModalSpan = document.getElementById("closeVoteModal");
 
   var voteTripId = $("#vote-button").data("trip");
 
@@ -129,12 +133,21 @@ $(document).ready(function() {
   // When the user clicks on the button, open the modal 
   addTripLink.onclick = function(evt) {
       evt.preventDefault()
-      modal.style.display = "block";
+      addTripModal.style.display = "block";
+  }
+
+  btn.onclick = function(evt) {
+      evt.preventDefault()
+      voteModal.style.display = "block";
   }
 
   // When the user clicks on <span> (x), close the modal
-  span.onclick = function() {
-      modal.style.display = "none";
+  closeAddTripModalSpan.onclick = function() {
+      addTripModal.style.display = "none";
+  }
+
+  closeVoteModalSpan.onclick = function() {
+      voteModal.style.display = "none";
   }
 
   // When the user clicks anywhere outside of the modal, close it
@@ -157,8 +170,8 @@ $(document).ready(function() {
   function showConfirmation(result) {
 
       var voted_option_id = $(".options:checked").val(); 
-
-      $("#myModal").hide();
+      // debugger;
+      $("#voteModal").hide();
       $("#votedForOption").val(voted_option_id)
   }
 
