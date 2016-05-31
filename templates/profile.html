@@ -1,22 +1,17 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <h1>{{ user.user_name }}'s Trips</h1>
-
-    {% for trip in trips %}
-
+<div class="big-trip-container">
+{% for trip in trips %}
     <div class="trip-div">
+        <div class="trip-name">{{ trip.trip_name }}</div>
         <a class="trip-link" id="{{ trip.trip_id}}" href="/trip/{{ trip.trip_id }}"><img class="trip-image" title="{{ trip.trip_name}}" src="{{ images_list[trip.trip_id] }}"></a>
         <form class="trip-form" action="/profile/trip-delete" method="POST">
             <input type="hidden" name="trip-id-delete" value="{{ trip.trip_id }}">
             <input class="trip-submit" type="submit" id="delete-trip" class="trip-delete" value="Delete Trip">
         </form>
     </div>
-
-    <br>
-
-    {% endfor %}
-    
-    <a href="/settings">Settings</a>
+{% endfor %}
+</div>
 
 {% endblock %}

@@ -1,6 +1,275 @@
-{% extends 'base.html' %}
-{% block content %}
+<!doctype html>
+<html>
+<head>
+    <title>Fare Share</title>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="/static/js/scripts.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+    {% block head_stuff %} 
+    {% endblock %}
+</head>
+<body>
+<style>
 
-    <h1>Pretty placeholder picture heres!</h1>
+body {
+    background-image: url(/static/css/IMG_5300.jpg);
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    font-family: sans-serif;
+    color: white;
+    /*z-index: 1;*/
+}
 
-{% endblock %}
+#title-container {
+  margin-top: 22%;
+}
+
+#title {
+  font-family: sans-serif;
+  text-align: center;
+  font-size: 90px;
+  color: white;
+  border: 1px solid white
+}
+
+.login {
+    display: inline;
+    padding-left: -5px;
+    font-size: 25px;
+}
+.signup {
+    float: right;
+    display: inline;
+    padding-right: -5px;
+    font-size: 25px;
+}
+
+.modal {
+    margin-top: 28%;
+    margin-left: auto;
+    margin-right: auto;
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 30;
+    top: 0;
+    width: 50%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(100,100,100,0.3); /* Black w/ opacity */
+    opacity: .8;
+    color: blue;
+    border: black;
+    border-radius: 0px;
+}
+
+/* Modal Content/Box */
+.modal-content {
+    background-color: #021D42;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 10px;
+    border: 1px solid black;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 0px;
+    color: blue;
+}
+
+.modal-content form input{
+    color: #021D42;
+    border: #021D42;
+}
+
+#login-submit {
+    margin-top: 2px;
+    border: 1px solid #021D42;
+    color: #021D42;
+    background-color: white;
+    height: 31px;
+}
+
+#closeLoginModal{
+    color: white;
+    opacity: 1;
+}
+
+.login-input {
+    margin-left: 2px;
+    margin-top: 2px;
+    border: 1px solid #021D42;
+    color: #021D42;
+    background-color: white;
+    height: 30px;
+
+}
+
+.signup-div {
+    color: white;
+    margin-bottom: 2px;
+    height: 30px;
+}
+
+.signup-input {
+    margin-left: 2px;
+    margin-top: 2px;
+    border: 1px solid #021D42;
+    color: #021D42;
+    background-color: white;
+    height: 30px;
+
+}
+
+#signup-submit {
+    margin-top: 1px;
+    border: 1px solid #021D42;
+    color: #021D42;
+    background-color: white;
+    height: 31px;
+    opacity: 1;
+}
+
+#closeSignupModal{
+    color: white;
+    opacity: 1;
+}
+
+</style>
+
+<div class="row">
+    <div class="col-lg-3"></div>
+    <div id="title-container" class="col-lg-6">
+        <h1 id="title">Fare Share</h1>
+        <div id="open-login-modal" class="login">LOGIN</div>
+        <div id="open-signup-modal" class="signup">SIGNUP</div>
+    </div>
+    <div class="col-lg-3"></div>
+</div>
+
+
+<!-- Login Modal -->
+<div id="loginModal" class="modal">
+
+  <!-- Login Modal content -->
+  <div class="modal-content">
+    <span id="closeLoginModal" class="close">x</span>
+    <form id="login-form" action="/login" method="POST">
+        <input class="login-input" type="text" id="login-email" name="email" placeholder="Email">
+        <input class="login-input" type="password" id="login-password" name="user-password" placeholder="Password">
+        <button id="login-submit" type="submit">Login</button>
+      </form>
+  </div>
+
+</div>
+
+
+<script type="text/javascript">
+
+// Get the login modal
+var loginModal = document.getElementById('loginModal');
+
+// Get the button that opens the login modal
+var openLoginModal = document.getElementById("open-login-modal");
+
+// Get the <span> element that closes the login modal
+var closeLoginModalSpan = document.getElementById("closeLoginModal");
+
+// When the user clicks on the button, open the login modal 
+openLoginModal.onclick = function() {
+    loginModal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the login modal
+closeLoginModalSpan.onclick = function() {
+    loginModal.style.display = "none";
+}
+
+// // When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+//     if (event.target == modal) {
+//         modal.style.display = "none";
+//     }
+// }
+</script>
+
+
+
+<!-- Signup Modal -->
+<div id="signupModal" class="modal">
+
+  <!-- Signup Modal content -->
+  <div class="modal-content">
+    <span id="closeSignupModal" class="close">x</span>
+    <form action="/user-registration" method="POST">
+        <div class="signup-div"><input class="signup-input" type="email" name="user-email" placeholder="Email">
+        <input class="signup-input" type="password" name="user-password" placeholder="Password"></div>
+        <div class="signup-div"><input class="signup-input" type="text" name="username" placeholder="Username">
+        <input class="signup-input" type="text" name="origin_airport_code" placeholder="Origin Airport Code">
+        <button id="signup-submit" type="submit">Signup</button></div>
+    </form>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+// Get the signup modal
+var signupModal = document.getElementById('signupModal');
+
+// Get the button that opens the signup modal
+var openSignupModal = document.getElementById("open-signup-modal");
+
+// Get the <span> element that closes the signup modal
+var closeSignupModalSpan = document.getElementById("closeSignupModal");
+
+// When the user clicks on the button, open the signup modal 
+openSignupModal.onclick = function() {
+    signupModal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the signup modal
+closeSignupModalSpan.onclick = function() {
+    signupModal.style.display = "none";
+}
+
+// // When the user clicks anywhere outside of the signup modal, close it
+// window.onclick = function(event) {
+//     if (event.target == modal) {
+//         modal.style.display = "none";
+//     }
+// }
+</script>
+
+<script type="text/javascript">
+
+function showConfirmation(result) {
+
+var voted_option_id = $(".options:checked").val(); 
+// debugger;
+$("#voteModal").hide();
+$("#votedForOption").val(voted_option_id)
+}
+
+function voteOption(evt) {
+evt.preventDefault();     
+
+var voted_option_id = $(".options:checked").val(); 
+
+$("#votedForOption").text("You voted for option: " + voted_option_id)
+// debugger;
+$.ajax({type: "POST",
+    url: "/trip/" + voteTripId + "/option-vote.json",
+    data: {"voted-option-id": voted_option_id}, 
+    success: showConfirmation
+    });
+}
+
+$("#option-vote").on("submit", voteOption);
+
+</script>
+
+</body>
+</html>
+
+

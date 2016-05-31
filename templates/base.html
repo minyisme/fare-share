@@ -1,13 +1,15 @@
 <!doctype html>
 <html>
 <head>
-    <title>Travels and Stuffs</title>
+    <title>Fare Share</title>
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script type="text/javascript" src="/static/js/scripts.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
-    {% block head_stuff %} put your head stuffs here {% endblock %}
+    <script src="/static/js/base.js"></script>
+    {% block head_stuff %} 
+    {% endblock %}
 </head>
 <body>
 {% if session.get("user_id") %}
@@ -21,16 +23,17 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="/">Flight Sight</a>
+      <a class="navbar-brand" href="/">Fare Share</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li><a href="/profile">Home</a></li>
-        <li><a href="/trip/add" id="addTrip">Add Trip</a></li>
+        <li><a href="/profile">My Trips</a></li>
+        <li><a href="/trip/add" id="addTrip">Add New Trip</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li><a href="/settings">Settings</a></li>
         <li><a href="/logout">Logout</a></li>
       </ul>
     </div><!-- /.navbar-collapse -->
@@ -38,106 +41,125 @@
 </nav>
 
 <!-- Trigger/Open The Modal -->
-    <div id="addTripConf"></div>
+<div id="addTripConf"></div>
 
-    <!-- The Modal -->
-    <div id="addTripModal" class="modal">
+<!-- The Modal -->
+<div id="addTripModal" class="modal">
 
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span id="closeAddTripModal" class="close">x</span>
-        <form id="trip-add" action="/trip/create-new" method="POST">
-            <label>
-                Trip Name<input id="trip_name" type="text" name="trip_name" autocomplete="off">
-            </label>
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span id="closeAddTripModal" class="close">x</span>
+    <form id="trip-add" action="/trip/create-new" method="POST">
+        <label>
+            Trip Name<input id="trip_name" type="text" name="trip_name" autocomplete="off">
+        </label>
 
-            <label>
-                Add up to 4 other users to this trip:
-                <input id="trip_user1" type="text" name="trip_user1" autocomplete="off">
-                <input id="trip_user2" type="text" name="trip_user2" autocomplete="off">
-                <input id="trip_user3" type="text" name="trip_user3" autocomplete="off">
-                <input id="trip_user4" type="text" name="trip_user4" autocomplete="off">
-            </label>
-            <input type="submit" value="add">
-        </form>
-      </div>
+        <label>
+            Add up to 4 other users to this trip:
+            <input id="trip_user1" type="text" name="trip_user1" autocomplete="off">
+            <input id="trip_user2" type="text" name="trip_user2" autocomplete="off">
+            <input id="trip_user3" type="text" name="trip_user3" autocomplete="off">
+            <input id="trip_user4" type="text" name="trip_user4" autocomplete="off">
+        </label>
+        <input type="submit" value="add">
+    </form>
+  </div>
 
-    </div>
+</div>
 
-    <br>
+<br>
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
 
-        // Get the modal
-        var addTripModal = document.getElementById('addTripModal');
+// Get the modal
+var addTripModal = document.getElementById('addTripModal');
 
-        // Get the button that opens the modal
-        var addTripLink = document.getElementById("addTrip");
+// Get the button that opens the modal
+var addTripLink = document.getElementById("addTrip");
 
-        // Get the <span> element that closes the modal
-        var closeAddTripModalSpan = document.getElementById("closeAddTripModal");
+// Get the <span> element that closes the modal
+var closeAddTripModalSpan = document.getElementById("closeAddTripModal");
 
-        // When the user clicks on the button, open the modal 
-        addTripLink.onclick = function(evt) {
-            evt.preventDefault();
-            addTripModal.style.display = "block";
-        }   
+// When the user clicks on the button, open the modal 
+addTripLink.onclick = function(evt) {
+    evt.preventDefault();
+    addTripModal.style.display = "block";
+}   
 
-        // When the user clicks on <span> (x), close the modal
-        closeAddTripModalSpan.onclick = function(evt) {
-        addTripModal.style.display = "none";
-        }
+// When the user clicks on <span> (x), close the modal
+closeAddTripModalSpan.onclick = function(evt) {
+addTripModal.style.display = "none";
+}
 
-    function showAddedTrip(result) {
-        debugger;
-      $("#addTripModal").hide();
-      $("#addTripConf").val("Trip Added")
+function showAddedTrip(result) {
+    debugger;
+  $("#addTripModal").hide();
+  $("#addTripConf").val("Trip Added")
   }
 
-  function addTrip(evt) {
-      evt.preventDefault();
+function addTrip(evt) {
+  evt.preventDefault();
 
-        var trip_name = $("#trip_name").val()
+    var trip_name = $("#trip_name").val()
 
-        var trip_user1 = $("#trip_user1").val()
+    var trip_user1 = $("#trip_user1").val()
 
-        var trip_user2 = $("#trip_user2").val()
+    var trip_user2 = $("#trip_user2").val()
 
-        var trip_user3 = $("#trip_user3").val()
+    var trip_user3 = $("#trip_user3").val()
 
-        var trip_user4 = $("#trip_user4").val()
+    var trip_user4 = $("#trip_user4").val()
 
-      $.ajax({type: "POST",
-        url: "/trip/create-new",
-        data: {"trip_name": trip_name,
-               "trip_user1": trip_user1,
-               "trip_user2": trip_user2,
-               "trip_user3": trip_user3,
-               "trip_user4": trip_user4,},
-        success: showAddedTrip
-      });
-  }
+  $.ajax({type: "POST",
+    url: "/trip/create-new",
+    data: {"trip_name": trip_name,
+           "trip_user1": trip_user1,
+           "trip_user2": trip_user2,
+           "trip_user3": trip_user3,
+           "trip_user4": trip_user4,},
+    success: showAddedTrip
+  });
+}
 
   $("#trip-add").on("submit", addTrip);
 
-    </script>s
+</script>s
 
-    {% else %}
-        <p>Home</p>
-        <form action="/login" method="POST">
-            <lable>
-                Email<input type="text" name="email">
-            </label>
-            <label>
-                Password<input type="password" name="user-password">
-            </label>
-            <input type="submit" value="Login">
+{% else %}
+
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">Fare Share</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <form class="navbar-form navbar-left" action="/login" method="POST">
+        <div class="form-group">
+          <input type="text" class="form-control" id="navbar-email" name="email" placeholder="Email">
+          <input type="password" class="form-control" id="navbar-password" name="user-password" placeholder="Password">
+        </div>
+        <button type="submit" class="btn btn-default">Login</button>
+      </form>
+      <ul class="nav navbar-nav navbar-right">
+        <form class="navbar-form navbar-left" action="/user-reg-form">
+          <div class="form-group">
+            <button type="submit" class="btn btn-default">Signup</button>
+          </div>
         </form>
-        or
-        <form action="/user-reg-form">
-            <button type="submit">Signup</button>
-        </form>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
     {% endif %}
 
     <ul>
@@ -147,6 +169,5 @@
     </ul>
 
     {% block content %} put your content here {% endblock %}
-
 </body>
 </html>
