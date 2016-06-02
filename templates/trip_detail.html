@@ -341,21 +341,35 @@
   var map;
   var originMarkers = []
   var destinationMarkers = []
+  var paths =[]
   var poly, geodesicPoly;
 
   function update() {
     // debugger;
     for (i=0; i<originMarkers.length; i++) {
         for (j=0; j<destinationMarkers.length; j++) {
-            marker1 = originMarkers[i];
-            marker2 = destinationMarkers[j];
-            var path = [marker1.getPosition(), marker2.getPosition()];
-            poly.setPath(path);
-            geodesicPoly.setPath(path);
-            var heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
-            document.getElementById('heading').value = heading;
-            document.getElementById('origin').value = path[0].toString();
-            document.getElementById('destination').value = path[1].toString();
+            function updateMarkers() {
+                geodesicPoly = new google.maps.Polyline({
+                    strokeColor: '#021D42',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 3,
+                    geodesic: true,
+                    map: map
+                });
+                // debugger;
+                marker1 = originMarkers[i];
+                marker2 = destinationMarkers[j];
+                var path = [marker1.getPosition(), marker2.getPosition()];
+                poly.setPath(path);
+                geodesicPoly.setPath(path);
+
+                paths.push(path);
+                // var heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
+                // document.getElementById('heading').value = heading;
+                // document.getElementById('origin').value = path[0].toString();
+                // document.getElementById('destination').value = path[1].toString();
+            }
+            updateMarkers()
         }
     }
   }
@@ -368,55 +382,59 @@
 
     $.get("/origins-for-map", {"trip": $("#trip-details-name").data("trip")}, function(result) {
       // debugger;
-      for (i=0; i<result["latlongs"].length; i++) {
-        var origin_lat = result["latlongs"][i][0]
-        var origin_long = result["latlongs"][i][1]
-        marker = new google.maps.Marker({
-            icon: '/static/css/airplane.png',
-            position: {lat: origin_lat, lng: origin_long},
-            map: map,
-            title: "Origin"
+        for (i=0; i<result["latlongs"].length; i++) {
+            var origin_lat = result["latlongs"][i][0]
+            var origin_long = result["latlongs"][i][1]
+            marker = new google.maps.Marker({
+                icon: '/static/css/airplane.png',
+                position: {lat: origin_lat, lng: origin_long},
+                map: map,
+                title: "Origin"
+            });
+
+            originMarkers.push(marker);
+        }
+
+        $.get("/destinations-for-map", {"trip": $("#trip-details-name").data("trip")}, function(result) {
+        // debugger;
+            for (i=0; i<result["latlongs"].length; i++) {
+                var origin_lat = result["latlongs"][i][0];
+                var origin_long = result["latlongs"][i][1];
+                marker = new google.maps.Marker({
+                    icon: '/static/css/airplane.png',
+                    position: {lat: origin_lat, lng: origin_long},
+                    map: map,
+                    title: "Destination"
+                });
+
+                destinationMarkers.push(marker);
+            } 
+
+            update();
         });
 
-        originMarkers.push(marker)
-      }
     });
 
-      $.get("/destinations-for-map", {"trip": $("#trip-details-name").data("trip")}, function(result) {
-      // debugger;
-      for (i=0; i<result["latlongs"].length; i++) {
-        var origin_lat = result["latlongs"][i][0];
-        var origin_long = result["latlongs"][i][1];
-        marker = new google.maps.Marker({
-            icon: '/static/css/airplane.png',
-            position: {lat: origin_lat, lng: origin_long},
-            map: map,
-            title: "Destination"
-        });
-        destinationMarkers.push(marker)
-      }
-    });
-
+      
     var styles = [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#2c3645"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"administrative.country","elementType":"geometry.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#dcdcdc"}]},{"featureType":"landscape.man_made","elementType":"geometry.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape.man_made","elementType":"labels.text.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape.natural.landcover","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#93d09e"}]},{"featureType":"landscape.natural.terrain","elementType":"labels","stylers":[{"visibility":"on"},{"color":"#0d6f32"}]},{"featureType":"landscape.natural.terrain","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#62bf85"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#95c4a7"}]},{"featureType":"road","elementType":"labels.text","stylers":[{"color":"#334767"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#334767"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#b7b7b7"}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"on"},{"color":"#364a6a"}]},{"featureType":"transit","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#ffffff"}]},{"featureType":"transit","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"transit.station.rail","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#535353"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#3fc672"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#4d6489"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]}]
 
     map.setOptions({styles: styles});
 
     poly = new google.maps.Polyline({
         strokeColor: '#FF0000',
-        strokeOpacity: 1.0,
+        strokeOpacity: 0,
         strokeWeight: 3,
         map: map,
       });
 
     geodesicPoly = new google.maps.Polyline({
-        strokeColor: '#CC0099',
+        strokeColor: '#021D42',
         strokeOpacity: 1.0,
         strokeWeight: 3,
         geodesic: true,
         map: map
       });
     // debugger;
-    update();
   }
 
 </script>
