@@ -14,7 +14,7 @@
 <style>
 
 body {
-    background-image: url(/static/css/IMG_5300.jpg);
+    background-image: url(/static/css/IMG_5300-4.jpg);
     background-size: cover;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -25,14 +25,17 @@ body {
 
 #title-container {
   margin-top: 22%;
+  padding: 0;
 }
 
 #title {
+  z-index: 100;
   font-family: sans-serif;
   text-align: center;
   font-size: 90px;
   color: white;
-  border: 1px solid white
+  border: 1px solid white;
+  opacity: 1;
 }
 
 .login {
@@ -48,7 +51,7 @@ body {
 }
 
 .modal {
-    margin-top: 28%;
+    margin-top: 35%;
     margin-left: auto;
     margin-right: auto;
     display: none; /* Hidden by default */
@@ -57,11 +60,11 @@ body {
     left: 30;
     top: 0;
     width: 50%; /* Full width */
-    height: 100%; /* Full height */
+    height: 22%; /* Full height */
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(100,100,100,0.3); /* Black w/ opacity */
-    opacity: .8;
+    opacity: .85;
     color: blue;
     border: black;
     border-radius: 0px;
@@ -70,12 +73,13 @@ body {
 /* Modal Content/Box */
 .modal-content {
     background-color: #021D42;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 5% auto; /* 15% from the top and centered */
     padding: 10px;
     border: 1px solid black;
     width: 80%; /* Could be more or less, depending on screen size */
     border-radius: 0px;
     color: blue;
+    opacity: 1;
 }
 
 .modal-content form input{
@@ -106,10 +110,18 @@ body {
 
 }
 
+#open-login-modal:hover {
+    cursor: pointer;
+}
+
 .signup-div {
     color: white;
     margin-bottom: 2px;
     height: 30px;
+}
+
+#open-signup-modal:hover {
+    cursor: pointer;
 }
 
 .signup-input {
@@ -136,14 +148,16 @@ body {
     opacity: 1;
 }
 
+.ui-helper-hidden-accessible { display:none; }
+
 </style>
 
 <div class="row">
     <div class="col-lg-3"></div>
     <div id="title-container" class="col-lg-6">
         <h1 id="title">Fare Share</h1>
-        <div id="open-login-modal" class="login">LOGIN</div>
-        <div id="open-signup-modal" class="signup">SIGNUP</div>
+        <div id="open-login-modal" class="login">Log In</div>
+        <div id="open-signup-modal" class="signup">Sign Up</div>
     </div>
     <div class="col-lg-3"></div>
 </div>
@@ -158,7 +172,7 @@ body {
     <form id="login-form" action="/login" method="POST">
         <input class="login-input" type="text" id="login-email" name="email" placeholder="Email">
         <input class="login-input" type="password" id="login-password" name="user-password" placeholder="Password">
-        <button id="login-submit" type="submit">Login</button>
+        <button id="login-submit" type="submit">Log In</button>
       </form>
   </div>
 
@@ -203,11 +217,15 @@ closeLoginModalSpan.onclick = function() {
   <div class="modal-content">
     <span id="closeSignupModal" class="close">x</span>
     <form action="/user-registration" method="POST">
-        <div class="signup-div"><input class="signup-input" type="email" name="user-email" placeholder="Email">
-        <input class="signup-input" type="password" name="user-password" placeholder="Password"></div>
-        <div class="signup-div"><input class="signup-input" type="text" name="username" placeholder="Username">
-        <input class="signup-input" type="text" name="origin_airport_code" placeholder="Origin Airport Code">
-        <button id="signup-submit" type="submit">Signup</button></div>
+        <div class="signup-div">
+            <input class="signup-input" type="email" name="user-email" placeholder="Email">
+            <input class="signup-input" type="password" name="user-password" placeholder="Password">
+        </div>
+        <div class="signup-div">
+            <input class="signup-input" type="text" name="username" placeholder="Username">
+            <input class="signup-input" id= "signup-airport" type="text" name="origin_airport_code" placeholder="Origin Airport Code">
+            <button id="signup-submit" type="submit">Sign Up</button>
+        </div>
     </form>
   </div>
 
@@ -243,30 +261,61 @@ closeSignupModalSpan.onclick = function() {
 
 <script type="text/javascript">
 
-function showConfirmation(result) {
+    function showConfirmation(result) {
 
-var voted_option_id = $(".options:checked").val(); 
-// debugger;
-$("#voteModal").hide();
-$("#votedForOption").val(voted_option_id)
-}
+        var voted_option_id = $(".options:checked").val(); 
+        // debugger;
+        $("#voteModal").hide();
+        $("#votedForOption").val(voted_option_id)
+        }
 
-function voteOption(evt) {
-evt.preventDefault();     
+    function voteOption(evt) {
+    evt.preventDefault();     
 
-var voted_option_id = $(".options:checked").val(); 
+        var voted_option_id = $(".options:checked").val(); 
 
-$("#votedForOption").text("You voted for option: " + voted_option_id)
-// debugger;
-$.ajax({type: "POST",
-    url: "/trip/" + voteTripId + "/option-vote.json",
-    data: {"voted-option-id": voted_option_id}, 
-    success: showConfirmation
-    });
-}
+        $("#votedForOption").text("You voted for option: " + voted_option_id)
+        // debugger;
 
-$("#option-vote").on("submit", voteOption);
+        $.ajax({type: "POST",
+            url: "/trip/" + voteTripId + "/option-vote.json",
+            data: {"voted-option-id": voted_option_id}, 
+            success: showConfirmation
+            });
+        }
 
+    $("#option-vote").on("submit", voteOption);
+
+</script>
+
+<script type="text/javascript">
+    $.get("/get-airports-to-autocomplete", function(result) {
+
+        // alert(result["airports"]);
+        var airportsAutocomplete = [];
+        for (i=0; i<result["airports"].length; i++) {
+            var airportAutocomplete = result["airports"][i][0];
+            airportsAutocomplete.push(airportAutocomplete);
+            // console.log(result["airports"][i][1])
+        }
+        // debugger;
+
+
+        $("#signup-airport").autocomplete({
+            position: { my: "left bottom", at: "left top", collision: "flip" },
+            source: function(request, response) {
+                var filteredAirportsAutocomplete = $.map(airportsAutocomplete, function(item) {
+                    if(item.indexOf(request.term.toUpperCase()) == 0){
+                        return item;
+                    }
+                    else{
+                        return null;
+                    }
+                });
+                response(filteredAirportsAutocomplete);
+            },  
+        });
+    }); 
 </script>
 
 </body>

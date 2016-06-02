@@ -25,7 +25,6 @@ def is_valid_login(user_email, user_password):
 
     # Check User db for email and password match
     if User.query.filter_by(email=user_email, password=user_password).first():
-        flash("Yay you're back!!!!!")
         # If match, add to session to indicate logged in user
         logged_in_user = User.query.filter_by(email=user_email, password=user_password).first()
         session["user_id"] = logged_in_user.user_id
@@ -223,6 +222,16 @@ def userstrips_by_trip(trip):
 
 
 
+def travelers_by_userstrips(userstrips):
+
+    travelers = {}
+    for usertrip in userstrips:
+        travelers[usertrip.user.user_name] = usertrip.user.origin_airport_code
+
+    return travelers
+
+
+
 def options_by_trip(trip):
     """Takes input trip object, and returns all option objects associated with
     that trip"""
@@ -230,6 +239,7 @@ def options_by_trip(trip):
     options = Option.query.filter_by(trip_id = trip.trip_id).all()
 
     return options
+
 
 
 def flights_by_option(option):
@@ -474,8 +484,5 @@ def logout():
 
     # Deletes user_id from session
     del session["user_id"]
-
-    # Flash logout confirmation message
-    flash("Don't leave meeeee!!!! :( ")
 
     return

@@ -1,66 +1,239 @@
 {% extends 'base.html' %}
 {% block head_stuff %}
 <script src="/static/js/trip_search.js"></script>
+<meta name="viewport" content="initial-scale=1.0">
+<meta charset="utf-8">
+<style type="text/css">
+    body {
+        background-image: url(/static/css/IMG_6541-3.jpg);
+        background-size: cover;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+        font-family: sans-serif;
+        color: white;
+    }
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #map {
+        height: 70%;
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .modal {
+        margin-top: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        left: 30;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+        opacity: .9;
+        color: blue;
+        border: black;
+        border-radius: 0px;
+    }
+
+    /* Modal Content/Box */
+    .modal-content {
+        background-color: #021D42;
+        margin: 5% auto; /* 15% from the top and centered */
+        padding: 10px;
+        border: 1px solid black;
+        width: 80%; /* Could be more or less, depending on screen size */
+        border-radius: 0px;
+        color: white;
+        opacity: 1;
+        font-size: 20px;
+    }
+
+    #travelersModalContent {
+        margin-top: 20%;
+        padding-top: 20px;
+        width: 50%;
+    }
+
+    #voteModal {
+        margin-top: 30px;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+    }
+
+    .option-modal-header {
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .voteModalThead td {
+        font-size: 16px;
+    }
+
+    .voteModalTd tr td {
+        font-size: 16px;
+    }
+
+    .option-modal-header-container {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .option-modal-header {
+        display: inline;        
+    }
+
+    input.options {
+        display: inline-block;
+    }
+
+</style>
+
 {% endblock %}
 {% block content %}
     
-    <h1>{{ trip.trip_name }}: All the infos!</h1>
+<div id="trip-spec-name-row" class="row">
+    <div class="col-lg-3"></div>
+    <div class="trip-spec-name-container col-lg-6">
+        <h1 id="trip-details-name" class="trip-spec-name" data-trip="{{ trip.trip_name }}">{{ trip.trip_name }}</h1>
+        <!-- <div id="link-container"> -->
+            <span class="pull-left" >
+                <a id="vote" id="votedForOption">
+                    {% for usertrip in trip.usertrips %}
+                        {% if usertrip.user_id == session["user_id"] %}
+                            {% if usertrip.option_vote %}
+                                Voted: {{ usertrip.option_vote }}
+                            {% else %}
+                                Vote
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </a>
+            </span>
+            <a id="travelers">Travelers</a>
+            <span class="pull-right" >
+                <a id="search-link" href="/trip/{{ trip.trip_id }}/search">Search</a>
+            </span>
+        <!-- </div> -->
+    </div>
+    <div class="col-lg-3"></div>
+</div>
 
+<div id="map"></div>
+
+<!-- The Modal -->
+<div id="voteModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span id="closeVoteModal" class="close">x</span>
+    <form id="option-vote">
+    {% for option in options %}
     <br>
-
-    <h3>All the peoples
-        <ul>
-            {% for usertrip in trip.usertrips %}
-            <li>
-                {{ usertrip.user.user_name }}
-            </li>
-            {% endfor %}
-        </ul>
-    </h3>
-
-    <a href="/trip/{{ trip.trip_id }}/search">Searches the stuffs</a>
-
-    <br>
-
-    <a href="/trip/{{ trip.trip_id }}/share">Sharing all the trips!</a>
-
-    <p>All stuffs in here based on search results and whatnots</p>
-
-    {% for usertrip in trip.usertrips %}
-    {% if usertrip.user_id == session["user_id"] %}
-        <p id="votedForOption">You voted for option: {{ usertrip.option_vote }}</p>
-    {% endif %}
-    {% endfor %}
-
-    <!-- Trigger/Open The Modal -->
-    <button id="vote">Vote for Option</button>
-
-    <!-- The Modal -->
-    <div id="voteModal" class="modal">
-
-      <!-- Modal content -->
-      <div class="modal-content">
-        <span id="closeVoteModal" class="close">x</span>
-        <form id="option-vote">
-        {% for option in options %}
-        <br>
+    <div class="option-modal-header-container">
         <input class="options" type="radio" name="vote-option" value="{{ option.option_id }}"></input>
-        <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
-            {% for flight in option.flights %}
-            {% for leg in flight.legs %}
-            {% if leg.origin_airport_code == user.origin_airport_code %}
+        <div class="option-modal-header">Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</div>
+        {% for flight in option.flights %}
+        {% for leg in flight.legs %}
+        {% if leg.origin_airport_code == user.origin_airport_code %}
+        <div>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</div>
+    </div>
+        <table class="table">
+            <thead class="voteModalThead">
+                    <td>Origin Airport</td>
+                    <td>Departure Datetime</td>
+                    <td>Destination Airport</td>
+                    <td>Arrival Time</td>
+                    <td>Flight ID</td>
+                    <td>Flight Duration</td>
+            </thead>
+            <tbody class="voteModalTd">
+                <tr>
+                    <td>{{ leg.origin_airport_code }}</td>
+                    <td>{{ leg.departure_datetime }}</td>
+                    <td>{{ leg.destination_airport_code }}</td>
+                    <td>{{ leg.arrival_datetime }}</td>
+                    <td>{{ leg.leg_airline }} {{ leg.leg_flight_code }}</td>
+                    <td>{{ leg.leg_duration }}</td>
+                </tr>
+            </tbody>
+            {% endif %}
+            {% endfor %}
+        </table>
+        {% endfor %}
+    {% endfor %}
+    <br>
+    <input type="submit" value="vote" id="vote-button" data-trip='{{ trip.trip_id }}'>
+    </form>
+  </div>
+
+</div>
+
+<!-- The Modal -->
+<div id="travelersModal" class="modal">
+
+  <!-- Modal content -->
+  <div id="travelersModalContent" class="modal-content">
+    <span id="closeTravelersModalSpan" class="close">x</span>
+        {% for traveler in travelers %}
+            <ul>
+                <div>{{ traveler }} from {{ travelers[traveler] }}</div>
+            </ul>
+        {% endfor %}
+  </div>
+
+</div>
+
+<br>
+
+{% for option in options %}
+<br>
+<div class="option-container">
+    <div class="option-in-trip">
+        <div class="option-header">   
+            <div class="option-title" style="font-size: 24px">
+                Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}
+            </div>
+            <br>
+            <div class="option-change-container">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-repeat" aria-hidden="true" style="float:right;"></span>
+            </div>
+            </div>
+            <div class="option-delete-button">
+                <form action="/trip/{{ trip.trip_id }}/option-delete" method="POST">
+                    <input type="hidden" name="option-id-delete" value="{{ option.option_id }}">
+                    <input type="submit" class="option-delete" value="Delete">
+                </form>
+            </div>
+            <div class="option-update-button">
+                <form action="/trip/{{ trip.trip_id }}/option-update" method="POST">
+                    <input type="hidden" name="option-id-update" value="{{ option.option_id }}">
+                    <input type="submit" class="option-update" value="Update">
+                </form>
+            </div>
+        </div>
+        {% for flight in option.flights %}
+        <div class="flight-in-option">
             <h4>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</h4>
-            <table>
+            <table class="table">
                 <thead>
-                    <th>
                         <td>Origin Airport</td>
                         <td>Departure Datetime</td>
                         <td>Destination Airport</td>
                         <td>Arrival Time</td>
                         <td>Flight ID</td>
-                        <td>Flight Duration</td>
-                    </th>
+                        <td>Flight Duration (in min)</td>
                 </thead>
+                {% for leg in flight.legs %}
                 <tbody>
                     <tr>
                         <td>{{ leg.origin_airport_code }}</td>
@@ -71,62 +244,15 @@
                         <td>{{ leg.leg_duration }}</td>
                     </tr>
                 </tbody>
-                {% endif %}
                 {% endfor %}
             </table>
-            {% endfor %}
+        </div>
         {% endfor %}
-        <br>
-        <input type="submit" value="vote" id="vote-button" data-trip='{{ trip.trip_id }}'>
-        </form>
-      </div>
-
     </div>
+</div>
+{% endfor %}
 
-    <br>
-
-    {% for option in options %}
-    <br>
-    <span style="font-size: 24px"><strong>Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</strong></span>
-    <br>
-    <form action="/trip/{{ trip.trip_id }}/option-delete" method="POST">
-        <input type="hidden" name="option-id-delete" value="{{ option.option_id }}">
-        <input type="submit" class="option-delete" value="Delete Option">
-    </form>
-    <form action="/trip/{{ trip.trip_id }}/option-update" method="POST">
-        <input type="hidden" name="option-id-update" value="{{ option.option_id }}">
-        <input type="submit" class="option-update" value="Update Option Results">
-    </form>
-        {% for flight in option.flights %}
-        <h4>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</h4>
-        <table>
-            <thead>
-                <th>
-                    <td>Origin Airport</td>
-                    <td>Departure Datetime</td>
-                    <td>Destination Airport</td>
-                    <td>Arrival Time</td>
-                    <td>Flight ID</td>
-                    <td>Flight Duration</td>
-                </th>
-            </thead>
-            {% for leg in flight.legs %}
-            <tbody>
-                <tr>
-                    <td>{{ leg.origin_airport_code }}</td>
-                    <td>{{ leg.departure_datetime }}</td>
-                    <td>{{ leg.destination_airport_code }}</td>
-                    <td>{{ leg.arrival_datetime }}</td>
-                    <td>{{ leg.leg_airline }} {{ leg.leg_flight_code }}</td>
-                    <td>{{ leg.leg_duration }}</td>
-                </tr>
-            </tbody>
-            {% endfor %}
-        </table>
-        {% endfor %}
-    {% endfor %}
-
-    <script type="text/javascript">
+<script type="text/javascript">
 
     var voteModal = document.getElementById('voteModal');
 
@@ -146,37 +272,153 @@
     voteModal.style.display = "none";
     }
 
+</script>
 
-
-    </script>
-
-    <script type="text/javascript">
+<script type="text/javascript">
 
     function showConfirmation(result) {
 
-    var voted_option_id = $(".options:checked").val(); 
-    // debugger;
-    $("#voteModal").hide();
-    $("#votedForOption").val(voted_option_id)
+        // var voted_option_id = $(".options:checked").val(); 
+        debugger;
+        $("#voteModal").hide();
+        $("#vote").text("Voted: " + voted_option_id)
     }
 
     function voteOption(evt) {
     evt.preventDefault();     
 
-    var voted_option_id = $(".options:checked").val(); 
+        var voted_option_id = $(".options:checked").val(); 
 
-    $("#votedForOption").text("You voted for option: " + voted_option_id)
-    // debugger;
-    $.ajax({type: "POST",
-        url: "/trip/" + voteTripId + "/option-vote.json",
-        data: {"voted-option-id": voted_option_id}, 
-        success: showConfirmation
-        });
+        // $("#votedForOption").text("You voted for option: " + voted_option_id)
+        // debugger;
+        $.ajax({type: "POST",
+            url: "/trip/" + voteTripId + "/option-vote.json",
+            data: {"voted-option-id": voted_option_id}, 
+            success: showConfirmation,
+            });
     }
 
     $("#option-vote").on("submit", voteOption);
 
-    </script>
+</script>
+
+<script type="text/javascript">
+
+    // Get the modal
+    var travelersModal = document.getElementById('travelersModal');
+
+    // Get the button that opens the modal
+    var openTravelersModal = document.getElementById("travelers");
+
+    // Get the <span> element that closes the modal
+    var closeTravelersModalSpan = document.getElementById("closeTravelersModalSpan");
+
+    // When the user clicks on the button, open the modal 
+    openTravelersModal.onclick = function() {
+        travelersModal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    closeTravelersModalSpan.onclick = function() {
+        travelersModal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    // window.onclick = function(event) {
+    //     if (event.target == modal) {
+    //         modal.style.display = "none";
+    //     }
+    // }
+
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-GCR38Gz0Y-tued81BwisFBmiWMtP8oU&callback=initMap"
+    async defer>
+</script>
+
+<script type="text/javascript">
+
+  var map;
+  var originMarkers = []
+  var destinationMarkers = []
+  var poly, geodesicPoly;
+
+  function update() {
+    // debugger;
+    for (i=0; i<originMarkers.length; i++) {
+        for (j=0; j<destinationMarkers.length; j++) {
+            marker1 = originMarkers[i];
+            marker2 = destinationMarkers[j];
+            var path = [marker1.getPosition(), marker2.getPosition()];
+            poly.setPath(path);
+            geodesicPoly.setPath(path);
+            var heading = google.maps.geometry.spherical.computeHeading(path[0], path[1]);
+            document.getElementById('heading').value = heading;
+            document.getElementById('origin').value = path[0].toString();
+            document.getElementById('destination').value = path[1].toString();
+        }
+    }
+  }
+
+  function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: 30, lng: 0},
+    zoom: 2
+    });
+
+    $.get("/origins-for-map", {"trip": $("#trip-details-name").data("trip")}, function(result) {
+      // debugger;
+      for (i=0; i<result["latlongs"].length; i++) {
+        var origin_lat = result["latlongs"][i][0]
+        var origin_long = result["latlongs"][i][1]
+        marker = new google.maps.Marker({
+            icon: '/static/css/airplane.png',
+            position: {lat: origin_lat, lng: origin_long},
+            map: map,
+            title: "Origin"
+        });
+
+        originMarkers.push(marker)
+      }
+    });
+
+      $.get("/destinations-for-map", {"trip": $("#trip-details-name").data("trip")}, function(result) {
+      // debugger;
+      for (i=0; i<result["latlongs"].length; i++) {
+        var origin_lat = result["latlongs"][i][0];
+        var origin_long = result["latlongs"][i][1];
+        marker = new google.maps.Marker({
+            icon: '/static/css/airplane.png',
+            position: {lat: origin_lat, lng: origin_long},
+            map: map,
+            title: "Destination"
+        });
+        destinationMarkers.push(marker)
+      }
+    });
+
+    var styles = [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#2c3645"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"administrative.country","elementType":"geometry.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#dcdcdc"}]},{"featureType":"landscape.man_made","elementType":"geometry.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape.man_made","elementType":"labels.text.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape.natural.landcover","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#93d09e"}]},{"featureType":"landscape.natural.terrain","elementType":"labels","stylers":[{"visibility":"on"},{"color":"#0d6f32"}]},{"featureType":"landscape.natural.terrain","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#62bf85"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#95c4a7"}]},{"featureType":"road","elementType":"labels.text","stylers":[{"color":"#334767"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#334767"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#b7b7b7"}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"on"},{"color":"#364a6a"}]},{"featureType":"transit","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#ffffff"}]},{"featureType":"transit","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"transit.station.rail","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#535353"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#3fc672"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#4d6489"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]}]
+
+    map.setOptions({styles: styles});
+
+    poly = new google.maps.Polyline({
+        strokeColor: '#FF0000',
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+        map: map,
+      });
+
+    geodesicPoly = new google.maps.Polyline({
+        strokeColor: '#CC0099',
+        strokeOpacity: 1.0,
+        strokeWeight: 3,
+        geodesic: true,
+        map: map
+      });
+    // debugger;
+    update();
+  }
+
+</script>
 
 {% endblock %}
-
