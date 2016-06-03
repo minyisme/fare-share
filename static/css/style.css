@@ -253,7 +253,7 @@ ul.nav.navbar-nav li a{
 }
 
 .option-modal-header {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 .option-title {
@@ -287,7 +287,7 @@ ul.nav.navbar-nav li a{
 }
 
 .option-in-trip {
-  margin: 20px;
+  margin: 16px;
   border: 1px solid white;
   background-color: white;
 }
@@ -308,7 +308,7 @@ ul.nav.navbar-nav li a{
 }
 
 .ui-datepicker a {
-    color: black;
+    color: #021D42;
     text-decoration: none;
     background-color: white;
     text-align: center;
@@ -320,6 +320,11 @@ ul.nav.navbar-nav li a{
     color: black;
     width: 100%;
     border: 1px solid #021D42;
+}
+
+.ui-datepicker a:hover {
+    color: white;
+    background-color: #021D42;
 }
 
 .ui-datepicker-header {

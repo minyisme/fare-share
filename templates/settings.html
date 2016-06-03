@@ -1,19 +1,28 @@
 {% extends 'base.html' %}
-{% block content %}
-
+{% block head_stuff %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.js"></script>
 <style type="text/css">
-body {
-    background-image: url(/static/css/IMG_5597.jpg);
-    background-size: cover;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    font-family: sans-serif;
-    color: white;
-}
+
+    body {
+        background-color: #021D42;
+        font-family: sans-serif;
+        color: white;
+    }
+
+    h1 {
+        margin-top: 100px;
+    }
+
 </style>
 
-    <h1>Settings here</h1>
+{% endblock %}
 
-    <a href="/profile">Back</a>
+{% block content %}
+
+<h1>Settings: TBD</h1>
+<a href="/profile">Back</a>
+<div id="flight-prices-chart-container">
+    <canvas id="flight-prices-chart"></canvas>
+</div>
 
 {% endblock %}

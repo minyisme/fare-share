@@ -3,6 +3,7 @@
 <script src="/static/js/trip_search.js"></script>
 <meta name="viewport" content="initial-scale=1.0">
 <meta charset="utf-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.js"></script>
 <style type="text/css">
     body {
         background-image: url(/static/css/IMG_6541-3.jpg);
@@ -18,10 +19,51 @@
         padding: 0;
     }
     #map {
-        height: 70%;
-        width: 60%;
+        height: 100%;
+        width: 100%;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    #show-map-chart-container {
+        text-align: center;
+    }
+
+    #show-map {
+        margin-right: -370px;
+        color: #021D42;
+        font-size: 16px;
+        z-index: 1;
+    }
+
+    #show-chart {
+        margin-left: -385px;
+        color: #021D42;
+        font-size: 16px;
+        z-index: 0;
+    }
+
+    #map-chart-container {
+        height: 70%;
+        width: 60%;
+        background-color: white;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #flight-prices-chart-container {
+        margin-right: auto;
+        margin-left: auto;
+        height: 80%;
+        width: 80%;
+        margin-top: -370px;
+        background-color: white;
+    }
+
+    #flight-prices-chart {
+        background-color: white;
+        color: #021D42;
     }
 
     .modal {
@@ -103,7 +145,7 @@
 <div id="trip-spec-name-row" class="row">
     <div class="col-lg-3"></div>
     <div class="trip-spec-name-container col-lg-6">
-        <h1 id="trip-details-name" class="trip-spec-name" data-trip="{{ trip.trip_name }}">{{ trip.trip_name }}</h1>
+        <h1 id="trip-details-name" class="trip-spec-name" data-trip="{{ trip.trip_name }}" data-tripid="{{ trip.trip_id }}">{{ trip.trip_name }}</h1>
         <!-- <div id="link-container"> -->
             <span class="pull-left" >
                 <a id="vote" id="votedForOption">
@@ -127,7 +169,16 @@
     <div class="col-lg-3"></div>
 </div>
 
-<div id="map"></div>
+<div id="show-map-chart-container">
+    <a id="show-map">Map</a>
+    <a id="show-chart">Chart</a>
+</div>
+<div id="map-chart-container">
+    <div id="map"></div>
+    <div id="flight-prices-chart-container">
+        <canvas id="flight-prices-chart"></canvas>
+    </div>
+</div>
 
 <!-- The Modal -->
 <div id="voteModal" class="modal">
@@ -351,8 +402,8 @@
             function updateMarkers() {
                 geodesicPoly = new google.maps.Polyline({
                     strokeColor: '#021D42',
-                    strokeOpacity: 1.0,
-                    strokeWeight: 3,
+                    strokeOpacity: .9,
+                    strokeWeight: 2,
                     geodesic: true,
                     map: map
                 });
@@ -436,6 +487,42 @@
       });
     // debugger;
   }
+
+</script>
+
+<script type="text/javascript">
+
+    var ctx = $("#flight-prices-chart").get(0).getContext("2d");
+
+    var options = {
+        scales: {
+            xAxes: [{
+                    stacked: true
+            }],
+            yAxes: [{
+                    stacked: true
+            }]
+        }
+    }
+
+    $.post("/chart.json", {"trip_id": $("#trip-details-name").data("tripid")}, function (data) {
+        var myBarChart = new Chart(ctx, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+    });
+
+    $("#show-chart").click(function() {
+        debugger;
+        $("#flight-prices-chart-container").css("opacity","1.0")
+        $("#map").css("opacity","0.0")
+    })
+
+    $("#show-map").click(function() {
+        $("#flight-prices-chart-container").css("opacity","0.0")
+        $("#map").css("opacity","1.0")
+    })
 
 </script>
 

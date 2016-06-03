@@ -2,7 +2,7 @@
 
 from jinja2 import StrictUndefined
 from flask import Flask, render_template, redirect, request, flash, session, jsonify
-from flask_debugtoolbar import DebugToolbarExtension
+# from flask_debugtoolbar import DebugToolbarExtension
 from flask_sqlalchemy import SQLAlchemy
 from pprint import pprint
 import json
@@ -247,10 +247,53 @@ def trip_detail(trip_id):
 
     # Get user that's logged in
     user = User.query.get(session["user_id"])
+
+    flight_prices = {}
+    for option in options:
+        flights = functions.flights_by_option(option)
+        for flight in flights: 
+            flight_prices[option.destination_airport_code] = flight.flight_price
     
-    return render_template("trip_detail.html", trip=trip, options=options, user=user, travelers=travelers)
+    return render_template("trip_detail.html", trip=trip, options=options, user=user, travelers=travelers, flight_prices=flight_prices)
 
+@app.route('/chart.json', methods=["POST"])
+def chart():
 
+    trip_id = request.form.get("trip_id")
+
+    trip = Trip.query.get(trip_id)
+
+    labels_chart = []
+
+    for option in trip.options:
+        labels_chart.append(option.option_id)
+
+    chart_data = []
+
+    i = 0
+    for option in trip.options:
+        chart_data.append(0)
+        for flight in option.flights:
+            chart_data[i] += float(flight.flight_price[3:])
+        i += 1
+
+    datasets_chart = [
+            {
+                "label": "Options by Prices",
+                "borderColor": "rgba(2,29,66,1)",
+                "borderWidth": 1,
+                "hoverBackgroundColor": "rgba(2,29,66,0.4)",
+                "hoverBorderColor": "rgba(2,29,66,1)",
+                "data": chart_data,
+            }
+        ]
+
+    data = {
+        "labels": labels_chart,
+        "datasets": datasets_chart
+    }
+
+    return jsonify(data)
 
 @app.route('/trip/<int:trip_id>/search')
 def trip_search(trip_id):
@@ -524,7 +567,7 @@ if __name__ == "__main__":
     connect_to_db(app)
 
     # Use DebugToolbar
-    DebugToolbarExtension(app)
+    # DebugToolbarExtension(app)
 
     # Runs app
     app.run()
