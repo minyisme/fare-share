@@ -56,7 +56,7 @@ ul.nav.navbar-nav li a{
     display: inline-block;
     max-width: 400px;
     background-color: white;
-/*    border: 1px solid #3A67C9;*/
+    border: 1px solid #021D42;
     padding: 20px;
     opacity: 1; 
     box-shadow: 5px 5px 10px #02174A;
@@ -239,7 +239,7 @@ ul.nav.navbar-nav li a{
 }
 
 .option-container {
-  border: 1px solid white;
+  border: 1px solid #021D42;
   margin: 20px 80px;
   background-color: white;
   box-shadow: 5px 5px 10px #02174A;
@@ -290,6 +290,7 @@ ul.nav.navbar-nav li a{
   margin: 16px;
   border: 1px solid white;
   background-color: white;
+
 }
 
 .flight-in-option {

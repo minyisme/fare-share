@@ -6,12 +6,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.js"></script>
 <style type="text/css">
     body {
-        background-image: url(/static/css/IMG_6541-3.jpg);
+/*        background-image: url(/static/css/IMG_6541-3.jpg);
         background-size: cover;
         background-attachment: fixed;
         background-repeat: no-repeat;
         font-family: sans-serif;
-        color: white;
+        color: white;*/
     }
     html, body {
         height: 100%;
@@ -50,14 +50,16 @@
         text-align: center;
         margin-left: auto;
         margin-right: auto;
+        border: 1px solid #021D42;
+        box-shadow: 5px 5px 10px #02174A;
     }
 
     #flight-prices-chart-container {
         margin-right: auto;
         margin-left: auto;
-        height: 80%;
+        height: 70%;
         width: 80%;
-        margin-top: -370px;
+        margin-top: -350px;
         background-color: white;
     }
 
@@ -99,10 +101,18 @@
         font-size: 20px;
     }
 
+    #travelersModal {
+        height: 100%;
+        width: 100%;
+        z-index: 10;
+    }
+
     #travelersModalContent {
         margin-top: 20%;
         padding-top: 20px;
         width: 50%;
+        z-index: 10;
+        background-color: #021D42;
     }
 
     #voteModal {
@@ -122,6 +132,10 @@
 
     .voteModalTd tr td {
         font-size: 16px;
+    }
+
+    .flight-price {
+        text-align: center;
     }
 
     .option-modal-header-container {
@@ -161,7 +175,7 @@
                 </a>
             </span>
             <a id="travelers">Travelers</a>
-            <span class="pull-right" >
+            <span class="pull-right">
                 <a id="search-link" href="/trip/{{ trip.trip_id }}/search">Search</a>
             </span>
         <!-- </div> -->
@@ -182,7 +196,6 @@
 
 <!-- The Modal -->
 <div id="voteModal" class="modal">
-
   <!-- Modal content -->
   <div class="modal-content">
     <span id="closeVoteModal" class="close">x</span>
@@ -192,11 +205,11 @@
     <div class="option-modal-header-container">
         <input class="options" type="radio" name="vote-option" value="{{ option.option_id }}"></input>
         <div class="option-modal-header">Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}</div>
+    </div>
         {% for flight in option.flights %}
         {% for leg in flight.legs %}
         {% if leg.origin_airport_code == user.origin_airport_code %}
-        <div>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</div>
-    </div>
+        <div class="flight-price">Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</div>
         <table class="table">
             <thead class="voteModalThead">
                     <td>Origin Airport</td>
@@ -225,7 +238,6 @@
     <input type="submit" value="vote" id="vote-button" data-trip='{{ trip.trip_id }}'>
     </form>
   </div>
-
 </div>
 
 <!-- The Modal -->
@@ -315,7 +327,6 @@
     var voteTripId = $("#vote-button").data("trip");
 
     voteBtn.onclick = function(evt) {
-    evt.preventDefault()
     voteModal.style.display = "block";
     }
 
