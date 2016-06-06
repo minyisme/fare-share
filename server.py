@@ -36,7 +36,10 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
-    return render_template("homepage.html")
+    if session["user_id"]:
+        return redirect("/profile")
+    else:
+        return render_template("homepage.html")
 
 
 
@@ -256,8 +259,8 @@ def trip_detail(trip_id):
     
     return render_template("trip_detail.html", trip=trip, options=options, user=user, travelers=travelers, flight_prices=flight_prices)
 
-@app.route('/chart.json', methods=["POST"])
-def chart():
+@app.route('/chart1.json', methods=["POST"])
+def chart1():
 
     trip_id = request.form.get("trip_id")
 
@@ -294,6 +297,50 @@ def chart():
     }
 
     return jsonify(data)
+
+
+
+@app.route('/chart2.json', methods=["POST"])
+def chart2():
+
+    trip_id = request.form.get("trip_id")
+
+    trip = Trip.query.get(trip_id)
+
+    labels_chart = []
+
+    for option in trip.options:
+        labels_chart.append(option.option_id)
+
+    chart_data = []
+
+    i = 0
+    for option in trip.options:
+        chart_data.append(0)
+        for usertrip in trip.usertrips:
+            if usertrip.option_vote == option.option_id: 
+                chart_data[i] += 1   
+        i += 1
+
+    datasets_chart = [
+            {
+                "label": "Options by Vote",
+                "borderColor": "rgba(2,29,66,1)",
+                "borderWidth": 1,
+                "hoverBackgroundColor": "rgba(2,29,66,0.4)",
+                "hoverBorderColor": "rgba(2,29,66,1)",
+                "data": chart_data,
+            }
+        ]
+
+    data = {
+        "labels": labels_chart,
+        "datasets": datasets_chart
+    }
+
+    return jsonify(data)
+
+
 
 @app.route('/trip/<int:trip_id>/search')
 def trip_search(trip_id):

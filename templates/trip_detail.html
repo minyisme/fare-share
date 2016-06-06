@@ -34,13 +34,26 @@
         color: #021D42;
         font-size: 16px;
         z-index: 1;
+        cursor: pointer;
+        text-decoration: none;
     }
 
-    #show-chart {
-        margin-left: -385px;
+    #show-chart1 {
+        margin-left: -380px;
         color: #021D42;
         font-size: 16px;
         z-index: 0;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    #show-chart2 {
+        display: inline;
+        color: #021D42;
+        font-size: 16px;
+        z-index: 0;
+        cursor: pointer;
+        text-decoration: none;
     }
 
     #map-chart-container {
@@ -64,8 +77,17 @@
     }
 
     #flight-prices-chart {
+        display: 100%;
         background-color: white;
         color: #021D42;
+    }
+
+    #option-votes-chart {
+        display: 100%;
+        margin-top: -500px;
+        background-color: white;
+        color: #021D42;
+        margin-bottom: 50px;
     }
 
     .modal {
@@ -121,9 +143,18 @@
         height: 100%; /* Full height */
     }
 
+    #vote-button-container {
+        text-align: center;
+    }
+
+    #vote-button {
+        color: #021D42;
+    }
+
     .option-modal-header {
         font-size: 24px;
         text-align: center;
+        margin-top: 20px;
     }
 
     .voteModalThead td {
@@ -166,7 +197,7 @@
                     {% for usertrip in trip.usertrips %}
                         {% if usertrip.user_id == session["user_id"] %}
                             {% if usertrip.option_vote %}
-                                Voted: {{ usertrip.option_vote }}
+                                Voted: Opt.{{ usertrip.option_vote }}
                             {% else %}
                                 Vote
                             {% endif %}
@@ -184,13 +215,15 @@
 </div>
 
 <div id="show-map-chart-container">
-    <a id="show-map">Map</a>
-    <a id="show-chart">Chart</a>
+    <a id="show-map">Flight Map</a>
+    <a id="show-chart1">Chart 1</a>
+    <a id="show-chart2"> | 2</a>
 </div>
 <div id="map-chart-container">
     <div id="map"></div>
     <div id="flight-prices-chart-container">
         <canvas id="flight-prices-chart"></canvas>
+        <canvas id="option-votes-chart"></canvas>
     </div>
 </div>
 
@@ -209,22 +242,24 @@
         {% for flight in option.flights %}
         {% for leg in flight.legs %}
         {% if leg.origin_airport_code == user.origin_airport_code %}
-        <div class="flight-price">Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</div>
+        <div class="flight-price">Price: ${{ flight.flight_price[3:] }}</div>
         <table class="table">
             <thead class="voteModalThead">
                     <td>Origin Airport</td>
-                    <td>Departure Datetime</td>
+                    <td>Departure Time</td>
                     <td>Destination Airport</td>
                     <td>Arrival Time</td>
                     <td>Flight ID</td>
                     <td>Flight Duration</td>
             </thead>
+            {% for leg in flight.legs %}
+            {% if leg.origin_airport_code == user.origin_airport_code or leg.destination_airport_code == user.origin_airport_code %}
             <tbody class="voteModalTd">
                 <tr>
                     <td>{{ leg.origin_airport_code }}</td>
-                    <td>{{ leg.departure_datetime }}</td>
+                    <td>{{ leg.departure_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>{{ leg.destination_airport_code }}</td>
-                    <td>{{ leg.arrival_datetime }}</td>
+                    <td>{{ leg.arrival_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
                     <td>{{ leg.leg_airline }} {{ leg.leg_flight_code }}</td>
                     <td>{{ leg.leg_duration }}</td>
                 </tr>
@@ -232,10 +267,14 @@
             {% endif %}
             {% endfor %}
         </table>
+        {% endif %}
+        {% endfor %}
         {% endfor %}
     {% endfor %}
     <br>
-    <input type="submit" value="vote" id="vote-button" data-trip='{{ trip.trip_id }}'>
+    <div id="vote-button-container">
+        <input type="submit" value="vote" id="vote-button" data-trip='{{ trip.trip_id }}'>
+    </div>
     </form>
   </div>
 </div>
@@ -286,11 +325,11 @@
         </div>
         {% for flight in option.flights %}
         <div class="flight-in-option">
-            <h4>Flight: {{ flight.flight_id }} Price: {{ flight.flight_price }}</h4>
+            <h4>Price: ${{ flight.flight_price[3:] }}</h4>
             <table class="table">
                 <thead>
                         <td>Origin Airport</td>
-                        <td>Departure Datetime</td>
+                        <td>Departure Time</td>
                         <td>Destination Airport</td>
                         <td>Arrival Time</td>
                         <td>Flight ID</td>
@@ -300,9 +339,9 @@
                 <tbody>
                     <tr>
                         <td>{{ leg.origin_airport_code }}</td>
-                        <td>{{ leg.departure_datetime }}</td>
+                        <td>{{ leg.departure_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
                         <td>{{ leg.destination_airport_code }}</td>
-                        <td>{{ leg.arrival_datetime }}</td>
+                        <td>{{ leg.arrival_datetime.strftime('%Y-%m-%d %H:%M') }}</td>
                         <td>{{ leg.leg_airline }} {{ leg.leg_flight_code }}</td>
                         <td>{{ leg.leg_duration }}</td>
                     </tr>
@@ -343,7 +382,7 @@
         // var voted_option_id = $(".options:checked").val(); 
         debugger;
         $("#voteModal").hide();
-        $("#vote").text("Voted: " + voted_option_id)
+        $("#vote").text("Voted: " + result)
     }
 
     function voteOption(evt) {
@@ -503,7 +542,42 @@
 
 <script type="text/javascript">
 
-    var ctx = $("#flight-prices-chart").get(0).getContext("2d");
+    var ctx1 = $("#flight-prices-chart").get(0).getContext("2d");
+
+    var options1 = {
+        scales: {
+            xAxes: [{
+                    stacked: true
+            }],
+            yAxes: [{
+                    stacked: true
+            }]
+        }
+    }
+
+    $.post("/chart1.json", {"trip_id": $("#trip-details-name").data("tripid")}, function (data1) {
+        var myBarChart1 = new Chart(ctx1, {
+            type: 'bar',
+            data: data1,
+            options: options1
+        });
+    });
+
+    $("#show-chart1").click(function() {
+        $("#flight-prices-chart-container").css("opacity","1.0")
+        $("#map").css("opacity","0.0")
+    })
+
+    $("#show-map").click(function() {
+        $("#flight-prices-chart-container").css("opacity","0.0")
+        $("#map").css("opacity","1.0")
+    })
+
+</script>
+
+<script type="text/javascript">
+
+    var ctx = $("#option-votes-chart").get(0).getContext("2d");
 
     var options = {
         scales: {
@@ -516,7 +590,7 @@
         }
     }
 
-    $.post("/chart.json", {"trip_id": $("#trip-details-name").data("tripid")}, function (data) {
+    $.post("/chart2.json", {"trip_id": $("#trip-details-name").data("tripid")}, function (data) {
         var myBarChart = new Chart(ctx, {
             type: 'bar',
             data: data,
@@ -524,15 +598,14 @@
         });
     });
 
-    $("#show-chart").click(function() {
-        debugger;
-        $("#flight-prices-chart-container").css("opacity","1.0")
-        $("#map").css("opacity","0.0")
+    $("#show-chart1").click(function() {
+        $("#flight-prices-chart").css("opacity","1.0")
+        $("#option-votes-chart").css("opacity","0.0")
     })
 
-    $("#show-map").click(function() {
-        $("#flight-prices-chart-container").css("opacity","0.0")
-        $("#map").css("opacity","1.0")
+    $("#show-chart2").click(function() {
+        $("#flight-prices-chart").css("opacity","0.0")
+        $("#option-votes-chart").css("opacity","1.0")
     })
 
 </script>

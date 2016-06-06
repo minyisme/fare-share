@@ -289,6 +289,12 @@ def make_airports_autocomplete():
 ################################################################################
 
 
+# After Career day, refactor to this!!!!
+# def delete_things(things):
+#     for thing in things:
+#         db.session.delete(thing)
+#         db.session.commit()
+
 
 def delete_legs(legs):
     """Takes input list of leg objects and deletes all leg records from db"""
@@ -298,7 +304,6 @@ def delete_legs(legs):
         db.session.delete(leg)
         db.session.commit()
 
-    return
 
 def delete_flights(flights):
     """Takes input list of flights objects and deletes all flight records from db"""
@@ -308,7 +313,6 @@ def delete_flights(flights):
         db.session.delete(flight)
         db.session.commit()
 
-    return
 
 def delete_options(options):
     """Takes input list of options objects and deletes all option records from db"""
@@ -442,6 +446,7 @@ def parse_results(python_result, option):
     flights = []
     # Parsing QPX results to add to flights table
     # for i in range(len(python_results)):
+    # use enumerate to make this more readable!!!!!
     for j in range(len(python_result["trips"]["tripOption"])):
         flight_info = {"flight_price":python_result["trips"]["tripOption"][j]["saleTotal"]}
         # Calls function to add flight to db

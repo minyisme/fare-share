@@ -24,14 +24,26 @@ body {
   color: white;
 }
 
+.navbar-default .navbar-brand:hover {
+  color: #021D42;
+  background-color: #FAEFD8;
+  border-color: white
+}
+
 .navbar-default .navbar-form .btn-default {
   background-color: #021D42;
   border: 1px solid #021D42;
   color: white;
 }
 
-ul.nav.navbar-nav li a{
+ul.nav.navbar-nav li a {
   color: white;
+}
+
+ul.nav.navbar-nav li a:hover {
+  color: #021D42;
+  background-color: #FAEFD8;
+  border-color: white
 }
 
 /* next */
@@ -62,9 +74,13 @@ ul.nav.navbar-nav li a{
     box-shadow: 5px 5px 10px #02174A;
 }
 
+.trip-div:hover {
+  background-color: #FAEFD8;
+}
+
 .trip-image {
-    max-width: 300px;
-    max-height: 300px;
+    width: 300px;
+    height: 199px;
     opacity: 1;
 /*    border: 1px solid #3A67C9;*/
 }
@@ -180,12 +196,15 @@ ul.nav.navbar-nav li a{
   color: #021D42;
   height: 20px;
   vertical-align: text-top;
-/*  margin-left: 0;*/
+  padding: 2px;
 }
 
 #search-link:hover {
   cursor: pointer;
   text-decoration: none;
+  color: #FAEFD8;
+  background-color: #021D42;
+  font-weight: lighter;
 }
 
 #vote {
@@ -193,12 +212,16 @@ ul.nav.navbar-nav li a{
   color: #021D42;
   height: 20px;
   vertical-align: text-top;
+  padding: 2px;
 /*  margin-right: 0;*/
 }
 
 #vote:hover {
   cursor: pointer;
   text-decoration: none;
+  color: #FAEFD8;
+  background-color: #021D42;
+  font-weight: lighter;
 }
 
 #travelers {
@@ -207,11 +230,15 @@ ul.nav.navbar-nav li a{
   display: inline-block;
   margin: 0 auto;
   vertical-align: text-top;
+  padding: 2px;
 }
 
 #travelers:hover {
   cursor: pointer;
   text-decoration: none;
+  color: #FAEFD8;
+  background-color: #021D42;
+  font-weight: lighter;
 }
 
 #trip-spec-name-row {
@@ -494,4 +521,12 @@ ul.nav.navbar-nav li a{
 
 .flight-results-table-container td {
   font-size: 16px;
+}
+
+input[type="radio"] {
+    -webkit-appearance: checkbox; /* Chrome, Safari, Opera */
+    /*-moz-appearance: checkbox;    /* Firefox */*/
+    /*-ms-appearance: checkbox;*/
+    color: #021D42; 
+    background-color: #021D42;    /* not currently supported */
 }
