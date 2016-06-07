@@ -27,8 +27,7 @@ JavaScript, jQuery, AJAX, Jinja2, HTML, CSS, jQuery UI, Chart.js
 
 ##### APIs
 
-Google Flights API
-Google Maps API
+Google Flights API, Google Maps API
 
 [Back to Top](#fare-share)
 <dl id="features"></dl>
@@ -86,7 +85,7 @@ Google Maps API
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/autocomplete.png)
     - datepicker feature on dates
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/datepicker.png)
-- Shows results from Google Flights API 
+- Displays results from Google Flights API through individual AJAX calls 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/results.png)
 
 [Back to Top](#fare-share)
@@ -118,7 +117,7 @@ Install the requirements:
 pip install -r requirements.txt
 ```
 
-Get your own secret key for Google Flights API and save it to secrets.sh:
+Grab your own secret key for Google Flights API and save it to secrets.sh:
 
 ```
 QPX_KEY
@@ -127,8 +126,7 @@ QPX_KEY
 Set up your database and seed airport data:
 
 ```
-python -i model.py
-db.create_all()
+python model.py
 python seed.py
 ```
 
