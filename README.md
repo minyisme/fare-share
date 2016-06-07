@@ -13,7 +13,8 @@ Fare Share is an app built for friends living in different cities who want to tr
 - [Data Model](#data-model)
 
 <dl id="tech-stack"></dl>
-## Tech Stack                   ###### <dl align="right">[Back to Top](#fare-share)</dl>
+## Tech Stack                   
+<p align="right">[ # Back to Top](#fare-share)</p>
 
 ##### Backend
 
