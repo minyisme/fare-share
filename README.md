@@ -14,7 +14,7 @@ Fare Share is an app built for friends living in different cities who want to tr
 
 <dl id="tech-stack"></dl>
 ## Tech Stack                   
-<p align="right">[ # Back to Top](#fare-share)</p>
+
 
 ##### Backend
 
@@ -29,6 +29,7 @@ JavaScript, jQuery, AJAX, Jinja2, HTML, CSS, jQuery UI, Chart.js
 Google Flights API
 Google Maps API
 
+<p align="right">[Back to Top](#fare-share)</p>
 <dl id="features"></dl>
 ## Features                     [Back to Top](#fare-share)
 
