@@ -11,6 +11,7 @@ Fare Share is an app built for friends living in different cities who want to tr
     - [Trip Page](#trip-page)
     - [Search Page](#search-page)
 - [Data Model](#data-model)
+- [Get Fare Share](#set-up)
 
 <dl id="tech-stack"></dl>
 ## Tech Stack                   
@@ -93,6 +94,51 @@ Google Maps API
 ## Data Model
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/data_model.png)
+
+[Back to Top](#fare-share)
+<dl id="set-up"></dl>
+## Get Fare Share
+
+Clone or fork this repo:
+
+```
+https://github.com/minyisme/fare-share
+```
+
+Create and activate a virtual environment inside your project directory:
+
+```
+virtualenv env
+source env/bin/activate
+```
+
+Install the requirements:
+
+```
+pip install -r requirements.txt
+```
+
+Get your own secret key for Google Flights API and save them to secrets.sh:
+
+```
+QPX_KEY
+```
+
+Set up the database and seed airport data:
+
+```
+python -i model.py
+db.create_all()
+python seed.py
+```
+
+Start running your server:
+
+```
+python server.py
+```
+
+Navigate to 'localhost:5000/' and have fun trip planning!
 
 [Back to Top](#fare-share)
 <!-- [![Coverage Status](https://coveralls.io/repos/github/minyisme/totally-named-project-yo/badge.svg?branch=master)](https://coveralls.io/github/minyisme/totally-named-project-yo?branch=master) -->
