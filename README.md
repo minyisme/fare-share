@@ -118,13 +118,13 @@ Install the requirements:
 pip install -r requirements.txt
 ```
 
-Get your own secret key for Google Flights API and save them to secrets.sh:
+Get your own secret key for Google Flights API and save it to secrets.sh:
 
 ```
 QPX_KEY
 ```
 
-Set up the database and seed airport data:
+Set up your database and seed airport data:
 
 ```
 python -i model.py
