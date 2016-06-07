@@ -45,7 +45,7 @@ Google Flights API, Google Maps API
 <dl id="profile-page"></dl>
 ##### Profile Page
 
-![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/profile.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/profile1.png)
 
 - Display tiles of all trips belonging to user
 - User can click on "trash" glyphicons to delete trips
@@ -57,7 +57,7 @@ Google Flights API, Google Maps API
 <dl id="trip-page"></dl>
 ##### Trip Page
 
-![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/trip.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/trip1.png)
 
 - Displays trip details with links to:
     - modal window of travelers for this trip

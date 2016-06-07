@@ -1,7 +1,7 @@
 /* base */
 
 body {
-    background-color: white;
+    background-color: #fefcfa;
     color: white;
 }
 
@@ -16,8 +16,8 @@ body {
   color: white;
   opacity: 1;
   border-radius: 0px;
-  border-color: #031030;
-  box-shadow: 0px 5px 20px #02174A;
+  border-color: #808ea0;
+  box-shadow: 1px 1px 2px 0px #808ea0;
 }
 
 .navbar-default .navbar-brand {
@@ -62,16 +62,16 @@ ul.nav.navbar-nav li a:hover {
 }
 
 .trip-div {
-    margin-left: 40px;
-    margin-right: auto;
-    margin-top: 40px;
-    display: inline-block;
-    max-width: 400px;
-    background-color: white;
-    border: 1px solid #021D42;
-    padding: 20px;
-    opacity: 1; 
-    box-shadow: 5px 5px 10px #02174A;
+  margin-left: 40px;
+  margin-right: auto;
+  margin-top: 40px;
+  display: inline-block;
+  max-width: 400px;
+  background-color: white;
+  border: 1px solid #021D42;
+  padding: 20px;
+  opacity: 1; 
+  box-shadow: 1px 1px 2px 0px #808ea0;
 }
 
 .trip-div:hover {
@@ -204,7 +204,7 @@ ul.nav.navbar-nav li a:hover {
   text-decoration: none;
   color: #FAEFD8;
   background-color: #021D42;
-  font-weight: lighter;
+  /*font-weight: lighter;*/
 }
 
 #vote {
@@ -221,7 +221,7 @@ ul.nav.navbar-nav li a:hover {
   text-decoration: none;
   color: #FAEFD8;
   background-color: #021D42;
-  font-weight: lighter;
+  /*font-weight: lighter;*/
 }
 
 #travelers {
@@ -238,7 +238,7 @@ ul.nav.navbar-nav li a:hover {
   text-decoration: none;
   color: #FAEFD8;
   background-color: #021D42;
-  font-weight: lighter;
+  /*font-weight: lighter;*/
 }
 
 #trip-spec-name-row {
@@ -269,7 +269,7 @@ ul.nav.navbar-nav li a:hover {
   border: 1px solid #021D42;
   margin: 20px 80px;
   background-color: white;
-  box-shadow: 5px 5px 10px #02174A;
+  box-shadow: 1px 1px 2px 0px #808ea0;
   opacity: 1;
 }
 
@@ -488,7 +488,7 @@ ul.nav.navbar-nav li a:hover {
   margin-right: 10%;
   margin-top: 40px;
   padding-top: 20px;
-  box-shadow: 5px 5px 10px #02174A;
+  box-shadow: 1px 1px 2px 0px #808ea0;
 }
 
 .flight-results-container2 {
@@ -498,7 +498,7 @@ ul.nav.navbar-nav li a:hover {
   margin-left: 10%;
   margin-right: 10%;
   margin-top: -15px;
-  box-shadow: 5px 5px 10px #02174A;
+  box-shadow: 1px 1px 2px 0px #808ea0;
 }
 
 .flight-results-header-container {
