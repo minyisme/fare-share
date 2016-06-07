@@ -17,5 +17,9 @@ JavaScript, jQuery, AJAX, Jinja2, HTML, CSS, jQuery UI, Chart.js
 Google Flights API
 Google Maps API
 
+## Data Model
+
+"https://github.com/minyisme/fare-share/static/images/data_model.png"
+
 
 <!-- [![Coverage Status](https://coveralls.io/repos/github/minyisme/totally-named-project-yo/badge.svg?branch=master)](https://coveralls.io/github/minyisme/totally-named-project-yo?branch=master) -->
