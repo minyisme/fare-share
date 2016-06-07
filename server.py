@@ -36,7 +36,7 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Homepage"""
 
-    if session["user_id"]:
+    if session.get("user_id"):
         return redirect("/profile")
     else:
         return render_template("homepage.html")
