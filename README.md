@@ -53,12 +53,22 @@ Google Maps API
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_prices.png)
     - Chart.js chart of all options by user votes
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_votes.png)
-- Displays flight details for all traveleres for each flight option with:
+- Displays flight details for all travelers for each flight option with:
     - Glyphicon to delete option
     - Glyphicon to update option results
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/option_details.png)
 
 ##### Search Page
+
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/search.png)
+
+- Allows user to flight search with:
+    - autocomplete feature on airport
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/autocomplete.png)
+    - datepicker feature on dates
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/datepicker.png)
+-Shows results from Google Flights API 
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/results.png)
 
 ## Data Model
 
