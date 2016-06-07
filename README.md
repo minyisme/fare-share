@@ -53,6 +53,12 @@ Google Maps API
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_prices.png)
     - Chart.js chart of all options by user votes
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_votes.png)
+- Displays flight details for all traveleres for each flight option with:
+    - Glyphicon to delete option
+    - Glyphicon to update option results
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/option_details.png)
+
+##### Search Page
 
 ## Data Model
 

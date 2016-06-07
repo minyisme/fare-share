@@ -377,7 +377,7 @@ ul.nav.navbar-nav li a:hover {
     text-align: center;
     cursor: pointer;
     background-repeat: no-repeat;
-    background-image: url('../css/arrow.png'); 
+    background-image: url('../images/arrow.png'); 
     line-height: 600%;
     overflow: hidden;
 }
