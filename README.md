@@ -4,6 +4,12 @@ Fare Share is an app built for friends living in different cities who want to tr
 
 ## Table of Contents
 -[Tech Stack](#tech-stack)
+-[Features](#features)
+    -[Landing Page](#landing-page)
+    -[Profile Page](#profile-page)
+    -[Trip Page](#trip-page)
+    -[Search Page](#search-page)
+-[Data Model](#data-model)
 
 <dl id="tech-stack"></dl>
 ## Tech Stack
@@ -21,18 +27,18 @@ JavaScript, jQuery, AJAX, Jinja2, HTML, CSS, jQuery UI, Chart.js
 Google Flights API
 Google Maps API
 
+<dl id="features"></dl>
 ## Features
 
+<dl id="landing-page"></dl>
 ##### Landing Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/landing_page.png)
 
-##### User Sign Up
-
 - User specifies a home airport during sign up
-
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/sign_up.png)
 
+<dl id="profile-page"></dl>
 ##### Profile Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/profile.png)
@@ -43,6 +49,7 @@ Google Maps API
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/add_trip.png)
 
+<dl id="trip-page"></dl>
 ##### Trip Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/trip.png)
@@ -62,6 +69,7 @@ Google Maps API
     - Glyphicon to update option results
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/option_details.png)
 
+<dl id="search-page"></dl>
 ##### Search Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/search.png)
@@ -74,6 +82,7 @@ Google Maps API
 - Shows results from Google Flights API 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/results.png)
 
+<dl id="data-model"></dl>
 ## Data Model
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/data_model.png)
