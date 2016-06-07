@@ -31,10 +31,10 @@ Google Maps API
 
 [Back to Top](#fare-share)
 <dl id="features"></dl>
-## Features                     [Back to Top](#fare-share)
+## Features
 
 <dl id="landing-page"></dl>
-##### Landing Page              [Back to Top](#fare-share)
+##### Landing Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/landing_page.png)
 
@@ -43,7 +43,7 @@ Google Maps API
 
 [Back to Top](#fare-share)
 <dl id="profile-page"></dl>
-##### Profile Page              [Back to Top](#fare-share)
+##### Profile Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/profile.png)
 
@@ -55,7 +55,7 @@ Google Maps API
 
 [Back to Top](#fare-share)
 <dl id="trip-page"></dl>
-##### Trip Page                 [Back to Top](#fare-share)
+##### Trip Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/trip.png)
 
@@ -76,7 +76,7 @@ Google Maps API
 
 [Back to Top](#fare-share)
 <dl id="search-page"></dl>
-##### Search Page               [Back to Top](#fare-share)
+##### Search Page
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/search.png)
 
@@ -90,9 +90,9 @@ Google Maps API
 
 [Back to Top](#fare-share)
 <dl id="data-model"></dl>
-## Data Model                   [Back to Top](#fare-share)
+## Data Model
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/data_model.png)
 
-
+[Back to Top](#fare-share)
 <!-- [![Coverage Status](https://coveralls.io/repos/github/minyisme/totally-named-project-yo/badge.svg?branch=master)](https://coveralls.io/github/minyisme/totally-named-project-yo?branch=master) -->
