@@ -19,15 +19,15 @@ Fare Share is an app built for friends living in different cities who want to tr
 
 ##### Backend
 
-Python, Flask, SQLAlchemy, PostgreSQL
+[Python](https://www.python.org/), [Flask](http://flask.pocoo.org/), [SQLAlchemy](http://www.sqlalchemy.org/), [PostgreSQL](https://www.postgresql.org/)
 
 ##### Frontend
 
-JavaScript, jQuery, AJAX, Jinja2, HTML, CSS, jQuery UI, Chart.js
+JavaScript, [jQuery](https://jquery.com/), AJAX, [Jinja2](http://jinja.pocoo.org/docs/dev/), HTML, CSS, [jQuery UI](https://jqueryui.com/), [Chart.js](http://www.chartjs.org/)
 
 ##### APIs
 
-Google Flights API, Google Maps API
+[Google Flights API](https://developers.google.com/qpx-express/), [Google Maps API](https://developers.google.com/maps/)
 
 [Back to Top](#fare-share)
 <dl id="features"></dl>
@@ -66,19 +66,19 @@ Google Flights API, Google Maps API
 - Displays visuals:
     - Google Map of flight paths for all options
     - Chart.js chart of all options by price
-![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_prices.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_prices1.png)
     - Chart.js chart of all options by user votes
-![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_votes.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/options_votes1.png)
 - Displays flight details for all travelers for each flight option with:
     - Glyphicon to delete option
     - Glyphicon to update option results
-![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/option_details.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/option_details1.png)
 
 [Back to Top](#fare-share)
 <dl id="search-page"></dl>
 ##### Search Page
 
-![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/search.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/search1.png)
 
 - Allows user to flight search with:
     - autocomplete feature on airport
