@@ -35,7 +35,7 @@ Google Maps API
 
 - Display tiles of all trips belonging to user
 - User can click on "trash" glyphicons to delete trips
-- User can create a trip, specifying other users on the trip
+- User can add a new trip, specifying other users on the trip
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/add_trip.png)
 
@@ -67,7 +67,7 @@ Google Maps API
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/autocomplete.png)
     - datepicker feature on dates
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/datepicker.png)
--Shows results from Google Flights API 
+- Shows results from Google Flights API 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/results.png)
 
 ## Data Model
