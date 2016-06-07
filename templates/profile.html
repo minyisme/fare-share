@@ -1,20 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<style type="text/css">
-    body {
-/*        background-image: url(/static/css/IMG_5133-2.jpg);
-        background-size: cover;
-        background-attachment: fixed;
-        background-repeat: no-repeat;
-        font-family: sans-serif;
-        color: white;*/
-    }
-</style>
-
-
+<!-- page of trip tiles -->
 <div class="big-trip-container">
 {% for trip in trips %}
+    <!-- divs containing each trip w/ trip name and delete glyphicon-->
     <div class="trip-div">
         <div class="trip-name">{{ trip.trip_name }}</div>
         <div>
@@ -25,6 +15,7 @@
                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </div>
         </div>
+        <!-- actually delete trip route that hides with 0 opacity in front of trash glyphicon -->
         <div class="delete-container">
             <form class="trip-form" action="/profile/trip-delete" method="POST">
                 <input type="hidden" name="trip-id-delete" value="{{ trip.trip_id }}">
