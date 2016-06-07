@@ -19,7 +19,7 @@ Google Maps API
 
 ## Data Model
 
-![alt text](https://github.com/minyisme/fare-share/static/images/data_model.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/data_model.png)
 
 
 <!-- [![Coverage Status](https://coveralls.io/repos/github/minyisme/totally-named-project-yo/badge.svg?branch=master)](https://coveralls.io/github/minyisme/totally-named-project-yo?branch=master) -->
