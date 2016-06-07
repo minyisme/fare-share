@@ -29,7 +29,7 @@ JavaScript, jQuery, AJAX, Jinja2, HTML, CSS, jQuery UI, Chart.js
 Google Flights API
 Google Maps API
 
-<p align="right">[Back to Top](#fare-share)</p>
+[Back to Top](#fare-share)
 <dl id="features"></dl>
 ## Features                     [Back to Top](#fare-share)
 
@@ -41,6 +41,7 @@ Google Maps API
 - User specifies a home airport during sign up
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/sign_up.png)
 
+[Back to Top](#fare-share)
 <dl id="profile-page"></dl>
 ##### Profile Page              [Back to Top](#fare-share)
 
@@ -52,6 +53,7 @@ Google Maps API
 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/add_trip.png)
 
+[Back to Top](#fare-share)
 <dl id="trip-page"></dl>
 ##### Trip Page                 [Back to Top](#fare-share)
 
@@ -72,6 +74,7 @@ Google Maps API
     - Glyphicon to update option results
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/option_details.png)
 
+[Back to Top](#fare-share)
 <dl id="search-page"></dl>
 ##### Search Page               [Back to Top](#fare-share)
 
@@ -85,6 +88,7 @@ Google Maps API
 - Shows results from Google Flights API 
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/results.png)
 
+[Back to Top](#fare-share)
 <dl id="data-model"></dl>
 ## Data Model                   [Back to Top](#fare-share)
 
