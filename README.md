@@ -40,7 +40,7 @@ Google Maps API
 ![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/landing_page.png)
 
 - User specifies a home airport during sign up
-![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/sign_up.png)
+![alt text](https://github.com/minyisme/fare-share/blob/master/static/images/sign_up1.png)
 
 [Back to Top](#fare-share)
 <dl id="profile-page"></dl>
