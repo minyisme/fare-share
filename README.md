@@ -12,6 +12,7 @@ Fare Share is an app built for friends living in different cities who want to tr
     - [Search Page](#search-page)
 - [Data Model](#data-model)
 - [Get Fare Share](#set-up)
+- [Fare Share 2.0](#future)
 
 <dl id="tech-stack"></dl>
 ## Tech Stack                   
@@ -137,6 +138,16 @@ python server.py
 ```
 
 Navigate to 'localhost:5000/' and have fun trip planning!
+
+[Back to Top](#fare-share)
+<dl id="future"></dl>
+## For Version 2.0
+
+- **Search by region:** Allow users to search destinations by region, country, or continent
+- **Interactive map and charts:** Map markers and chart columns to be interactive
+- **Password hashing:** Passwords will be hashed before being saved in DB
+- **Trip images:** Allow users to upload images for each trip tile
+- **Deployment:** Deployment coming soon!
 
 [Back to Top](#fare-share)
 <!-- [![Coverage Status](https://coveralls.io/repos/github/minyisme/totally-named-project-yo/badge.svg?branch=master)](https://coveralls.io/github/minyisme/totally-named-project-yo?branch=master) -->
