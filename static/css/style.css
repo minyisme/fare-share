@@ -5,6 +5,7 @@ body {
     color: white;
 }
 
+/* nav bar css*/
 .btn-default {
   border: 1px solid #021D42;
   color: white;
@@ -48,6 +49,7 @@ ul.nav.navbar-nav li a:hover {
 
 /* next */
 
+/* trip tiles on profile page css */
 #delete-trip {
     color: black;
 }
@@ -117,6 +119,7 @@ ul.nav.navbar-nav li a:hover {
 
 }
 
+/* add trip modal css*/
 /* The Modal (background) */
 #addTripModal {
     margin-left: auto;
@@ -181,6 +184,7 @@ ul.nav.navbar-nav li a:hover {
   border: 1px solid #021D42;
 }
 
+/* trip details page under title links */
 .trip-header {
   /*position: fixed;*/
 }
@@ -241,6 +245,7 @@ ul.nav.navbar-nav li a:hover {
   /*font-weight: lighter;*/
 }
 
+/* options tiles in trip details page css*/
 #trip-spec-name-row {
   text-align: center;
 }
@@ -326,6 +331,7 @@ ul.nav.navbar-nav li a:hover {
   color: #021D42;
 }
 
+/* jquery ui datepicker css */
 .ui-datepicker {
     color: #021D42;
     opacity: .9;
@@ -391,6 +397,7 @@ ul.nav.navbar-nav li a:hover {
     background-position: center 0px;
 }
 
+/* jquery ui autocomplete css*/
 .ui-autocomplete {
   color: black;
   position: absolute;
@@ -443,6 +450,7 @@ ul.nav.navbar-nav li a:hover {
 
 .ui-helper-hidden-accessible { display:none; }
 
+/* search page css */
 #search-form-container {
   padding-top: 15px;
   padding-bottom: 15px;
@@ -523,6 +531,7 @@ ul.nav.navbar-nav li a:hover {
   font-size: 16px;
 }
 
+/* get square radio button */
 input[type="radio"] {
     -webkit-appearance: checkbox; /* Chrome, Safari, Opera */
     /*-moz-appearance: checkbox;    /* Firefox */*/

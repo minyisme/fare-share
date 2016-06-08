@@ -18,6 +18,8 @@
         margin: 0;
         padding: 0;
     }
+
+    /* map css */
     #map {
         height: 100%;
         width: 100%;
@@ -46,6 +48,7 @@
         /*font-weight: lighter;*/
     }
 
+    /* charts css */
     #show-chart1 {
         margin-left: -380px;
         color: #021D42;
@@ -91,6 +94,7 @@
         box-shadow: 1px 1px 2px 0px #808ea0;
     }
 
+    /* flight options css */
     #flight-prices-chart-container {
         margin-right: auto;
         margin-left: auto;
@@ -114,6 +118,7 @@
         margin-bottom: 50px;
     }
 
+    /* modal css */
     .modal {
         margin-top: 0;
         margin-left: auto;
@@ -147,6 +152,7 @@
         font-size: 20px;
     }
 
+    /* travelers modal */
     #travelersModal {
         height: 100%;
         width: 100%;
@@ -161,6 +167,7 @@
         background-color: #021D42;
     }
 
+    /* vote modal css */
     #voteModal {
         margin-top: 30px;
         width: 100%; /* Full width */
@@ -211,6 +218,7 @@
 {% endblock %}
 {% block content %}
     
+<!-- title container -->
 <div id="trip-spec-name-row" class="row">
     <div class="col-lg-3"></div>
     <div class="trip-spec-name-container col-lg-6">
@@ -238,11 +246,13 @@
     <div class="col-lg-3"></div>
 </div>
 
+<!-- links to toggle map and charts -->
 <div id="show-map-chart-container">
     <a id="show-map">Flight Map</a>
     <a id="show-chart1">Chart 1</a>
     <a id="show-chart2"> | 2</a>
 </div>
+<!-- map and charts -->
 <div id="map-chart-container">
     <div id="map"></div>
     <div id="flight-prices-chart-container">
@@ -251,7 +261,7 @@
     </div>
 </div>
 
-<!-- The Modal -->
+<!-- vote options modal -->
 <div id="voteModal" class="modal">
   <!-- Modal content -->
   <div class="modal-content">
@@ -303,7 +313,7 @@
   </div>
 </div>
 
-<!-- The Modal -->
+<!-- travelers modal -->
 <div id="travelersModal" class="modal">
 
   <!-- Modal content -->
@@ -322,6 +332,8 @@
 
 {% for option in options %}
 <br>
+
+<!-- options tiles -->
 <div class="option-container">
     <div class="option-in-trip">
         <div class="option-header">   
@@ -329,17 +341,20 @@
                 Option {{ option.option_id }}: Traveling to {{ option.destination_airport.airport_city }} from {{ option.depart_date }} to {{ option.return_date }}
             </div>
             <br>
+            <!-- glyphicons -->
             <div class="option-change-container">
             <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             <span class="glyphicon glyphicon-repeat" aria-hidden="true" style="float:right;"></span>
             </div>
             </div>
+            <!-- opacity 0 delete form over trash glyphicon -->
             <div class="option-delete-button">
                 <form action="/trip/{{ trip.trip_id }}/option-delete" method="POST">
                     <input type="hidden" name="option-id-delete" value="{{ option.option_id }}">
                     <input type="submit" class="option-delete" value="Delete">
                 </form>
             </div>
+            <!-- opacity 0 update form over repeat glyphicon -->
             <div class="option-update-button">
                 <form action="/trip/{{ trip.trip_id }}/option-update" method="POST">
                     <input type="hidden" name="option-id-update" value="{{ option.option_id }}">
@@ -347,6 +362,7 @@
                 </form>
             </div>
         </div>
+        <!-- flight info -->
         {% for flight in option.flights %}
         <div class="flight-in-option">
             <h4>Price: ${{ flight.flight_price[3:] }}</h4>
@@ -379,6 +395,7 @@
 {% endfor %}
 
 <script type="text/javascript">
+    // open and close vote modal
 
     var voteModal = document.getElementById('voteModal');
 
@@ -400,6 +417,7 @@
 </script>
 
 <script type="text/javascript">
+    // vote for option ajax call
 
     function showConfirmation(result) {
 
@@ -428,6 +446,7 @@
 </script>
 
 <script type="text/javascript">
+    // open and close vote modal
 
     // Get the modal
     var travelersModal = document.getElementById('travelersModal');
@@ -457,11 +476,13 @@
 
 </script>
 
+<!-- get map from google -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB-GCR38Gz0Y-tued81BwisFBmiWMtP8oU&callback=initMap"
     async defer>
 </script>
 
 <script type="text/javascript">
+// create google map
 
   var map;
   var originMarkers = []
@@ -469,6 +490,7 @@
   var paths =[]
   var poly, geodesicPoly;
 
+    // update map with destination and origin markers
   function update() {
     // debugger;
     for (i=0; i<originMarkers.length; i++) {
@@ -499,12 +521,14 @@
     }
   }
 
+    // create map
   function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 30, lng: 0},
     zoom: 2
     });
 
+    // ajax call to get origin lat longs for markers
     $.get("/origins-for-map", {"trip": $("#trip-details-name").data("trip")}, function(result) {
       // debugger;
         for (i=0; i<result["latlongs"].length; i++) {
@@ -520,6 +544,7 @@
             originMarkers.push(marker);
         }
 
+        // ajax call to get destination lat longs for markers
         $.get("/destinations-for-map", {"trip": $("#trip-details-name").data("trip")}, function(result) {
         // debugger;
             for (i=0; i<result["latlongs"].length; i++) {
@@ -535,12 +560,13 @@
                 destinationMarkers.push(marker);
             } 
 
+            // run the function to add flight paths
             update();
         });
 
     });
 
-      
+      // google maps styling and color
     var styles = [{"featureType":"administrative","elementType":"labels.text.fill","stylers":[{"color":"#2c3645"}]},{"featureType":"administrative","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"administrative.country","elementType":"geometry.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#dcdcdc"}]},{"featureType":"landscape.man_made","elementType":"geometry.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape.man_made","elementType":"labels.text.stroke","stylers":[{"color":"#00344d"}]},{"featureType":"landscape.natural.landcover","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#93d09e"}]},{"featureType":"landscape.natural.terrain","elementType":"labels","stylers":[{"visibility":"on"},{"color":"#0d6f32"}]},{"featureType":"landscape.natural.terrain","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"all","stylers":[{"visibility":"on"}]},{"featureType":"poi","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#62bf85"}]},{"featureType":"road","elementType":"all","stylers":[{"saturation":-100},{"lightness":45}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#95c4a7"}]},{"featureType":"road","elementType":"labels.text","stylers":[{"color":"#334767"}]},{"featureType":"road","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#334767"}]},{"featureType":"road.highway","elementType":"all","stylers":[{"visibility":"simplified"}]},{"featureType":"road.arterial","elementType":"labels.icon","stylers":[{"visibility":"off"}]},{"featureType":"road.local","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#b7b7b7"}]},{"featureType":"road.local","elementType":"labels.text","stylers":[{"visibility":"on"}]},{"featureType":"transit","elementType":"all","stylers":[{"visibility":"on"},{"color":"#364a6a"}]},{"featureType":"transit","elementType":"labels.text.fill","stylers":[{"visibility":"on"},{"color":"#ffffff"}]},{"featureType":"transit","elementType":"labels.text.stroke","stylers":[{"visibility":"on"}]},{"featureType":"transit.station.rail","elementType":"geometry.stroke","stylers":[{"visibility":"on"},{"color":"#535353"}]},{"featureType":"water","elementType":"all","stylers":[{"color":"#3fc672"},{"visibility":"on"}]},{"featureType":"water","elementType":"geometry.fill","stylers":[{"visibility":"on"},{"color":"#4d6489"}]},{"featureType":"water","elementType":"labels.text.stroke","stylers":[{"visibility":"off"}]}]
 
     map.setOptions({styles: styles});
@@ -565,6 +591,7 @@
 </script>
 
 <script type="text/javascript">
+    // chart 1 of options by prices
 
     var ctx1 = $("#flight-prices-chart").get(0).getContext("2d");
 
@@ -587,6 +614,7 @@
         });
     });
 
+    // toggle between charts and map
     $("#show-chart1").click(function() {
         $("#flight-prices-chart-container").css("opacity","1.0")
         $("#map").css("opacity","0.0")
@@ -600,6 +628,7 @@
 </script>
 
 <script type="text/javascript">
+    // chart 2 of options by vote tallies
 
     var ctx = $("#option-votes-chart").get(0).getContext("2d");
 
@@ -622,6 +651,7 @@
         });
     });
 
+    // toggle between two charts
     $("#show-chart1").click(function() {
         $("#flight-prices-chart").css("opacity","1.0")
         $("#option-votes-chart").css("opacity","0.0")

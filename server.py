@@ -115,12 +115,12 @@ def user_logout():
 #     elif method == 'GET':
 #         return do_get()  # get the user registration form
 
-@app.route('/user-reg-form')
-def user_reg_form():
-    """Takes user to user registration form"""
+# @app.route('/user-reg-form')
+# def user_reg_form():
+#     """Takes user to user registration form"""
 
-    # Takes user directly to user registration page without any checks
-    return render_template('user_registration.html')
+#     # Takes user directly to user registration page without any checks
+#     return render_template('user_registration.html')
 
 
 
@@ -135,7 +135,8 @@ def user_registration():
     user_info["user_email"] = request.form.get('user-email')
     user_info["user_password"] = request.form.get('user-password')
     user_info["user_name"] = request.form.get('username')
-    user_info["user_origin_airport_code"] = (request.form.get('origin_airport_code')).upper()
+    # jQuery UI autocomplete added, so limit first 3 characters to add to db
+    user_info["user_origin_airport_code"] = ((request.form.get('origin_airport_code')).upper())[:3]
 
     # Checks if email is in the db already
     if functions.is_registered_email(user_info["user_email"]) == False:
@@ -158,24 +159,33 @@ def user_registration():
 @app.route('/profile/trip-delete', methods=["POST"])  # DELETE
 def trip_delete():
     """Delete trip and all option, flight, and leg data associated with that trip
-    in db"""
+    in db, ajax call"""
 
+    # Get trip to delete
     trip_id = request.form.get("trip-id-delete")
     trip = Trip.query.get(trip_id)
 
+    # Get all options for the trip
     options = functions.options_by_trip(trip)
     for option in options:
+        # Get all flights for the options
         flights = functions.flights_by_option(option)
         for flight in flights:
+            # Get all legs for the flights
             legs = functions.legs_by_flight(flight)
+            # Delete legs
             functions.delete_legs(legs)
             db.session.commit()
+        # Delete flights
         functions.delete_flights(flights)
+    # Delete options
     functions.delete_options(options)
 
+    # Get all userstrips and delete
     userstrips = functions.userstrips_by_trip(trip)
     functions.delete_userstrips(userstrips)
 
+    # Delete trip
     db.session.delete(trip)
     db.session.commit()
 
@@ -261,25 +271,27 @@ def trip_detail(trip_id):
 
 @app.route('/chart1.json', methods=["POST"])
 def chart1():
+    """Grab all flight options and prices data to populate Chart 1, ajax call"""
 
+    # Get trip_id
     trip_id = request.form.get("trip_id")
-
+    # Get trip
     trip = Trip.query.get(trip_id)
 
     labels_chart = []
-
+    # Get options as columns
     for option in trip.options:
         labels_chart.append(option.option_id)
 
     chart_data = []
-
+    # Get flight prices for each option
     i = 0
     for option in trip.options:
         chart_data.append(0)
         for flight in option.flights:
             chart_data[i] += float(flight.flight_price[3:])
         i += 1
-
+    # Parameters of the chart
     datasets_chart = [
             {
                 "label": "Options by Prices",
@@ -290,7 +302,7 @@ def chart1():
                 "data": chart_data,
             }
         ]
-
+    # Data to populate the Chart.js.chart
     data = {
         "labels": labels_chart,
         "datasets": datasets_chart
@@ -302,18 +314,20 @@ def chart1():
 
 @app.route('/chart2.json', methods=["POST"])
 def chart2():
+    """Grab all flight options and vote tally data to populate Chart 2, ajax call"""
 
+    # Get trip_id
     trip_id = request.form.get("trip_id")
-
+    # Get trip
     trip = Trip.query.get(trip_id)
 
     labels_chart = []
-
+    # Get options as columns
     for option in trip.options:
         labels_chart.append(option.option_id)
 
     chart_data = []
-
+    # Get vote tallies for each option
     i = 0
     for option in trip.options:
         chart_data.append(0)
@@ -321,7 +335,7 @@ def chart2():
             if usertrip.option_vote == option.option_id: 
                 chart_data[i] += 1   
         i += 1
-
+    # Parameters of the chart
     datasets_chart = [
             {
                 "label": "Options by Vote",
@@ -332,7 +346,7 @@ def chart2():
                 "data": chart_data,
             }
         ]
-
+    # Data to populate the Chart.js.chart
     data = {
         "labels": labels_chart,
         "datasets": datasets_chart
@@ -359,7 +373,10 @@ def trip_search(trip_id):
 
 @app.route('/get-airports-to-autocomplete', methods=["GET"])
 def get_airports_autocomplete():
+    """Grab all airports and lat and long data to populate the autocomplete 
+    drop down, ajax call"""
 
+    # Grabs info from helper function
     airports_autocomplete_list = functions.make_airports_autocomplete()
     # import pdb
     # pdb.set_trace()
@@ -369,7 +386,7 @@ def get_airports_autocomplete():
 
 @app.route('/trip/<int:trip_id>/option-delete', methods=["POST"])
 def option_delete(trip_id):
-    """Delete an option from the db"""
+    """Delete an option from the db ajax call"""
 
     # Get option id from from
     option_id = int(request.form.get("option-id-delete"))
@@ -403,7 +420,8 @@ def option_delete(trip_id):
 
 @app.route('/trip/<int:trip_id>/option-update', methods=["POST"])
 def option_update(trip_id):
-    """Update the search results of an option"""
+    """Update results for an option by deleting all flights/legs associated and 
+    redirecting to search page with original search parameters prepopulated"""
 
     trip = Trip.query.get(trip_id)
     origin_airport_codes = functions.origin_airport_codes_by_trip(trip)
@@ -461,11 +479,11 @@ def option_vote(trip_id):
 
 
 
-@app.route('/trip/<int:trip_id>/share')
-def trip_share(trip_id):
-    """Share trip with other users"""
+# @app.route('/trip/<int:trip_id>/share')
+# def trip_share(trip_id):
+#     """Share trip with other users"""
 
-    return render_template("trip_share.html", trip_id=trip_id)
+#     return render_template("trip_share.html", trip_id=trip_id)
 
 
 
@@ -479,7 +497,7 @@ def trip_share(trip_id):
 
 @app.route('/trip/<int:trip_id>/search.json', methods=["POST"])
 def trip_option_info(trip_id):
-    """Get Option info and save to db"""
+    """Get Option info and save to db, ajax call"""
 
     # Initializes empty dictionary to add option info to
     option_info = {}
@@ -503,7 +521,7 @@ def trip_option_info(trip_id):
 
 @app.route('/trip/<int:trip_id>/results.json', methods=["POST"])
 def trip_results(trip_id):
-    """Search flights results"""
+    """Search flights results, ajax call"""
 
     # Get trip from trip_id
     trip = Trip.query.get(trip_id)
@@ -554,9 +572,14 @@ def trip_results(trip_id):
 
 @app.route('/origins-for-map')
 def origins_for_map():
+    """Grab all origin airport lat longs to put markers on the Google Map"""
+
+    # Get trip name
     trip_name = request.args.get("trip")
+    # Get trip
     trip = Trip.query.filter_by(trip_name=trip_name).first()
     users = []
+
     # import pdb
     # pdb.set_trace()
     userstrips = trip.usertrips
@@ -565,6 +588,7 @@ def origins_for_map():
         user = User.query.get(user_id)
         users.append(user)
 
+    # Get lat long lists for each marker
     latlongs = []
     for user in users:
         origin_airport = user.origin_airport
@@ -578,24 +602,26 @@ def origins_for_map():
 
 @app.route('/destinations-for-map')
 def destinations_for_map():
+    """Grab all origin airport lat longs to put markers on the Google Map"""
+
+    # Get trip name
     trip_name = request.args.get("trip")
     trip = Trip.query.filter_by(trip_name=trip_name).first()
 
+    # Get lat long lists for each marker
     latlongs = []
     options = trip.options
     for option in options:
         latlongs.append((option.destination_airport.airport_lat, option.destination_airport.airport_long))
 
-
-
     return jsonify({"latlongs": latlongs})
 
 
 
-@app.route('/untitled')
-def get_untitled():
+# @app.route('/untitled')
+# def get_untitled():
 
-    return render_template("untitled.html")
+#     return render_template("untitled.html")
 
 
 

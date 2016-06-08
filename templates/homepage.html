@@ -23,6 +23,7 @@ body {
     /*z-index: 1;*/
 }
 
+/* title css */
 #title-container {
   margin-top: 22%;
   padding: 0;
@@ -87,6 +88,7 @@ body {
     border: #021D42;
 }
 
+/* login css */
 #login-submit {
     margin-top: 2px;
     border: 1px solid #021D42;
@@ -114,6 +116,7 @@ body {
     cursor: pointer;
 }
 
+/* sign up css */
 .signup-div {
     color: white;
     margin-bottom: 2px;
@@ -152,6 +155,7 @@ body {
 
 </style>
 
+<!-- title container -->
 <div class="row">
     <div class="col-lg-3"></div>
     <div id="title-container" class="col-lg-6">
@@ -180,6 +184,7 @@ body {
 
 
 <script type="text/javascript">
+// login modal open and close
 
 // Get the login modal
 var loginModal = document.getElementById('loginModal');
@@ -232,6 +237,8 @@ closeLoginModalSpan.onclick = function() {
 </div>
 
 <script type="text/javascript">
+// sign up modal open and close
+
 // Get the signup modal
 var signupModal = document.getElementById('signupModal');
 
@@ -260,6 +267,7 @@ closeSignupModalSpan.onclick = function() {
 </script>
 
 <script type="text/javascript">
+    // ajax call to vote for options 
 
     function showConfirmation(result) {
 
@@ -289,6 +297,8 @@ closeSignupModalSpan.onclick = function() {
 </script>
 
 <script type="text/javascript">
+//  get airports for jquery ui autocomplete
+
     $.get("/get-airports-to-autocomplete", function(result) {
 
         // alert(result["airports"]);
